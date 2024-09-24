@@ -24,6 +24,7 @@ public enum Core: String {
 
 public enum Coordinator: String {
     case home = "HomeCoordinator"
+    case app = "AppCoordinator"
 }
 
 public enum Scene: String {
@@ -40,13 +41,13 @@ extension Module {
     public func asTargetDependency() -> TargetDependency {
         switch self {
         case .core(let core):
-            return .project(target: core.rawValue, path: .relativeToRoot("Projects/App"))
+            return .project(target: core.rawValue, path: .relativeToRoot("Projects/Core"))
             
         case .coordinator(let coordinator):
             return .project(target: coordinator.rawValue, path: .relativeToRoot("Projects/Features/Coordinator"))
             
         case .designSystem:
-            return .project(target: "DesignSystemKit", path: .relativeToRoot("Projects/DesignSystem"))
+            return .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem"))
             
         case .scene(let scene):
             return .project(target: scene.rawValue, path: .relativeToRoot("Projects/Features/Scene"))

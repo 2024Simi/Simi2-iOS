@@ -13,7 +13,7 @@ let project = Project.make(
     targets: [
         .make(
             name: "DesignSystem",
-            product: .app,
+            product: .staticLibrary,
             bundleId: "com.mashup.simi.designSystem",
             infoPlist: .extendingDefault(
                 with: [
@@ -23,10 +23,9 @@ let project = Project.make(
                     "ITSEncryptionExportComplianceCode": "false"
                 ]
             ),
-            sources: ["DesignSystem/Sources/**"],
-            resources: ["DesignSystem/Resources/**"],
+            sources: ["Sources/**"],
+            resources: ["Resources/**"],
             dependencies: [
-                .designSystem
             ],
             settings: .settings()
         ),
