@@ -9,13 +9,18 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let module = Project.module(
-    name: "DesignSystem",
+    name: "Scene",
+    settings: true,
     targets: [
         .moduleTarget(
-            name: "DesignSystem",
-            product: .framework,
-            resources: true,
-            dependencies: [],
+            name: "Home",
+            product: .staticLibrary,
+            resources: false,
+            dependencies: [
+                .core(.service),
+                .core(.model),
+                .designSystem
+            ],
             infoPlist: true
         )
     ]

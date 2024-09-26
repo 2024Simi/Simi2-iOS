@@ -1,33 +1,23 @@
 //
 //  Project.swift
-//  Config
+//  ProjectDescriptionHelpers
 //
-//  Created by cha_nyeong on 9/5/24.
+//  Created by 박서연 on 2024/09/25.
 //
 
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let project = Project.make(
-    name: "App",
-    targets: [
-        .make(
-            name: "Simi-iOS",
-            product: .app,
-            bundleId: "com.simi.simi-iOS",
-            infoPlist: .file(path: .relativeToRoot("Projects/App/InfoPlists/Info.plist")),
-            sources: ["Sources/**"],
-            resources: ["Resources/**"],
-            entitlements: .file(path: .relativeToRoot("Projects/App/Entitlements/Simi-iOS.entitlements")),
-            scripts: [],
+let project = Project.app(
+    target: [
+        .appTarget(
+            name: EnvironmentSettings.default.name,
             dependencies: [
                 .coordinator(.app),
+                .designSystem
             ],
-            settings: .settings(
-                configurations: [],
-                defaultSettings: .recommended(excluding: ["앱 아이콘 이름"])
-            )
+            infoPlist: true
         ),
-    ],
-    additionalFiles: []
+    ]
 )
+

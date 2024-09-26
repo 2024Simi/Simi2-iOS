@@ -1,36 +1,43 @@
 //
 //  Project.swift
-//  Config
+//  ProjectDescriptionHelpers
 //
-//  Created by cha_nyeong on 9/5/24.
+//  Created by 박서연 on 2024/09/25.
 //
+
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let project = Project.make(
+let module = Project.module(
     name: "Core",
+    settings: true,
     targets: [
-        .make(
+        .multiTarget(
             name: "Common",
             product: .staticLibrary,
-            bundleId: "com.mashup.simi.common",
-            sources: ["Common/**"],
-            dependencies: []
+            resources: false,
+            dependencies: [],
+            infoPlist: true,
+            setting: true
         ),
-        .make(
+        .multiTarget(
             name: "Models",
-            product: .staticLibrary,
-            bundleId: "com.mashup.simi.models",
-            sources: ["Models/**"],
-            dependencies: []
+            product: .framework,
+            resources: false,
+            dependencies: [],
+            infoPlist: true,
+            setting: false
         ),
-        .make(
+        .multiTarget(
             name: "Services",
             product: .staticLibrary,
-            bundleId: "com.mashup.simi.services",
-            sources: ["Services/**"],
-            dependencies: []
+            resources: false,
+            dependencies: [
+                .spm(.lottie),
+                .spm(.kakaoIosSdk),
+            ],
+            infoPlist: true,
+            setting: true
         )
-        // 각 부분 필요한 의존성 필요시 추가 진행
     ]
 )

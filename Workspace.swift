@@ -1,20 +1,20 @@
 //
 //  Workspace.swift
-//  Config
+//  ProjectDescriptionHelpers
 //
-//  Created by cha_nyeong on 9/5/24.
+//  Created by 박서연 on 2024/09/25.
 //
 
 import ProjectDescription
 
 let workspace = Workspace(
-    name: "Simi-iOS",
+    name: "simi",
     projects: [
         "Projects/App",
         "Projects/Core",
         "Projects/DesignSystem",
-        "Projects/Features/Coordinator",
-        "Projects/Features/Scene"
-    ],
-    schemes: []
+        "Projects/Feature/Coordinator",
+        "Projects/Feature/Scene"
+    ]
 )
+

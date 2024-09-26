@@ -9,15 +9,16 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let module = Project.module(
-    name: "DesignSystem",
+    name: "Coordinator",
     targets: [
         .moduleTarget(
-            name: "DesignSystem",
-            product: .framework,
-            resources: true,
-            dependencies: [],
-            infoPlist: true
+            name: "AppCoordinator",
+            product: .staticLibrary,
+            resources: false,
+            dependencies: [
+                .scene(.home)
+            ],
+            infoPlist: false
         )
     ]
 )
-
