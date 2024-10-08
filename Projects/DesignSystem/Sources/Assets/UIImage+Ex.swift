@@ -35,4 +35,10 @@ public extension UIImage {
     // login
     static let icKakao = DesignSystemAsset.icKakao.image
     static let icApple = DesignSystemAsset.icApple.image
+    
+    // tabbar
+    static let icMenuO = DesignSystemAsset.icMenuO.image
+    static let icMenuX = DesignSystemAsset.icMenuX.image
+    static let icNoteO =DesignSystemAsset.icNoteO.image
+    static let icNoteX =DesignSystemAsset.icNoteX.image
 }
