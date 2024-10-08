@@ -10,6 +10,10 @@ import DesignSystem
 
 class FontTestViewController: UIViewController, UITextFieldDelegate {
     
+    //navigationbar test
+    private let customBar = CustomNavigationBar()
+    
+    
     var buttonTest: Bool = false
     
     private let label: UILabel = {
@@ -49,6 +53,7 @@ class FontTestViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         view.backgroundColor = .white
         setup()
+        setupNavigationTest()
         
         inputTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         inputTextField.delegate = self
@@ -90,4 +95,36 @@ class FontTestViewController: UIViewController, UITextFieldDelegate {
             button.isDisabled = true
         }
     }
+}
+
+extension FontTestViewController {
+    func setupNavigationTest() {
+        view.addSubview(customBar)
+        customBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            customBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            customBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            customBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            customBar.heightAnchor.constraint(equalToConstant: 48)
+        ])
+        
+        customBar.configure(
+            title: "테스트",
+            font: .bold(.title1),
+            rightImage: .icArrowUp,
+            leftAction: #selector(tappedLAction),
+            rightAction: #selector(tappedRAction),
+            target: self,
+            type: .LRButtonWithTitle
+        )
+    }
+    
+    @objc private func tappedRAction() {
+        print("right navi tapped!")
+    }
+    
+    @objc private func tappedLAction() {
+        print("left navi Tapped")
+    }
+        
 }

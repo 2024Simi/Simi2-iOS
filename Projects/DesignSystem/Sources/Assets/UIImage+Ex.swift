@@ -39,6 +39,6 @@ public extension UIImage {
     // tabbar
     static let icMenuO = DesignSystemAsset.icMenuO.image
     static let icMenuX = DesignSystemAsset.icMenuX.image
-    static let icNoteO =DesignSystemAsset.icNoteO.image
-    static let icNoteX =DesignSystemAsset.icNoteX.image
+    static let icNoteO = DesignSystemAsset.icNoteO.image
+    static let icNoteX = DesignSystemAsset.icNoteX.image
 }
