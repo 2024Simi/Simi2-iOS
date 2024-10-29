@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import Common
 
 public enum ApiMethod: String {
     case get = "GET"

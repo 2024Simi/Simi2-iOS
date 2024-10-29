@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension Encodable {
+public extension Encodable {
     func toDictionary() throws -> [String: Any] {
         let data = try JSONEncoder().encode(self)
         let dictionary = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
@@ -15,7 +15,7 @@ extension Encodable {
     }
 }
 
-extension UIApplication {
+public extension UIApplication {
     func endEditing() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }

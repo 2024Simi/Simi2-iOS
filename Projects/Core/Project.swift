@@ -22,7 +22,7 @@ let module = Project.module(
         ),
         .multiTarget(
             name: "Models",
-            product: .framework,
+            product: .staticLibrary,
             resources: false,
             dependencies: [],
             infoPlist: true,
@@ -35,6 +35,8 @@ let module = Project.module(
             dependencies: [
                 .spm(.lottie),
                 .spm(.kakaoIosSdk),
+                .core(.common),
+                .core(.model)
             ],
             infoPlist: true,
             setting: true
