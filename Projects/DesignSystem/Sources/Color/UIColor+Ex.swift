@@ -38,9 +38,29 @@ public enum appColor {
     
     case pureWhite
     case pureBlack
+    
+    case happy
+    case sad
+    case angry
+    case fear
+    case somehow
+    case offensive
+    
+    case coolgray900
+    case coolgray800
+    case coolgray700
+    case coolgray600
+    case coolgray500
+    case coolgray400
+    case coolgray300
+    case coolgray200
+    case coolgray100
+    case coolgray50
+    
 }
 
 public extension UIColor {
+    // MARK: - Gray
     static var gray900: UIColor {
         return DesignSystemAsset.gray900.color
     }
@@ -72,7 +92,50 @@ public extension UIColor {
     static var gray50: UIColor {
         return DesignSystemAsset.gray50.color
     }
-     
+    
+    // MARK: - CoolGray
+    static var coolgray900: UIColor {
+        return DesignSystemAsset.coolgray900.color
+    }
+    
+    static var coolgray800: UIColor {
+        return DesignSystemAsset.coolgray800.color
+    }
+    
+    static var coolgray700: UIColor {
+        return DesignSystemAsset.coolgray700.color
+    }
+    
+    static var coolgray600: UIColor {
+        return DesignSystemAsset.coolgray600.color
+    }
+    
+    static var coolgray500: UIColor {
+        return DesignSystemAsset.coolgray500.color
+    }
+    
+    static var coolgray400: UIColor {
+        return DesignSystemAsset.coolgray400.color
+    }
+    
+    static var coolgray300: UIColor {
+        return DesignSystemAsset.coolgray300.color
+    }
+    
+    static var coolgray200: UIColor {
+        return DesignSystemAsset.coolgray200.color
+    }
+    
+    static var coolgray100: UIColor {
+        return DesignSystemAsset.coolgray100.color
+    }
+    
+    static var coolgray50: UIColor {
+        return DesignSystemAsset.coolgray50.color
+    }
+    
+    
+    // MARK: - System Color
     static var systemRed: UIColor {
         return DesignSystemAsset.systemRed.color
     }
@@ -83,6 +146,41 @@ public extension UIColor {
         return DesignSystemAsset.systemGreen.color
     }
     
+    // MARK: - White/Black
+    static var pureWhite: UIColor {
+        return DesignSystemAsset.pureWhite.color
+    }
+    
+    static var pureBlack: UIColor {
+        return DesignSystemAsset.pureBlack.color
+    }
+    
+    // MARK: - Character
+    static var happy: UIColor {
+        return DesignSystemAsset.happy.color
+    }
+    
+    static var offensive: UIColor {
+        return DesignSystemAsset.offensive.color
+    }
+    
+    static var sad: UIColor {
+        return DesignSystemAsset.sad.color
+    }
+    
+    static var angry: UIColor {
+        return DesignSystemAsset.anger.color
+    }
+    
+    static var somehow: UIColor {
+        return DesignSystemAsset.somehow.color
+    }
+    
+    static var fear: UIColor {
+        return DesignSystemAsset.fear.color
+    }
+    
+    // MARK: - Pink
     static var pink900: UIColor {
         return DesignSystemAsset.pink900.color
     }
@@ -116,12 +214,5 @@ public extension UIColor {
     
     static var color10: UIColor {
         return DesignSystemAsset.color10.color
-    }
-    
-    static var pureWhite: UIColor {
-        return DesignSystemAsset.pureWhite.color
-    }
-    static var pureBlack: UIColor {
-        return DesignSystemAsset.pureBlack.color
     }
 }
