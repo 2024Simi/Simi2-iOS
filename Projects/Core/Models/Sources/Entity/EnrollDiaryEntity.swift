@@ -13,8 +13,8 @@ struct EnrollDiaryEntity {
 //    var id = UUID().uuidString
     var episode: String
     var thoughtOfEpisode: String
-    var emotionOfEpisodes: [emotionOfEpisodes]
+    var emotionOfEpisodes: [EmotionOfEpisodes]
     var resultOfEpisode: String
     var empathyResponse: String
-    var emotionOfEpisodesNotDuplicatedByType: [emotionOfEpisodes]
+    var emotionOfEpisodesNotDuplicatedByType: [EmotionOfEpisodes]
 }

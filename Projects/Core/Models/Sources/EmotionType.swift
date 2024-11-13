@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum EmptionType {
+public enum EmotionType: Decodable {
     case happy
     case sad
     case angry

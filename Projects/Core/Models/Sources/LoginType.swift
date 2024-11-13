@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum LoginType {
+public enum LoginType: Decodable {
     case kakao
     case apple
     case basic

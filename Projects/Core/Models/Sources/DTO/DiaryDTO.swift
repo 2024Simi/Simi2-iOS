@@ -16,15 +16,15 @@ public struct DiaryIdDTO: Decodable {
 public struct DiaryDetailDTO: Decodable {
     var diaryId: Int
     var episode: String
-    var emotionOfEpisodes: [emotionOfEpisodes]
+    var emotionOfEpisodes: [EmotionOfEpisodes]
     var resultOfEpisode: String
     var empathyResponse: String
 }
 
 // 감정 선택뷰에서 선택하는
 // 행복 탭에서 감정 여러개 선택
-public struct emotionOfEpisodes: Decodable {
-    var type: EmptionType
+public struct EmotionOfEpisodes: Decodable {
+    var type: EmotionType
     var details: [String]
 }
 
