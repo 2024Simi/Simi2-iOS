@@ -1,13 +1,14 @@
 //
-//  Test.swift
+//  CancelButton.swift
 //  DesignSystem
 //
-//  Created by 박서연 on 2024/09/26.
+//  Created by 박서연 on 2024/11/19.
 //  Copyright © 2024 inner-dev. All rights reserved.
 //
 
 import UIKit
-public class CommonButton: UIButton {
+
+public class CancelButton: UIButton {
     
     public var action: (() -> Void)?
     public var text: String? = nil {
@@ -16,20 +17,10 @@ public class CommonButton: UIButton {
         }
     }
     
-    public var isDisabled: Bool = false {
-        didSet {
-            self.isEnabled = !isDisabled
-            setBackgroundColor()
-        }
-    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setTitle()
-        setBackgroundColor()
-        self.layer.cornerRadius = 8
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.heightAnchor.constraint(equalToConstant: 54).isActive = true
         self.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
@@ -38,12 +29,9 @@ public class CommonButton: UIButton {
     }
     
     private func setTitle() {
-        titleLabel?.font = FontCase.semibold(.subheadline).toUIFont
-        setTitleColor(.pureWhite, for: .normal)
-    }
-    
-    private func setBackgroundColor() {
-        backgroundColor = isDisabled ? .coolgray300 : .coolgray700
+        titleLabel?.font = FontCase.semibold(.caption1).toUIFont
+        titleLabel?.textColor = .coolgray400
+        setTitleColor(.coolgray400, for: .normal)
     }
     
     @objc public func buttonTapped() {
