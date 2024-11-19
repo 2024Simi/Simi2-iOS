@@ -8,11 +8,29 @@
 
 import Foundation
 
-public enum EmotionType: Decodable {
-    case happy
-    case sad
-    case angry
-    case fear
-    case disgust
-    case somehow
+public enum EmotionType: String, Decodable, CaseIterable {
+    case happy = "기쁨"
+    case sad = "슬픔"
+    case angry = "화나는"
+    case fear = "두려운"
+    case disgust = "블쾌한"
+    case somehow = "그럭저럭"
+    
+    var detailEmotion: [String] {
+        switch self {
+        case .happy:
+            ["감동적인","감사한","자신있는","재미있는","편안한","행복한","홀가분한","활기찬","자랑스러운","설레는","신나는","사랑넘치는"]
+        case .sad:
+            ["서운한","그리운","막막한","미안한","서러운","실망한","안타까운","후회스러운","허전한","우울한","외로운","괴로운"]
+        case .fear:
+            ["걱정스러운","긴장하는","무서운","깜짝놀란","불안한","혼란스러운","당황한","메스꺼운","좌절스러운","의기소침한","비참한","조마조마한"]
+        case .disgust:
+            ["곤란한","불편한","귀찮은","어색한","부끄러운","지루한","부담스러운","피곤한","부러운","황당한","찝찝한","매스꺼운"]
+        case .angry:
+            ["답답한","미운","원망스러운","지긋지긋한","짜증나는","억울한","화가나는","역겨운","신경질나는","기분이상한","눈물나는","우려스러운"]
+            
+        case .somehow:
+            []
+        }
+    }
 }

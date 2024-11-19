@@ -1,28 +1,28 @@
 //
-//  RecordViewController.swift
+//  BehaviorViewController.swift
 //  Home
 //
-//  Created by 박서연 on 2024/11/18.
+//  Created by 박서연 on 2024/11/19.
 //  Copyright © 2024 inner-dev. All rights reserved.
 //
 
 import UIKit
 import DesignSystem
 
-public class RecordViewController: UIViewController {
-
+public class BehaviorViewController: UIViewController {
+    
     public var customBar: CustomNavigationBar
-    public let viewModel: RecordViewModel
-
+    public let viewModel: BehaviorViewModel
+    
     public init(
-        viewModel: RecordViewModel,
+        viewModel: BehaviorViewModel,
         customBar: CustomNavigationBar = CustomNavigationBar()
     ) {
         self.viewModel = viewModel
         self.customBar = customBar
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -119,7 +119,7 @@ public class RecordViewController: UIViewController {
     }
 }
 
-extension RecordViewController {
+extension BehaviorViewController {
     /// 레이아웃 관련
     private func setupStackView() {
         buttonStackView.addArrangedSubview(cancelButton)
@@ -186,7 +186,7 @@ extension RecordViewController {
         ])
         
         customBar.configure(
-            title: "(1/4)",
+            title: "(2/4)",
             font: FontCase.bold(.footnote).toUIFont,
             leftAction: #selector(tappedLAction),
             target: self,
@@ -194,7 +194,7 @@ extension RecordViewController {
     }
     
     @objc private func tappedLAction() {
-        print("tapped left")
+        viewModel.backButtonTapped()
     }
     
     private func setupKeyboard() {
@@ -208,7 +208,7 @@ extension RecordViewController {
 }
 
 // MARK: - Button Action
-extension RecordViewController {
+extension BehaviorViewController {
     private func setupButton() {
         cancelButton.tap {
             print("cancel button tapped")
@@ -216,6 +216,7 @@ extension RecordViewController {
         
         nextButton.tap {
             print("next button tapped")
+            self.viewModel.nextButtonTapped(text: self.textEditor.text)
         }
     }
     

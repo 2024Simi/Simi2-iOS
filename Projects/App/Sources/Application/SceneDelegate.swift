@@ -13,7 +13,8 @@ import HomeCoordinator
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    var coordinator: RecordCoordinator?
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
@@ -21,14 +22,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        window?.rootViewController = FontTestViewController()  // Root View Controller 설정
 //        window?.makeKeyAndVisible()  // Window를 키 및 보이게 설정
         
-        // 네비게이션 컨트롤러 생성
         let navigationController = UINavigationController()
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
         
         // RecordCoordinator 초기화 및 시작
-        let recordCoordinator = RecordCoordinator(navigationController: navigationController)
-        recordCoordinator.start()
+        coordinator = RecordCoordinator(navigationController: navigationController)
+        coordinator?.start()
+        
+        // UINavigationController를 루트로 설정
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

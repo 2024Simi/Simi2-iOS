@@ -1,5 +1,5 @@
 //
-//  RecordViewModel.swift
+//  BehaviorViewModel.swift
 //  Home
 //
 //  Created by 박서연 on 2024/11/19.
@@ -8,8 +8,10 @@
 
 import Models
 
-public class RecordViewModel {
-    private let diaryRecord: DiaryRecord
+public class BehaviorViewModel {
+    public let diaryRecord: DiaryRecord
+    public var nextButton: ((String) -> Void)?
+    public var backButton: (() -> ())?
     
     public init(diaryRecord: DiaryRecord) {
         self.diaryRecord = diaryRecord
@@ -28,7 +30,15 @@ public class RecordViewModel {
     }
     
     public var titleText: String {
-        return "01. \(diaryRecord.rawValue)"
+        return "03. \(diaryRecord.rawValue)"
+    }
+    
+    func nextButtonTapped(text: String) {
+        nextButton?(text)
+    }
+    
+    func backButtonTapped() {
+        backButton?()
     }
 }
 
