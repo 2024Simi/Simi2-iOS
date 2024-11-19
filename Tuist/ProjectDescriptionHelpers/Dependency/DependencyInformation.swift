@@ -23,17 +23,18 @@ public enum Core: String {
 }
 
 public enum Coordinator: String {
-    case homeCoordinator = "homeCoordinator"
+    case homeCoordinator = "HomeCoordinator"
     case app = "AppCoordinator"
 }
 
 public enum Scene: String {
     case home = "Home"
+    case record = "Record"
 }
 
 public enum SPM: String {
     case lottie = "Lottie"
-    case kakaoIosSdk = "KakaoSDK"
+    case KakaoSDKUser = "KakaoSDKUser"
     case swiftyJSON = "swiftyJSON"
     case firebase = "firebase"
 }

@@ -45,7 +45,7 @@ public class CustomTextEditor: UIView {
     
     private func setupPlaceholder() {
         placeholderLabel.isUserInteractionEnabled = false
-        placeholderLabel.textColor = .coolgray400
+        placeholderLabel.textColor = .coolgray200
         placeholderLabel.font = font
         placeholderLabel.backgroundColor = .clear
         addSubview(placeholderLabel)
@@ -53,7 +53,7 @@ public class CustomTextEditor: UIView {
         placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
     
         NSLayoutConstraint.activate([
-            placeholderLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            placeholderLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             placeholderLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             placeholderLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
             placeholderLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)

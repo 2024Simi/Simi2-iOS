@@ -34,7 +34,7 @@ let module = Project.module(
             resources: false,
             dependencies: [
                 .spm(.lottie),
-                .spm(.kakaoIosSdk),
+                .spm(.KakaoSDKUser),
                 .core(.common),
                 .core(.model)
             ],

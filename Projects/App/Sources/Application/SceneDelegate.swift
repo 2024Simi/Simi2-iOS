@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import HomeCoordinator
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -17,8 +18,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = FontTestViewController()  // Root View Controller 설정
-        window?.makeKeyAndVisible()  // Window를 키 및 보이게 설정
+//        window?.rootViewController = FontTestViewController()  // Root View Controller 설정
+//        window?.makeKeyAndVisible()  // Window를 키 및 보이게 설정
+        
+        // 네비게이션 컨트롤러 생성
+        let navigationController = UINavigationController()
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
+        
+        // RecordCoordinator 초기화 및 시작
+        let recordCoordinator = RecordCoordinator(navigationController: navigationController)
+        recordCoordinator.start()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
