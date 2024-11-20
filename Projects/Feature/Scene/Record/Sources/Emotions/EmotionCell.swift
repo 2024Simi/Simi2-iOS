@@ -13,22 +13,18 @@ import Models
 class EmotionCell: UICollectionViewCell {
     static let identifier = "EmotionCell"
     
-    private let label: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.textColor = .coolgray900
-        label.font = FontCase.semibold(.subheadline).toUIFont
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+//    private let label: UILabel = {
+//        let label = UILabel()
+//        label.textAlignment = .center
+//        label.textColor = .coolgray900
+//        label.font = FontCase.semibold(.subheadline).toUIFont
+//        label.translatesAutoresizingMaskIntoConstraints = false
+//        return label
+//    }()
     
     let button: UIButton = {
         let button = UIButton()
-        button.setTitleColor(.clear, for: .normal)
         button.titleLabel?.font = FontCase.semibold(.subheadline).toUIFont
-        button.layer.cornerRadius = 4
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.coolgray200.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -50,10 +46,7 @@ class EmotionCell: UICollectionViewCell {
     }
     
     func configure(with text: String, emotionType: EmotionType) {
-//        button.setTitle(text, for: .normal)
-        
         button.setTitle(text, for: .normal)
         button.setTitleColor(UIColor.coolgray500, for: .normal)
-        button.backgroundColor = emotionType.color
     }
 }

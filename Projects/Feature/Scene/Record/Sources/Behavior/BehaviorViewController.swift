@@ -186,7 +186,7 @@ extension BehaviorViewController {
         ])
         
         customBar.configure(
-            title: "(2/4)",
+            title: "(3/4)",
             font: FontCase.bold(.footnote).toUIFont,
             leftAction: #selector(tappedLAction),
             target: self,

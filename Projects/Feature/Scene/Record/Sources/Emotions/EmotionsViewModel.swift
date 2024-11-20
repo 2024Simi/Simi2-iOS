@@ -9,12 +9,32 @@
 import Models
 import Foundation
 
-class EmotionViewModel {
-    var selectedEmotion: EmotionType = .happy
-    var onDataUpdated: (() -> Void)?
-    var onEmotionsListUpdated: (() -> Void)?
-    var selectedEmotionList: [String] = []
-    var selectedDetails: [String: Set<String>] = [:]
+public class EmotionViewModel {
+    public let diaryRecord: DiaryRecord
+    public var selectedEmotion: EmotionType = .happy
+    public var onDataUpdated: (() -> Void)?
+    public var onEmotionsListUpdated: ((String) -> Void)?
+    public var selectedEmotionList: [String] = []
+    public var nextButton: ((String) -> Void)?
+    public var backButton: (() -> ())?
+    
+    public init(
+        diaryRecord: DiaryRecord,
+        selectedEmotion: EmotionType = .happy,
+        onDataUpdated: (() -> Void)? = nil,
+        onEmotionsListUpdated: ((String) -> Void)? = nil,
+        selectedEmotionList: [String] = [],
+        nextButton: ((String) -> Void)? = nil,
+        backButton: (() -> Void)? = nil
+    ) {
+        self.diaryRecord = diaryRecord
+        self.selectedEmotion = selectedEmotion
+        self.onDataUpdated = onDataUpdated
+        self.onEmotionsListUpdated = onEmotionsListUpdated
+        self.selectedEmotionList = selectedEmotionList
+        self.nextButton = nextButton
+        self.backButton = backButton
+    }
     
     var detailEmotions: [String] {
         selectedEmotion.detailEmotion
@@ -26,21 +46,36 @@ class EmotionViewModel {
     }
     
     func updateEmotionsList(to emotion: String) {
-        selectedEmotionList.append(emotion)
-        onEmotionsListUpdated?()
+        guard let index = selectedEmotionList.firstIndex(of: emotion) else {
+            selectedEmotionList.append(emotion)
+            return
+        }
+        
+        selectedEmotionList.remove(at: index)
+        onEmotionsListUpdated?(emotion)
     }
     
-    func toggleDetailSelection(for emotion: EmotionType, detail: String) {
-            guard var details = selectedDetails[emotion.rawValue] else { return }
-            if details.contains(detail) {
-                details.remove(detail)
-            } else {
-                details.insert(detail)
-            }
-            selectedDetails[emotion.rawValue] = details
-        }
+    public var questionText: String {
+        return diaryRecord.question
+    }
     
-    func isDetailSelected(for emotion: EmotionType, detail: String) -> Bool {
-        return selectedDetails[emotion.rawValue]?.contains(detail) ?? false
+    public var placeholderText: String {
+        return diaryRecord.placeholder
+    }
+    
+    public var assistance: String {
+        return diaryRecord.assistance
+    }
+    
+    public var titleText: String {
+        return "04. \(diaryRecord.rawValue)"
+    }
+    
+    func nextButtonTapped(text: String) {
+        nextButton?(text)
+    }
+    
+    func backButtonTapped() {
+        backButton?()
     }
 }
