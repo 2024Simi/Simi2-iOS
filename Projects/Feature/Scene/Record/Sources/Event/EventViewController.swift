@@ -143,25 +143,25 @@ extension EventViewController {
         textEditor.layer.borderWidth = 1
         
         NSLayoutConstraint.activate([
-            caseLabel.topAnchor.constraint(equalTo: customBar.bottomAnchor),
-            caseLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 22),
-            caseLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -22),
+            caseLabel.topAnchor.constraint(equalTo: customBar.bottomAnchor, constant: 16),
+            caseLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            caseLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             questionLabel.topAnchor.constraint(equalTo: caseLabel.bottomAnchor, constant: 8),
-            questionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 22),
-            questionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -22),
+            questionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            questionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             characterImage.topAnchor.constraint(equalTo: questionLabel.bottomAnchor, constant: 16),
-            characterImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 22),
-            characterImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -22),
+            characterImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            characterImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             assistanceLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor),
-            assistanceLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 22),
-            assistanceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -22),
+            assistanceLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            assistanceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             textButtonStackView.topAnchor.constraint(equalTo: assistanceLabel.bottomAnchor, constant: 25),
-            textButtonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 22),
-            textButtonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -22),
+            textButtonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            textButtonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             textButtonStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32)
         ])
         

@@ -156,7 +156,7 @@ public class CustomNavigationBar: UIView {
         case .LButtonRTitle:
             leftButton.setImage(.icArrowBack, for: .normal)
             rightLabel.text = title
-            titleLabel.font = font
+            rightLabel.font = font
             rightLabel.textColor = .coolgray600
             addSubview(leftButton)
             addSubview(rightLabel)

@@ -34,9 +34,9 @@ public class EmotionViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        setupBindings()
         setupNavigationBar()
         setupUI()
-        setupBindings()
         setupConstraints()
     }
     
@@ -45,23 +45,16 @@ public class EmotionViewController: UIViewController {
         label.applyFontCase(.bold(.footnote))
         label.textColor = .pureBlack
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.heightAnchor.constraint(equalToConstant: label.font.lineHeight).isActive = true
         return label
     }()
-    
-    private let emotionTypeButtonStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .equalSpacing
-        stack.spacing = 0
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
+        
     private let questionLabel: UILabel = {
         let label = UILabel()
         label.applyFontCase(.bold(.title2))
         label.textColor = .coolgray900
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.heightAnchor.constraint(equalToConstant: label.font.lineHeight).isActive = true
         return label
     }()
     
@@ -79,14 +72,6 @@ public class EmotionViewController: UIViewController {
         return button
     }()
     
-    private let buttonStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 12
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
     private let characterImage: UIImageView = {
         let image = UIImageView()
         image.image = .icSample
@@ -100,10 +85,24 @@ public class EmotionViewController: UIViewController {
         label.textColor = .coolgray600
         label.font = FontCase.semibold(.footnote).toUIFont
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.heightAnchor.constraint(equalToConstant: label.font.lineHeight).isActive = true
         label.textAlignment = .center
         return label
     }()
     
+    /// 감정 대분류를 위한 stackView
+    private let emotionTypeButtonStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.distribution = .equalSpacing
+        stack.spacing = 0
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        stack.isLayoutMarginsRelativeArrangement = true // 여백 활성화
+        return stack
+    }()
+    
+    /// 대분류 + collectionview를 위한 stackView
     private let emotionStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -111,7 +110,8 @@ public class EmotionViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
+    
+    /// 다음에 쓸래요 + 완료를 위한 stackView
     private let bottomButtonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -119,30 +119,44 @@ public class EmotionViewController: UIViewController {
         return stackView
     }()
     
-    private let buttonCellStackView: UIStackView = {
+    /// emotionStackView + bottomButtonStackView
+    private let sheetViewStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 24
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }()
+    
+    private let sheetView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 30
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = CGSize(width: 0, height: 2)
+        view.layer.shadowRadius = 6
+        view.layer.shadowOpacity = 0.05
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 }
 
 // MARK: - layout setting
 extension EmotionViewController {
     private func setupConstraints() {
-        emotionStackView.addArrangedSubview(emotionTypeButtonStack)
-        emotionStackView.addArrangedSubview(collectionView)
-        bottomButtonStackView.addArrangedSubview(cancelButton)
-        bottomButtonStackView.addArrangedSubview(nextButton)
-        buttonCellStackView.addArrangedSubview(emotionStackView)
-        buttonCellStackView.addArrangedSubview(bottomButtonStackView)
 
         view.addSubview(caseLabel)
         view.addSubview(questionLabel)
         view.addSubview(characterImage)
         view.addSubview(assistanceLabel)
-        view.addSubview(buttonCellStackView)
+        view.addSubview(sheetView)
+        sheetView.addSubview(sheetViewStack)
+        
+        emotionStackView.addArrangedSubview(emotionTypeButtonStack)
+        emotionStackView.addArrangedSubview(collectionView)
+        bottomButtonStackView.addArrangedSubview(cancelButton)
+        bottomButtonStackView.addArrangedSubview(nextButton)
+        sheetViewStack.addArrangedSubview(emotionStackView)
+        sheetViewStack.addArrangedSubview(bottomButtonStackView)
         
         NSLayoutConstraint.activate([
             caseLabel.topAnchor.constraint(equalTo: customBar.bottomAnchor, constant: 16),
@@ -157,18 +171,20 @@ extension EmotionViewController {
             characterImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             characterImage.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
-            assistanceLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor, constant: 10),
+            assistanceLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor, constant: 0),
             assistanceLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             assistanceLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            
-            emotionStackView.topAnchor.constraint(equalTo: assistanceLabel.bottomAnchor, constant: 40),
-            emotionStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            emotionStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             collectionView.heightAnchor.constraint(equalToConstant: 228),
             
-            buttonCellStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32),
-            buttonCellStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            buttonCellStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            sheetView.topAnchor.constraint(equalTo: assistanceLabel.bottomAnchor, constant: 28),
+            sheetView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            sheetView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            sheetView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            sheetViewStack.topAnchor.constraint(equalTo: sheetView.topAnchor, constant: 24),
+            sheetViewStack.leadingAnchor.constraint(equalTo: sheetView.leadingAnchor, constant: 16),
+            sheetViewStack.trailingAnchor.constraint(equalTo: sheetView.trailingAnchor, constant: -16),
+            sheetViewStack.bottomAnchor.constraint(equalTo: sheetView.bottomAnchor, constant: -32)
         ])
     }
     
@@ -197,14 +213,13 @@ extension EmotionViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .white
         for emotion in EmotionType.allCases {
             let button = UIButton(type: .system)
             let buttonWidth = (view.bounds.width - 42) / 5
             button.tag = emotion.hashValue
             button.setTitle(emotion.rawValue, for: .normal)
             button.titleLabel?.font = FontCase.semibold(.subheadline).toUIFont
-            button.setTitleColor(UIColor.coolgray800, for: .normal)
+            button.setTitleColor((viewModel.selectedEmotion == emotion ? UIColor.coolgray800 : UIColor.coolgray500), for: .normal)
             button.backgroundColor = viewModel.selectedEmotion == emotion ? emotion.color : .clear
             button.translatesAutoresizingMaskIntoConstraints = false
             button.layer.cornerRadius = 4
@@ -219,14 +234,13 @@ extension EmotionViewController {
         }
         
         let layout = UICollectionViewFlowLayout()
-        let wordWidth = (view.bounds.width - 68) / 3 //56
+        let wordWidth = (view.bounds.width - 56) / 3 //56
         layout.minimumLineSpacing = 12
-        layout.minimumInteritemSpacing = 18 // 12
+        layout.minimumInteritemSpacing = 12 // 12
         layout.itemSize = CGSize(width: wordWidth, height: 40)
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .white
         collectionView.register(EmotionCell.self, forCellWithReuseIdentifier: EmotionCell.identifier)
         collectionView.dataSource = self
     }
@@ -246,6 +260,7 @@ extension EmotionViewController {
         for button in emotionButtons {
             guard let emotion = EmotionType.allCases.first(where: { $0.hashValue == button.tag }) else { continue }
             button.backgroundColor = viewModel.selectedEmotion == emotion ? emotion.color : .clear
+            button.setTitleColor((viewModel.selectedEmotion == emotion ? UIColor.coolgray800 : UIColor.coolgray500), for: .normal)
         }
     }
     
