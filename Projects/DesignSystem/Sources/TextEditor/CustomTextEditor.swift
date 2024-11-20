@@ -60,12 +60,12 @@ public class CustomTextEditor: UIView {
         ])
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupTextView()
-        setupPlaceholder()
-        setupCharacterCountLabel()
-    }
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        setupTextView()
+//        setupPlaceholder()
+//        setupCharacterCountLabel()
+//    }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)

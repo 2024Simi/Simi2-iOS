@@ -37,6 +37,7 @@ public class EmotionViewController: UIViewController {
         setupBindings()
         setupNavigationBar()
         setupUI()
+        setupBottomButtons()
         setupConstraints()
     }
     
@@ -140,7 +141,59 @@ public class EmotionViewController: UIViewController {
     }()
 }
 
-// MARK: - layout setting
+// MARK: - Action 관련 Extension
+extension EmotionViewController {
+    @objc private func tappedEmotionButtons(_ sender: UIButton) {
+        guard let emotion = sender.titleLabel?.text else { return }
+        viewModel.updateEmotionsList(to: emotion)
+        collectionView.reloadData()
+        updateButtonState()
+    }
+    
+    private func updateButtonState() {
+        if viewModel.selectedEmotionList.count <= 5, !viewModel.selectedEmotionList.isEmpty {
+            nextButton.isDisabled = false
+        } else {
+            nextButton.isDisabled = true
+        }
+    }
+    
+    private func setupBottomButtons() {
+        cancelButton.tap {
+            print("cancel button tapped")
+        }
+        
+        nextButton.tap {
+            print("next button tapped")
+        }
+    }
+    
+    private func setupBindings() {
+        caseLabel.text = viewModel.titleText
+        questionLabel.text = viewModel.questionText
+        assistanceLabel.text = viewModel.assistance
+        
+        viewModel.onDataUpdated = { [weak self] in
+            self?.updateButtonColors()
+            self?.collectionView.reloadData()
+        }
+    }
+    
+    private func updateButtonColors() {
+        for button in emotionButtons {
+            guard let emotion = EmotionType.allCases.first(where: { $0.hashValue == button.tag }) else { continue }
+            button.backgroundColor = viewModel.selectedEmotion == emotion ? emotion.color : .clear
+            button.setTitleColor((viewModel.selectedEmotion == emotion ? UIColor.coolgray800 : UIColor.coolgray500), for: .normal)
+        }
+    }
+    
+    @objc private func emotionButtonTapped(_ sender: UIButton) {
+        guard let emotion = EmotionType.allCases.first(where: { $0.hashValue == sender.tag }) else { return }
+        viewModel.updateSelectedEmotion(to: emotion)
+    }
+}
+
+// MARK: - layout 관련 Extension
 extension EmotionViewController {
     private func setupConstraints() {
 
@@ -244,30 +297,6 @@ extension EmotionViewController {
         collectionView.register(EmotionCell.self, forCellWithReuseIdentifier: EmotionCell.identifier)
         collectionView.dataSource = self
     }
-    
-    private func setupBindings() {
-        caseLabel.text = viewModel.titleText
-        questionLabel.text = viewModel.questionText
-        assistanceLabel.text = viewModel.assistance
-        
-        viewModel.onDataUpdated = { [weak self] in
-            self?.updateButtonColors()
-            self?.collectionView.reloadData()
-        }
-    }
-    
-    private func updateButtonColors() {
-        for button in emotionButtons {
-            guard let emotion = EmotionType.allCases.first(where: { $0.hashValue == button.tag }) else { continue }
-            button.backgroundColor = viewModel.selectedEmotion == emotion ? emotion.color : .clear
-            button.setTitleColor((viewModel.selectedEmotion == emotion ? UIColor.coolgray800 : UIColor.coolgray500), for: .normal)
-        }
-    }
-    
-    @objc private func emotionButtonTapped(_ sender: UIButton) {
-        guard let emotion = EmotionType.allCases.first(where: { $0.hashValue == sender.tag }) else { return }
-        viewModel.updateSelectedEmotion(to: emotion)
-    }
 }
 
 extension EmotionViewController: UICollectionViewDataSource {
@@ -299,11 +328,5 @@ extension EmotionViewController: UICollectionViewDataSource {
         cell.button.addTarget(self, action: #selector(tappedEmotionButtons(_:)), for: .touchUpInside)
         
         return cell
-    }
-    
-    @objc private func tappedEmotionButtons(_ sender: UIButton) {
-        guard let emotion = sender.titleLabel?.text else { return }
-        viewModel.updateEmotionsList(to: emotion)
-        collectionView.reloadData()
     }
 }

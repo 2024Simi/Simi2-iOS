@@ -13,7 +13,6 @@ public class EmotionViewModel {
     public let diaryRecord: DiaryRecord
     public var selectedEmotion: EmotionType = .happy
     public var onDataUpdated: (() -> Void)?
-    public var onEmotionsListUpdated: ((String) -> Void)?
     public var selectedEmotionList: [String] = []
     public var nextButton: ((String) -> Void)?
     public var backButton: (() -> ())?
@@ -22,7 +21,6 @@ public class EmotionViewModel {
         diaryRecord: DiaryRecord,
         selectedEmotion: EmotionType = .happy,
         onDataUpdated: (() -> Void)? = nil,
-        onEmotionsListUpdated: ((String) -> Void)? = nil,
         selectedEmotionList: [String] = [],
         nextButton: ((String) -> Void)? = nil,
         backButton: (() -> Void)? = nil
@@ -30,7 +28,6 @@ public class EmotionViewModel {
         self.diaryRecord = diaryRecord
         self.selectedEmotion = selectedEmotion
         self.onDataUpdated = onDataUpdated
-        self.onEmotionsListUpdated = onEmotionsListUpdated
         self.selectedEmotionList = selectedEmotionList
         self.nextButton = nextButton
         self.backButton = backButton
@@ -46,13 +43,13 @@ public class EmotionViewModel {
     }
     
     func updateEmotionsList(to emotion: String) {
-        guard let index = selectedEmotionList.firstIndex(of: emotion) else {
+        if let tappedEmotion = selectedEmotionList.firstIndex(of: emotion) {
+            selectedEmotionList.remove(at: tappedEmotion)
+        } else if selectedEmotionList.count < 5 {
             selectedEmotionList.append(emotion)
+        } else {
             return
         }
-        
-        selectedEmotionList.remove(at: index)
-        onEmotionsListUpdated?(emotion)
     }
     
     public var questionText: String {
