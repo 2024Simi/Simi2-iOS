@@ -21,19 +21,20 @@ public class RecordCoordinator {
     }
     
     private func firstView() {
-        let viewModel = EventViewModel(diaryRecord: .event)
-        let viewController = EventViewController(viewModel: viewModel)
-        
-        print("1 \(self.navigationController.viewControllers)")
-
-        viewModel.nextButton = { [weak self] text in
-            self?.secondView(text: text)
-        }
-        
-        viewModel.backButton = {
-            self.navigationController.popViewController(animated: true)
-        }
-        
+//        let viewModel = EventViewModel(diaryRecord: .event)
+//        let viewController = EventViewController(viewModel: viewModel)
+//        
+//        print("1 \(self.navigationController.viewControllers)")
+//
+//        viewModel.nextButton = { [weak self] text in
+//            self?.secondView(text: text)
+//        }
+//        
+//        viewModel.backButton = {
+//            self.navigationController.popViewController(animated: true)
+//        }
+//        
+        let viewController = EmotionViewController()
         navigationController.pushViewController(viewController, animated: true)
     }
     
@@ -55,11 +56,22 @@ public class RecordCoordinator {
     private func thirdView(text: String) {
         let viewModel = BehaviorViewModel(diaryRecord: .behavior)
         let viewController = BehaviorViewController(viewModel: viewModel)
-        print("3 \(self.navigationController.viewControllers)")
+        
         viewModel.backButton = {
             self.navigationController.popViewController(animated: true)
         }
         
+        viewModel.nextButton = { [weak self] text in
+            self?.fourthView()
+        }
+        
+        navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    private func fourthView() {
+//        let viewModel =
+        
+        let viewController = EmotionViewController()
         navigationController.pushViewController(viewController, animated: true)
     }
 }
