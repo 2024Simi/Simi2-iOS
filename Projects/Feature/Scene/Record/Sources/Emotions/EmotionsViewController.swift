@@ -39,6 +39,7 @@ public class EmotionViewController: UIViewController {
         setupUI()
         setupBottomButtons()
         setupConstraints()
+        addGesture()
     }
     
     private let caseLabel: UILabel = {
@@ -141,6 +142,38 @@ public class EmotionViewController: UIViewController {
     }()
 }
 
+// MARK: - Gesture 관련 Extension
+extension EmotionViewController {
+    func addGesture() {
+        let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+        leftSwipeGesture.direction = .left
+        
+        let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+        rightSwipeGesture.direction = .right
+        
+        // 제스처를 뷰에 추가
+        sheetView.addGestureRecognizer(leftSwipeGesture)
+        sheetView.addGestureRecognizer(rightSwipeGesture)
+    }
+    
+    @objc private func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
+        switch gesture.direction {
+        case .left:
+            viewModel.updateSelectedEmotionByGesture(viewModel.selectedEmotion, .left)
+            updateButtonState()
+            updateButtonColors()
+            collectionView.reloadData()
+        case .right:
+            viewModel.updateSelectedEmotionByGesture(viewModel.selectedEmotion, .right)
+            updateButtonState()
+            updateButtonColors()
+            collectionView.reloadData()
+        default:
+            break
+        }
+    }
+}
+
 // MARK: - Action 관련 Extension
 extension EmotionViewController {
     @objc private func tappedEmotionButtons(_ sender: UIButton) {
@@ -188,6 +221,7 @@ extension EmotionViewController {
     }
     
     @objc private func emotionButtonTapped(_ sender: UIButton) {
+        print("sender \(sender.tag)")
         guard let emotion = EmotionType.allCases.first(where: { $0.hashValue == sender.tag }) else { return }
         viewModel.updateSelectedEmotion(to: emotion)
     }

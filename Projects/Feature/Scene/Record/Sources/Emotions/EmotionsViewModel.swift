@@ -16,6 +16,7 @@ public class EmotionViewModel {
     public var selectedEmotionList: [String] = []
     public var nextButton: ((String) -> Void)?
     public var backButton: (() -> ())?
+    public var currentId: Int = 1
     
     public init(
         diaryRecord: DiaryRecord,
@@ -23,7 +24,8 @@ public class EmotionViewModel {
         onDataUpdated: (() -> Void)? = nil,
         selectedEmotionList: [String] = [],
         nextButton: ((String) -> Void)? = nil,
-        backButton: (() -> Void)? = nil
+        backButton: (() -> Void)? = nil,
+        currentId: Int = 1
     ) {
         self.diaryRecord = diaryRecord
         self.selectedEmotion = selectedEmotion
@@ -31,6 +33,7 @@ public class EmotionViewModel {
         self.selectedEmotionList = selectedEmotionList
         self.nextButton = nextButton
         self.backButton = backButton
+        self.currentId = currentId
     }
     
     var detailEmotions: [String] {
@@ -40,6 +43,11 @@ public class EmotionViewModel {
     func updateSelectedEmotion(to emotion: EmotionType) {
         selectedEmotion = emotion
         onDataUpdated?()
+    }
+    
+    /// swipe Gesture로 대분류 감정 타입 값 조절
+    func updateSelectedEmotionByGesture(_ emotion: EmotionType, _ direction: GestureDirection) {
+        selectedEmotion = selectedEmotion.gestureEvent(direction: direction)
     }
     
     func updateEmotionsList(to emotion: String) {

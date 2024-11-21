@@ -24,7 +24,7 @@ let module = Project.module(
             name: "Models",
             product: .staticLibrary,
             resources: false,
-            dependencies: [],
+            dependencies: [.designSystem],
             infoPlist: true,
             setting: false
         ),

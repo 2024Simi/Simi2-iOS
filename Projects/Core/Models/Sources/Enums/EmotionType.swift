@@ -15,7 +15,7 @@ public enum EmotionType: String, Decodable, CaseIterable {
     case angry = "분노"
     case fear = "두려움"
     case offensive = "불쾌"
-//    case somehow = "그럭저럭"
+    //    case somehow = "그럭저럭"
     
     public var detailEmotion: [String] {
         switch self {
@@ -30,8 +30,8 @@ public enum EmotionType: String, Decodable, CaseIterable {
         case .angry:
             ["답답한","미운","원망스러운","지긋지긋한","짜증나는","억울한","화가나는","역겨운","신경질나는","기분이상한","눈물나는","우려스러운"]
             
-//        case .somehow:
-//            []
+            //        case .somehow:
+            //            []
         }
     }
     
@@ -47,8 +47,44 @@ public enum EmotionType: String, Decodable, CaseIterable {
             return UIColor.fear
         case .offensive:
             return UIColor.offensive
-//        case .somehow:
-//            return UIColor.somehow
+            //        case .somehow:
+            //            return UIColor.somehow
         }
     }
+    
+    public var id: Int {
+        switch self {
+        case .happy:
+            return 1
+        case .sad:
+            return 2
+        case .angry:
+            return 3
+        case .fear:
+            return 4
+        case .offensive:
+            return 5
+        }
+    }
+    
+    public func gestureEvent(direction: GestureDirection) -> EmotionType {
+        guard let currentIndex = EmotionType.allCases.firstIndex(of: self) else {
+            return .happy
+        }
+ 
+        let nextIndex: Int
+        switch direction {
+        case .right:
+            nextIndex = max(currentIndex - 1, 0)
+        case .left: 
+            nextIndex = min(currentIndex + 1, EmotionType.allCases.count - 1)
+        }
+        
+        return EmotionType.allCases[nextIndex]
+    }
+}
+
+public enum GestureDirection {
+    case right
+    case left
 }
