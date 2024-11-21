@@ -14,7 +14,8 @@ let project = Project.app(
             name: EnvironmentSettings.default.name,
             dependencies: [
                 .coordinator(.app),
-                .designSystem
+                .designSystem,
+                .core(.service)
             ],
             infoPlist: true
         ),

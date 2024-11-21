@@ -12,6 +12,7 @@ public extension UIImage {
     // item
     static let icNotifications = DesignSystemAsset.icNotifications.image
     static let icToday = DesignSystemAsset.icToday.image
+    static let icHelp = DesignSystemAsset.icHelp.image
     
     // chevron
     static let icChevronLeft = DesignSystemAsset.icChevronLeft.image
@@ -41,4 +42,17 @@ public extension UIImage {
     static let icMenuX = DesignSystemAsset.icMenuX.image
     static let icNoteO = DesignSystemAsset.icNoteO.image
     static let icNoteX = DesignSystemAsset.icNoteX.image
+    static let icActiveMenu = DesignSystemAsset.icActiveMenu.image
+    static let icInactiveMenu = DesignSystemAsset.icInactiveMenu.image
+    static let icActiveWrite = DesignSystemAsset.icActiveWrite.image
+    static let icInactiveWrite = DesignSystemAsset.icInactiveWrite.image
+    static let icActiveNoti = DesignSystemAsset.icActiveNoti.image
+    
+    // character
+    static let icHappy = DesignSystemAsset.icHappy.image
+    static let icAnger = DesignSystemAsset.icAnger.image
+    static let icSad = DesignSystemAsset.icSad.image
+    static let icFear = DesignSystemAsset.icFear.image
+    static let icOffensive = DesignSystemAsset.icOffensive.image
+    static let icSomehow = DesignSystemAsset.icSomehow.image
 }
