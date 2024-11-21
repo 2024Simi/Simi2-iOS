@@ -21,25 +21,18 @@ public class RecordCoordinator {
     }
     
     private func firstView() {
-//        let viewModel = EventViewModel(diaryRecord: .event)
-//        let viewController = EventViewController(viewModel: viewModel)
-//
-//        viewModel.nextButton = { [weak self] text in
-//            self?.secondView(text: text)
-//        }
-//        
-//        viewModel.backButton = {
-//            self.navigationController.popViewController(animated: true)
-//        }
-//        
-//        navigationController.pushViewController(viewController, animated: true)
-        let viewModel = EmotionViewModel(diaryRecord: .emotions)
-        let viewController = EmotionViewController(viewModel: viewModel)
-        navigationController.pushViewController(viewController, animated: true)
+        let viewModel = EventViewModel(diaryRecord: .event)
+        let viewController = EventViewController(viewModel: viewModel)
+
+        viewModel.nextButton = { [weak self] text in
+            self?.secondView(text: text)
+        }
         
         viewModel.backButton = {
             self.navigationController.popViewController(animated: true)
         }
+        
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     private func secondView(text: String) {
