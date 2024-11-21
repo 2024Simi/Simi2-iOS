@@ -24,7 +24,7 @@ let module = Project.module(
             name: "Models",
             product: .staticLibrary,
             resources: false,
-            dependencies: [],
+            dependencies: [.designSystem],
             infoPlist: true,
             setting: false
         ),
@@ -34,7 +34,7 @@ let module = Project.module(
             resources: false,
             dependencies: [
                 .spm(.lottie),
-                .spm(.kakaoIosSdk),
+                .spm(.KakaoSDKUser),
                 .core(.common),
                 .core(.model)
             ],

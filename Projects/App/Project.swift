@@ -14,6 +14,7 @@ let project = Project.app(
             name: EnvironmentSettings.default.name,
             dependencies: [
                 .coordinator(.app),
+                .coordinator(.homeCoordinator),
                 .designSystem,
                 .core(.service)
             ],

@@ -55,4 +55,7 @@ public extension UIImage {
     static let icFear = DesignSystemAsset.icFear.image
     static let icOffensive = DesignSystemAsset.icOffensive.image
     static let icSomehow = DesignSystemAsset.icSomehow.image
+    
+    // MARK: - Sample
+    static let icSample = DesignSystemAsset.sample.image
 }

@@ -14,6 +14,7 @@ public enum NavigationBarType {
     case LButtonWithTitle
     case LButtonWithLTitle
     case LRButtonWithLTitle
+    case LButtonRTitle
 }
 
 public class CustomNavigationBar: UIView {
@@ -21,6 +22,7 @@ public class CustomNavigationBar: UIView {
     private let titleLabel = UILabel()
     private let leftButton = UIButton()
     private let rightButton = UIButton()
+    private let rightLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,11 +38,12 @@ public class CustomNavigationBar: UIView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         leftButton.translatesAutoresizingMaskIntoConstraints = false
         rightButton.translatesAutoresizingMaskIntoConstraints = false
+        rightLabel.translatesAutoresizingMaskIntoConstraints = false
     }
     
     public func configure(
-        title: String,
-        font: FontCase? = .regular(.title3),
+        title: String?,
+        font: UIFont? = FontCase.regular(.title3).toUIFont,
         rightImage: UIImage? = nil,
         leftAction: Selector? = nil,
         rightAction: Selector? = nil,
@@ -48,11 +51,13 @@ public class CustomNavigationBar: UIView {
         type: NavigationBarType
     ) {
         titleLabel.text = title
-        titleLabel.font = font?.toUIFont
+        titleLabel.font = font
 
         // 네비게이션 바 타입에 따라 버튼 표시/숨김
         switch type {
         case .titleOnly:
+            titleLabel.text = title
+            titleLabel.font = font
             addSubview(titleLabel)
             
             NSLayoutConstraint.activate([
@@ -62,6 +67,8 @@ public class CustomNavigationBar: UIView {
             
         case .LRButtonWithTitle:
             leftButton.setImage(.icArrowBack, for: .normal)
+            titleLabel.text = title
+            titleLabel.font = font
             addSubview(titleLabel)
             addSubview(leftButton)
             addSubview(rightButton)
@@ -86,6 +93,8 @@ public class CustomNavigationBar: UIView {
             
         case .LButtonWithTitle:
             leftButton.setImage(.icArrowBack, for: .normal)
+            titleLabel.text = title
+            titleLabel.font = font
             addSubview(titleLabel)
             addSubview(leftButton)
             
@@ -102,6 +111,8 @@ public class CustomNavigationBar: UIView {
             
         case .LButtonWithLTitle:
             leftButton.setImage(.icArrowBack, for: .normal)
+            titleLabel.text = title
+            titleLabel.font = font
             addSubview(titleLabel)
             addSubview(leftButton)
             
@@ -118,6 +129,8 @@ public class CustomNavigationBar: UIView {
             
         case .LRButtonWithLTitle:
             leftButton.setImage(.icArrowBack, for: .normal)
+            titleLabel.text = title
+            titleLabel.font = font
             addSubview(titleLabel)
             addSubview(leftButton)
             addSubview(rightButton)
@@ -138,6 +151,30 @@ public class CustomNavigationBar: UIView {
                 leftButton.centerYAnchor.constraint(equalTo: centerYAnchor),
                 rightButton.centerYAnchor.constraint(equalTo: centerYAnchor),
                 rightButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+            ])
+            
+        case .LButtonRTitle:
+            leftButton.setImage(.icArrowBack, for: .normal)
+            rightLabel.text = title
+            rightLabel.font = font
+            rightLabel.textColor = .coolgray600
+            addSubview(leftButton)
+            addSubview(rightLabel)
+            
+            if let action = leftAction {
+                leftButton.addTarget(target, action: action, for: .touchUpInside)
+            }
+            
+            if let image = rightImage, let action = rightAction {
+                rightButton.setImage(image, for: .normal)
+                rightButton.addTarget(target, action: action, for: .touchUpInside)
+            }
+            
+            NSLayoutConstraint.activate([
+                leftButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+                leftButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+                rightLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+                rightLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
             ])
         }
     }

@@ -16,7 +16,18 @@ let module = Project.module(
             product: .staticLibrary,
             resources: false,
             dependencies: [
-                .scene(.home)
+                .scene(.home),
+                .scene(.record)
+            ],
+            infoPlist: false
+        ),
+        .moduleTarget(
+            name: "HomeCoordinator",
+            product: .staticLibrary,
+            resources: false,
+            dependencies: [
+                .scene(.home),
+                .scene(.record)
             ],
             infoPlist: false
         )

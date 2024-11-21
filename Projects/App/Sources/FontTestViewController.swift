@@ -110,7 +110,6 @@ extension FontTestViewController {
         
         customBar.configure(
             title: "테스트",
-            font: .bold(.title1),
             rightImage: .icArrowUp,
             leftAction: #selector(tappedLAction),
             rightAction: #selector(tappedRAction),

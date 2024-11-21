@@ -12,17 +12,29 @@ let module = Project.module(
     name: "Scene",
     settings: true,
     targets: [
-        .moduleTarget(
+        .multiTarget(
             name: "Home",
             product: .staticLibrary,
             resources: false,
             dependencies: [
                 .core(.service),
                 .core(.model),
+                .core(.common),
                 .designSystem
             ],
             infoPlist: true
+        ),
+        .multiTarget(
+            name: "Record",
+            product: .staticLibrary,
+            resources: false,
+            dependencies: [
+                .core(.service),
+                .core(.model),
+                .core(.common),
+                .designSystem
+            ],
+            infoPlist: false
         )
     ]
 )
-

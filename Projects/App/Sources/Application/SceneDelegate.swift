@@ -8,17 +8,29 @@
 
 import Foundation
 import UIKit
+import HomeCoordinator
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    var coordinator: RecordCoordinator?
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = FontTestViewController()  // Root View Controller 설정
-        window?.makeKeyAndVisible()  // Window를 키 및 보이게 설정
+//        window?.rootViewController = FontTestViewController()  // Root View Controller 설정
+//        window?.makeKeyAndVisible()  // Window를 키 및 보이게 설정
+        
+        let navigationController = UINavigationController()
+        
+        // RecordCoordinator 초기화 및 시작
+        coordinator = RecordCoordinator(navigationController: navigationController)
+        coordinator?.start()
+        
+        // UINavigationController를 루트로 설정
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

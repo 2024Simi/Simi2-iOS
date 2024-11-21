@@ -35,17 +35,6 @@ public enum FontCase {
         }
     }
     
-    public func toUIFont(_ font:  FontCase) -> UIFont? {
-        switch font {
-        case .bold(let simiFont):
-            return UIFont(name: font.name, size: simiFont.size)
-        case .semibold(let simiFont):
-            return UIFont(name: font.name, size: simiFont.size)
-        case .regular(let simiFont):
-            return UIFont(name: font.name, size: simiFont.size)
-        }
-    }
-    
     public var toUIFont: UIFont {
         switch self {
         case .bold(let simiFont),
