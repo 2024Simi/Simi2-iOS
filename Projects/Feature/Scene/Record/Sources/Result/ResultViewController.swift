@@ -11,7 +11,7 @@ import DesignSystem
 import Models
 
 public class ResultViewController: UIViewController {
-
+    let diaryContentView = DiaryContentView()
     public var customBar: CustomNavigationBar
     public var viewModel: ResultViewModel
     
@@ -49,7 +49,6 @@ public class ResultViewController: UIViewController {
         scroll.showsHorizontalScrollIndicator = false
         scroll.showsVerticalScrollIndicator = false
         scroll.isPagingEnabled = true
-//        scroll.alwaysBounceVertical = false
         scroll.alwaysBounceVertical = false
         scroll.translatesAutoresizingMaskIntoConstraints = false
         return scroll
@@ -67,10 +66,8 @@ public class ResultViewController: UIViewController {
     
     private let totalScrollView: UIScrollView = {
         let scrollView = UIScrollView()
-//        scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = true
         scrollView.alwaysBounceVertical = true
-//        scrollView.isPagingEnabled = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
@@ -80,7 +77,6 @@ public class ResultViewController: UIViewController {
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
-//        stackView.distribution = .fillEqually
         return stackView
     }()
 }
@@ -93,7 +89,6 @@ extension ResultViewController {
         totalScrollView.backgroundColor = .backgroundColor
         view.addSubview(totalScrollView)
         
-        let diaryContentView = DiaryContentView()
         diaryContentView.translatesAutoresizingMaskIntoConstraints = false
         totalScrollView.addSubview(diaryContentView)
 
@@ -216,15 +211,19 @@ extension ResultViewController {
     }
     
     @objc func tappedLAction() {
-        
+        print("뒤로가기")
     }
     
     @objc func tappedRAction() {
-        
+        print(viewModel.isEditing ? "수정끝" : "수정시작")
+        diaryContentView.setTextViewsEditable(viewModel.isEditing ? false : true)
+        viewModel.isEditing.toggle()
+        customBar.updateRightButtonTitle(viewModel.isEditing ? "완료" : "수정하기")
     }
 }
 
 class DiaryContentView: UIView {
+    var textViews: [UITextView] = []
     // 3개의 view(제목 + 내용 스택뷰)를 담을 총괄 스택뷰
     private let mainStackView: UIStackView = {
         let stack = UIStackView()
@@ -252,22 +251,28 @@ class DiaryContentView: UIView {
         titleLabel.applyFontCase(.bold(.subheadline))
         titleLabel.textColor = .coolgray600
         
-        let contentLabel = UILabel()
-        contentLabel.text = content
-        contentLabel.applyFontCase(.regular(.subheadline))
-        contentLabel.textColor = .coolgray800
-        contentLabel.numberOfLines = 0
+        let contentTextView = UITextView()
+        contentTextView.text = content
+        contentTextView.font = FontCase.regular(.subheadline).toUIFont
+        contentTextView.textColor = .coolgray800
+        contentTextView.translatesAutoresizingMaskIntoConstraints = false
+        contentTextView.isScrollEnabled = false
+        contentTextView.isEditable = false
+        contentTextView.textContainer.lineFragmentPadding = 0  // 텍스트 패딩 제거
+        contentTextView.textContainerInset = .zero  // 컨테이너 인셋 제거
         
         stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(contentLabel)
+        stackView.addArrangedSubview(contentTextView)
         containerView.addSubview(stackView)
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
             stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16)
+            stackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16),
         ])
+        
+        textViews.append(contentTextView)
         
         return containerView
     }
@@ -289,5 +294,9 @@ class DiaryContentView: UIView {
             mainStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             mainStackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+    
+    func setTextViewsEditable(_ editable: Bool) {
+        textViews.forEach { $0.isEditable = editable }
     }
 }

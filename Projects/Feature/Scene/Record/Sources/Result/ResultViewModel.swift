@@ -14,6 +14,7 @@ public class ResultViewModel {
     public let diaryString: DiaryString
     public var backButton: (() -> ())?
     public var modifyButton: (() -> ())?
+    public var isEditing: Bool = false
     
     public init(
         diaryEntity: DiaryEntity,
