@@ -11,10 +11,11 @@ import DesignSystem
 import Models
 
 public class ResultViewController: UIViewController {
+    let characterView = CharacterResultView()
     let diaryContentView = DiaryContentView()
+    
     public var customBar: CustomNavigationBar
     public var viewModel: ResultViewModel
-    
     public init(
         customBar: CustomNavigationBar = CustomNavigationBar(),
         viewModel: ResultViewModel
@@ -33,6 +34,7 @@ public class ResultViewController: UIViewController {
         view.backgroundColor = .white
         setupNavigationBar()
         configureLayout()
+        
     }
     
     // MARK: - Setup UI
@@ -84,38 +86,36 @@ public class ResultViewController: UIViewController {
 // MARK: - Layout Extenison
 extension ResultViewController {
     private func configureLayout() {
-        setupEmotionLabels()
-        totalScrollView.addSubview(emotionsScrollView)
-        totalScrollView.backgroundColor = .backgroundColor
-        view.addSubview(totalScrollView)
-        
-        diaryContentView.translatesAutoresizingMaskIntoConstraints = false
-        totalScrollView.addSubview(diaryContentView)
-
-        NSLayoutConstraint.activate([
-            diaryContentView.topAnchor.constraint(equalTo: emotionsScrollView.bottomAnchor),
-            diaryContentView.leadingAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.leadingAnchor, constant: 16),
-            diaryContentView.trailingAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.trailingAnchor, constant: -16),
-            diaryContentView.bottomAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.bottomAnchor)
-        ])
-        
-        // 외부에서 데이터 주입
         diaryContentView.configure(
-            event: "푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔한 미소와 작은 행복을 주는 사람 너에게 나는 그런 사람이고 싶다..푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는",
-            behavior: "푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔한 미소와 작은 행복을 주는 사람 너에게 나는 그런 사람이고 싶다..푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔한 미소와 작은 행복을 주는 사람 너에게 나는 그런 사람이고 싶다..푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔한 미소와 작은 행복을 주는 사람 너에게 나는 그런 사람이고 싶다..푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는",
-            result: "언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔"
+            event: "푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는",
+            behavior: "푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔한 미소와 작은 행복을 주는 사람 너에게 나는 그런 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔한 미소와 작은 행복을 주는 사람 너에게 나는 그런 사람이고 싶다..푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는",
+            result: "언제나 파란 희망으로 다가서는 너에언제나 파란 희망으로 다가서는 너에언제나 파란 희망으로 다가서는 너에언제나 파란 희망으로 다가서는 너에언제나 파란 희망으로 다가서는 너에"
         )
         
+        characterView.configure(mainEmotion: viewModel.resultMessage.mainEmotion, empathyMessage: viewModel.resultMessage.message, stackViewColor: viewModel.resultMessage.color, image: viewModel.resultMessage.mainImage)
+        
+        totalScrollView.backgroundColor = .backgroundColor
+        characterView.backgroundColor = UIColor.white
+        diaryContentView.translatesAutoresizingMaskIntoConstraints = false
+        characterView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(totalScrollView)
+        
+        setupEmotionLabels()
+        totalScrollView.addSubview(characterView)
+        totalScrollView.addSubview(emotionsScrollView)
+        totalScrollView.addSubview(diaryContentView)
+        
         NSLayoutConstraint.activate([
-            // totalScrollView 제약
             totalScrollView.topAnchor.constraint(equalTo: customBar.bottomAnchor),
             totalScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             totalScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             totalScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
+            characterView.topAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.topAnchor),
+            characterView.leadingAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.leadingAnchor),
+            characterView.trailingAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.trailingAnchor),
             
-            // emotionsScrollView 제약
-            emotionsScrollView.topAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.topAnchor),
+            emotionsScrollView.topAnchor.constraint(equalTo: characterView.bottomAnchor),
             emotionsScrollView.leadingAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.leadingAnchor),
             emotionsScrollView.trailingAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.trailingAnchor),
             emotionsScrollView.heightAnchor.constraint(equalToConstant: 68),
@@ -127,9 +127,12 @@ extension ResultViewController {
             emotionsStack.trailingAnchor.constraint(equalTo: emotionsScrollView.contentLayoutGuide.trailingAnchor, constant: -16),
             emotionsStack.bottomAnchor.constraint(equalTo: emotionsScrollView.bottomAnchor, constant: -12),
             emotionsStack.heightAnchor.constraint(equalToConstant: 40),
+            
+            diaryContentView.topAnchor.constraint(equalTo: emotionsScrollView.bottomAnchor),
+            diaryContentView.leadingAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.leadingAnchor, constant: 16),
+            diaryContentView.trailingAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.trailingAnchor, constant: -16),
+            diaryContentView.bottomAnchor.constraint(equalTo: totalScrollView.contentLayoutGuide.bottomAnchor),
         ])
-        
-        
     }
     
     private func setupEmotionLabels() {
@@ -219,84 +222,5 @@ extension ResultViewController {
         diaryContentView.setTextViewsEditable(viewModel.isEditing ? false : true)
         viewModel.isEditing.toggle()
         customBar.updateRightButtonTitle(viewModel.isEditing ? "완료" : "수정하기")
-    }
-}
-
-class DiaryContentView: UIView {
-    var textViews: [UITextView] = []
-    // 3개의 view(제목 + 내용 스택뷰)를 담을 총괄 스택뷰
-    private let mainStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 10
-        stack.backgroundColor = .clear
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
-    private func setupViewComponent(title: String, content: String) -> UIView {
-        // 각각의 제목 + 내용 스택뷰를 담을 View
-        let containerView = UIView()
-        containerView.layer.cornerRadius = 6
-        
-        // 제목 + 내용 스택뷰
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 4
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.backgroundColor = .white
-        
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.applyFontCase(.bold(.subheadline))
-        titleLabel.textColor = .coolgray600
-        
-        let contentTextView = UITextView()
-        contentTextView.text = content
-        contentTextView.font = FontCase.regular(.subheadline).toUIFont
-        contentTextView.textColor = .coolgray800
-        contentTextView.translatesAutoresizingMaskIntoConstraints = false
-        contentTextView.isScrollEnabled = false
-        contentTextView.isEditable = false
-        contentTextView.textContainer.lineFragmentPadding = 0  // 텍스트 패딩 제거
-        contentTextView.textContainerInset = .zero  // 컨테이너 인셋 제거
-        
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(contentTextView)
-        containerView.addSubview(stackView)
-        
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
-            stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16),
-        ])
-        
-        textViews.append(contentTextView)
-        
-        return containerView
-    }
-    
-    func configure(event: String, behavior: String, result: String) {
-        let eventView = setupViewComponent(title: "사건", content: event)
-        let behaviorView = setupViewComponent(title: "행동", content: behavior)
-        let resultView = setupViewComponent(title: "결과", content: result)
-        
-        mainStackView.addArrangedSubview(eventView)
-        mainStackView.addArrangedSubview(behaviorView)
-        mainStackView.addArrangedSubview(resultView)
-        
-        addSubview(mainStackView)
-        
-        NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: topAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            mainStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            mainStackView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-    }
-    
-    func setTextViewsEditable(_ editable: Bool) {
-        textViews.forEach { $0.isEditable = editable }
     }
 }

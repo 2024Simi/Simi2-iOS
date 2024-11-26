@@ -62,6 +62,21 @@ public enum EmotionType: String, Decodable, CaseIterable {
         }
     }
     
+    public var image: UIImage {
+        switch self {
+        case .happy:
+            return .icHappy
+        case .sad:
+            return .icSad
+        case .angry:
+            return .icAnger
+        case .fear:
+            return .icFear
+        case .offensive:
+            return .icOffensive
+        }
+    }
+    
     public func gestureEvent(direction: GestureDirection) -> EmotionType {
         guard let currentIndex = EmotionType.allCases.firstIndex(of: self) else {
             return .happy
