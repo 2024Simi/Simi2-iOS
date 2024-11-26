@@ -23,6 +23,7 @@ public class CustomNavigationBar: UIView {
     private let leftButton = UIButton()
     private let rightButton = UIButton()
     private let rightLabel = UILabel()
+    private var config = UIButton.Configuration.filled()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,6 +48,8 @@ public class CustomNavigationBar: UIView {
         rightImage: UIImage? = nil,
         leftAction: Selector? = nil,
         rightAction: Selector? = nil,
+        RButtonTitle: String? = nil,
+        RButtonTitleFont: FontCase = FontCase.semibold(.footnote),
         target: Any?,
         type: NavigationBarType
     ) {
@@ -131,6 +134,18 @@ public class CustomNavigationBar: UIView {
             leftButton.setImage(.icArrowBack, for: .normal)
             titleLabel.text = title
             titleLabel.font = font
+            
+            if let rButtonTitle = RButtonTitle {
+                var attributedTitle = AttributedString(rButtonTitle)
+                attributedTitle.font = FontCase.semibold(.footnote).toUIFont
+                attributedTitle.foregroundColor = UIColor.coolgray50
+                config.attributedTitle = attributedTitle
+            }
+            
+            config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
+            config.baseBackgroundColor = UIColor.coolgray800
+            rightButton.configuration = config
+            
             addSubview(titleLabel)
             addSubview(leftButton)
             addSubview(rightButton)

@@ -23,6 +23,7 @@ public enum appColor {
     case systemRed
     case systemBlue
     case systemGreen
+    case backgroundColor
     
     case pink900
     case pink800
@@ -139,11 +140,17 @@ public extension UIColor {
     static var systemRed: UIColor {
         return DesignSystemAsset.systemRed.color
     }
+    
     static var systemBlue: UIColor {
         return DesignSystemAsset.systemBlue.color
     }
+    
     static var systemGreen: UIColor {
         return DesignSystemAsset.systemGreen.color
+    }
+    
+    static var backgroundColor: UIColor {
+        return DesignSystemAsset.backgroundColor.color
     }
     
     // MARK: - White/Black
