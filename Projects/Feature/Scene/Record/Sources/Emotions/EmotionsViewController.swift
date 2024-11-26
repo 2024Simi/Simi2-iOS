@@ -197,6 +197,7 @@ extension EmotionViewController {
         }
         
         nextButton.tap {
+            self.viewModel.nextButtonTapped(text: "")
             print("next button tapped")
         }
     }

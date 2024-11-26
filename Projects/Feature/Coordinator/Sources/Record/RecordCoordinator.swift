@@ -8,6 +8,7 @@
 
 import UIKit
 import Record
+import Models
 
 public class RecordCoordinator {
     private let navigationController: UINavigationController
@@ -33,6 +34,11 @@ public class RecordCoordinator {
         }
         
         navigationController.pushViewController(viewController, animated: true)
+        
+//        let viewModel = ResultViewModel(diaryEntity: DiaryEntity(event: "event", behavior: "behavior", think: "think", emotions: ["감동적인","감사한","자신있는","우려스러운","조마조마한"]), diaryString: DiaryString(eventString: "eventString", behaviorString: "behaviorString", thinkString: "thinkString"))
+//        
+//        let viewController = ResultViewController(viewModel: viewModel)
+//        navigationController.pushViewController(viewController, animated: true)
     }
     
     private func secondView(text: String) {
@@ -73,5 +79,32 @@ public class RecordCoordinator {
         viewModel.backButton = {
             self.navigationController.popViewController(animated: true)
         }
+        
+        viewModel.nextButton = { [weak self] text in
+            self?.fifthView()
+        }
+    }
+    
+    private func fifthView() {
+        let viewModel = ResultViewModel(
+            diaryEntity: DiaryEntity(
+                event: "event",
+                behavior: "behavior",
+                think: "think",
+                emotions: ["감동적인","감사한","자신있는","우려스러운","조마조마한"]
+            ),
+            diaryString: DiaryString(
+                eventString: "eventString",
+                behaviorString: "behaviorString",
+                thinkString: "thinkString"
+            )
+        )
+        let viewController = ResultViewController(viewModel: viewModel)
+        
+        viewModel.backButton = {
+            self.navigationController.popViewController(animated: true)
+        }
+        
+        navigationController.pushViewController(viewController, animated: true)
     }
 }
