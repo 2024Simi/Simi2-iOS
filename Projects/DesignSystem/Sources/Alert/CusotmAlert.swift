@@ -20,6 +20,7 @@ public class CusotmAlert: UIView {
     public var SButtonAction: (() -> Void)?
     public var RButtonAction: (() -> Void)?
     public var LButtonAction: (() -> Void)?
+    private let width = UIScreen.main.bounds.width - 66
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -179,7 +180,6 @@ extension CusotmAlert {
         backgroundView.addSubview(alertView)
         addSubview(backgroundView)
         
-        let width = UIScreen.main.bounds.width - 66
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: topAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -221,14 +221,25 @@ extension CusotmAlert {
         totalStackView.addArrangedSubview(labelStackView)
         totalStackView.addArrangedSubview(SButtonView)
         
-        addSubview(totalStackView)
+        alertView.addSubview(totalStackView)
+        backgroundView.addSubview(alertView)
+        addSubview(backgroundView)
         
         NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            alertView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            alertView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
+            alertView.widthAnchor.constraint(equalToConstant: width),
+            
             titleLabel.topAnchor.constraint(equalTo: labelStackView.topAnchor),
-            totalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 24),
-            totalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24),
-            totalStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            totalStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            totalStackView.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 24),
+            totalStackView.bottomAnchor.constraint(equalTo: alertView.bottomAnchor, constant: -24),
+            totalStackView.leadingAnchor.constraint(equalTo: alertView.leadingAnchor, constant: 20),
+            totalStackView.trailingAnchor.constraint(equalTo: alertView.trailingAnchor, constant: -20),
             SButtonView.heightAnchor.constraint(equalToConstant: 42)
         ])
         
@@ -246,13 +257,25 @@ extension CusotmAlert {
     func setupTitleSButton(title: String, content: String?, SButton: String?) {
         totalStackView.addArrangedSubview(titleLabel)
         totalStackView.addArrangedSubview(SButtonView)
-        addSubview(totalStackView)
+        
+        alertView.addSubview(totalStackView)
+        backgroundView.addSubview(alertView)
+        addSubview(backgroundView)
         
         NSLayoutConstraint.activate([
-            totalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 24),
-            totalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24),
-            totalStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            totalStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            backgroundView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            alertView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            alertView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
+            alertView.widthAnchor.constraint(equalToConstant: width),
+            
+            totalStackView.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 24),
+            totalStackView.bottomAnchor.constraint(equalTo: alertView.bottomAnchor, constant: -24),
+            totalStackView.leadingAnchor.constraint(equalTo: alertView.leadingAnchor, constant: 20),
+            totalStackView.trailingAnchor.constraint(equalTo: alertView.trailingAnchor, constant: -20),
             SButtonView.heightAnchor.constraint(equalToConstant: 42)
         ])
         
