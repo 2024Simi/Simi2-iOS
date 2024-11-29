@@ -95,17 +95,29 @@ public class CusotmAlert: UIView {
         return stackView
     }()
     
-    // MARK: - Init
+    private let alertView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 8
+        return view
+    }()
+    
+    private let backgroundView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        return view
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
-        self.layer.cornerRadius = 8
+        setupGesture()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.backgroundColor = .white
-        self.layer.cornerRadius = 8
+        setupGesture()
     }
     
     public func configure(
@@ -116,7 +128,6 @@ public class CusotmAlert: UIView {
         LButton: String? = nil,
         alertCase: AlertCase
     ) {
-        
         switch alertCase {
         case .TitleContentDButton:
             setupTitleContentDButton(title: title, content: content, LButton: LButton, RButton: RButton)
@@ -127,8 +138,9 @@ public class CusotmAlert: UIView {
         }
 
     }
-    
-    // MARK: - Actions
+}
+
+extension CusotmAlert {
     @objc private func didTapActionSButton() {
         SButtonAction?()
     }
@@ -139,6 +151,15 @@ public class CusotmAlert: UIView {
     
     @objc private func didTapActionLButton() {
         LButtonAction?()
+    }
+    
+    private func setupGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapBackgroundView))
+        backgroundView.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func didTapBackgroundView() {
+        self.removeFromSuperview()
     }
 }
 
@@ -154,14 +175,26 @@ extension CusotmAlert {
         totalStackView.addArrangedSubview(labelStackView)
         totalStackView.addArrangedSubview(buttonStackView)
         
-        addSubview(totalStackView)
+        alertView.addSubview(totalStackView)
+        backgroundView.addSubview(alertView)
+        addSubview(backgroundView)
         
+        let width = UIScreen.main.bounds.width - 66
         NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            alertView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            alertView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
+            alertView.widthAnchor.constraint(equalToConstant: width),
+            
             titleLabel.topAnchor.constraint(equalTo: labelStackView.topAnchor),
-            totalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 24),
-            totalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24),
-            totalStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            totalStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            totalStackView.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 24),
+            totalStackView.bottomAnchor.constraint(equalTo: alertView.bottomAnchor, constant: -24),
+            totalStackView.leadingAnchor.constraint(equalTo: alertView.leadingAnchor, constant: 20),
+            totalStackView.trailingAnchor.constraint(equalTo: alertView.trailingAnchor, constant: -20),
             LButtonView.heightAnchor.constraint(equalToConstant: 42),
             RButtonView.heightAnchor.constraint(equalToConstant: 42)
         ])

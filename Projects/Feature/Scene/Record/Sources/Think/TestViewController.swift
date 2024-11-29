@@ -14,7 +14,7 @@ public class TestViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .black
+        view.backgroundColor = .yellow
 
         // 버튼으로 팝업 호출 예제
         let showPopupButton = UIButton(type: .system)

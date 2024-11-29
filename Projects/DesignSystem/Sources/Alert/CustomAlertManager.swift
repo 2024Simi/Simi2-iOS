@@ -14,47 +14,47 @@ import UIKit
      private init() {}
 
      public func showPopup(on viewController: UIViewController, title: String, content: String? = nil, LButton: String? = nil, RButton: String? = nil, SButton: String? = nil, type: AlertCase) {
-         let cuostomAlert = CusotmAlert()
-         cuostomAlert.configure(title: title, content: content, SButton: SButton, RButton: RButton, LButton: LButton, alertCase: type)
+         let customAlert = CusotmAlert()
+         customAlert.configure(title: title, content: content, SButton: SButton, RButton: RButton, LButton: LButton, alertCase: type)
          
-         cuostomAlert.SButtonAction = {
+         customAlert.SButtonAction = {
              UIView.animate(withDuration: 0.3, animations: {
-                 cuostomAlert.alpha = 0
+                 customAlert.alpha = 0
              }) { _ in
-                 cuostomAlert.removeFromSuperview()
+                 customAlert.removeFromSuperview()
              }
          }
          
-         cuostomAlert.RButtonAction = {
+         customAlert.RButtonAction = {
              UIView.animate(withDuration: 0.3, animations: {
-                 cuostomAlert.alpha = 0
+                 customAlert.alpha = 0
              }) { _ in
-                 cuostomAlert.removeFromSuperview()
+                 customAlert.removeFromSuperview()
              }
          }
          
-         cuostomAlert.LButtonAction = {
+         customAlert.LButtonAction = {
              UIView.animate(withDuration: 0.3, animations: {
-                 cuostomAlert.alpha = 0
+                 customAlert.alpha = 0
              }) { _ in
-                 cuostomAlert.removeFromSuperview()
+                 customAlert.removeFromSuperview()
              }
          }
 
-         cuostomAlert.translatesAutoresizingMaskIntoConstraints = false
-         cuostomAlert.alpha = 0
+         customAlert.translatesAutoresizingMaskIntoConstraints = false
+         customAlert.alpha = 0
 
-         viewController.view.addSubview(cuostomAlert)
+         viewController.view.addSubview(customAlert)
          
          NSLayoutConstraint.activate([
-            cuostomAlert.centerXAnchor.constraint(equalTo: viewController.view.centerXAnchor),
-            cuostomAlert.centerYAnchor.constraint(equalTo: viewController.view.centerYAnchor),
-            cuostomAlert.widthAnchor.constraint(equalToConstant: 300),
-            cuostomAlert.heightAnchor.constraint(greaterThanOrEqualToConstant: 150)
+            customAlert.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
+            customAlert.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
+            customAlert.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor),
+            customAlert.topAnchor.constraint(equalTo: viewController.view.topAnchor),
          ])
          
          UIView.animate(withDuration: 0.3) {
-             cuostomAlert.alpha = 1
+             customAlert.alpha = 1
          }
      }
  }
