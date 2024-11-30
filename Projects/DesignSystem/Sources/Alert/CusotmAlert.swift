@@ -9,9 +9,9 @@
 import UIKit
 
 public enum AlertCase {
-    case TitleContentDButton//(title: String, content: String, LButton: String, RButton: String) // [Confirm : 제목 + 내용(2줄) + 버튼(2개) ]
-    case TitleContentSButton//(title: String, content: String, SButton: String) // [Confirm : 제목 + 내용(2줄) + 버튼(1개) ]
-    case TitleSButton//(title: String, SButton: String) // [Confirm : 제목 + 버튼(1개)]
+    case TitleContentDButton // [Confirm : 제목 + 내용(2줄) + 버튼(2개) ]
+    case TitleContentSButton // [Confirm : 제목 + 내용(2줄) + 버튼(1개) ]
+    case TitleSButton // [Confirm : 제목 + 버튼(1개)]
 }
 
 public class CusotmAlert: UIView {

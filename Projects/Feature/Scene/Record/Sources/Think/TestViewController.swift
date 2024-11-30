@@ -9,8 +9,19 @@
 import UIKit
 import DesignSystem
 
+class TestViewModel {
+    func RButton() {
+        print("RButton tapped!!!!")
+    }
+    
+    func LButton() {
+        print("Lbutton Tapped!!!!")
+    }
+}
+
 public class TestViewController: UIViewController {
     let customTest = CusotmAlert()
+    let viewModel = TestViewModel()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +69,20 @@ public class TestViewController: UIViewController {
     
     
     @objc public func showPopup() {
-        PopupManager.shared.showPopup(on: self, title: "title", content: "content", LButton: "LButton", RButton: "Rbutton", type: .TitleContentDButton)
+        PopupManager.shared.showPopup(
+            on: self,
+            title: "title",
+            content: "content",
+            LButton: "LButton",
+            RButton: "Rbutton",
+            type: .TitleContentDButton,
+            RButtonAction: { [weak self] in
+                self?.viewModel.RButton()
+            },
+            LButtonAction: { [weak self] in
+                self?.viewModel.LButton()
+            }
+        )
     }
     
     @objc public func showPopupTwo() {
