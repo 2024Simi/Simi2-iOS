@@ -22,6 +22,7 @@ class TestViewModel {
 public class TestViewController: UIViewController {
     let customTest = CusotmAlert()
     let viewModel = TestViewModel()
+    let toast = ToastMessage()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +66,18 @@ public class TestViewController: UIViewController {
             thirdButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             thirdButton.topAnchor.constraint(equalTo: secondButton.bottomAnchor, constant: 30)
         ])
+        
+        let fourthButton = UIButton(type: .system)
+        fourthButton.setTitle("fourthButton", for: .normal)
+        fourthButton.addTarget(self, action: #selector(showPopupFourth), for: .touchUpInside)
+        
+        fourthButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(fourthButton)
+        
+        NSLayoutConstraint.activate([
+            fourthButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            fourthButton.topAnchor.constraint(equalTo: thirdButton.bottomAnchor, constant: 30)
+        ])
     }
     
     
@@ -91,5 +104,9 @@ public class TestViewController: UIViewController {
     
     @objc public func showPopupThird() {
         PopupManager.shared.showPopup(on: self, title: "title", SButton: "수정하기", type: .TitleSButton)
+    }
+    
+    @objc public func showPopupFourth() {
+        ToastMessageManager.shared.showToastMessage(on: self, message: "토스트메시지 테스트임", type: .success, postition: .up)
     }
 }
