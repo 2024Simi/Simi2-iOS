@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import DesignSystem
 
 struct DiaryData {
     let id: Int
@@ -14,18 +15,33 @@ struct DiaryData {
     let createdAt: String
     
     var createdday: Int {
-        let temp = ISO8601DateFormatter().date(from: createdAt)!
-        let calendar = Calendar.current
+        let temp = String(createdAt.prefix(10))
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
         
-        return calendar.component(.day, from: temp)
+        if let date = formatter.date(from: temp) {
+            return Calendar.current.component(.day, from: date)
+        }
+        
+        return 0
+    }
+    
+    var createdDate: Date? {
+        let temp = String(createdAt.prefix(10))
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        if let date = formatter.date(from: temp) {
+            return date
+        }
+        
+        return nil
     }
     
     static let sData: [DiaryData] = [
         .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-01T14:19:01.273Z"),
-        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-02T14:19:01.273Z"),
         .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-03T14:19:01.273Z"),
         .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-04T14:19:01.273Z"),
-        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-05T14:19:01.273Z")
     ]
 }
 
@@ -38,9 +54,10 @@ class CustomCalendarViewModel: ObservableObject {
 struct CustomCalendarView: View {
     @StateObject var viewModel = CustomCalendarViewModel()
     
-    @State var currentMonth = Date() //CustomCalendarView.koreaCalendar.date(byAdding: .month, value: 3, to: Date())!//
+    @State var currentMonth = Date()
     @State var tappedDate: Date = Date()
     static let thisMonth = Date()
+    let diaryData = DiaryData.sData
     
     var preMonth: Date {
         return CustomCalendarView.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth)!
@@ -62,6 +79,10 @@ struct CustomCalendarView: View {
     static let shortWeekly: [String] = {
         return koreaCalendar.shortWeekdaySymbols
     }()
+    
+    func formattedDate() -> String {
+        return Self.calendarHeaderDateFormatter.string(from: currentMonth)
+    }
     
     func firstDayOfMonth(_ date: Date) -> Int {
         let startOfMonth = CustomCalendarView.koreaCalendar.date(from: CustomCalendarView.koreaCalendar.dateComponents([.year, .month], from: currentMonth))!
@@ -92,9 +113,35 @@ struct CustomCalendarView: View {
     var body: some View {
         VStack {
             let circleWidth = ((UIScreen.main.bounds.width - 52) / 7) - 8
-            Text(currentMonth, formatter: Self.calendarHeaderDateFormatter)
-                .padding(10)
-                .background(.gray)
+            HStack(spacing: 8) {
+                SText(formattedDate(), fontType: .bold(.title3), color: .gray900)
+                Image.icChevronLeft
+                    .resizable()
+                    .frame(width: 32, height: 32)
+                    .onTapGesture {
+                        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
+                    }
+                
+                Image.icChevronRight
+                    .resizable()
+                    .frame(width: 32, height: 32)
+                    .padding(.leading, -8)
+                    .onTapGesture {
+                        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
+                    }
+                
+                Spacer()
+                
+                SText("오늘", fontType: .semibold(.footnote), color: .white)
+                    .padding(.init(top: 4,leading: 8,bottom: 4,trailing: 8))
+                    .background(Color.gray800)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .onTapGesture {
+                        currentMonth = Date()
+                    }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
             
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 12) {
                 ForEach(CustomCalendarView.shortWeekly, id: \.self) { data in
@@ -107,39 +154,46 @@ struct CustomCalendarView: View {
                 
                 ForEach((-firstDayOfMonth(currentMonth)+1) ... lastDateOfCalendar, id: \.self) { date in
                     let column = (date + firstDayOfMonth(currentMonth) - 1) % 7 == 0
-                    
-                    let temp = DateComponents(year: currentYear(currentMonth), month: returnCurrentMonth(currentMonth), day: date)
-                    let calculatedDateComponent = Calendar.current.date(from: temp) ?? Date()
+                    let dateComponent = DateComponents(year: currentYear(currentMonth), month: returnCurrentMonth(currentMonth), day: date)
+                    let calculatedDateComponent = Calendar.current.date(from: dateComponent) ?? Date()
                     let isToday = Calendar.current.isDateInToday(calculatedDateComponent)
                     let isPastDate = calculatedDateComponent < Calendar.current.startOfDay(for: Date())
+                    let isMatched = diaryData.contains { $0.createdDate == calculatedDateComponent }
                     
-                    if date <= 0 {
-                        let preDate = dateCount(preMonth) + date
-                        Text("\(preDate)")
-                            .foregroundStyle(date+firstDayOfMonth(preMonth) == 1 ? .red : .black)
-                            .opacity(isPastDate ? 0.5 : 1.0)
+                    VStack(spacing: 0){
+                        Circle()
+                            .frame(width: 4, height: 4)
+                            .opacity(isMatched ? 1.0 : 0.0)
                         
-                    } else if date > 0 && date <= dateCount(currentMonth) {
-                        if isToday {
-                            Circle()
-                                .frame(width: circleWidth, height: circleWidth)
-                                .overlay {
+                        if date <= 0 {
+                            let preDate = dateCount(preMonth) + date
+                            Text("\(preDate)")
+                                .foregroundStyle(date+firstDayOfMonth(preMonth) == 1 ? .red : .black)
+                                .opacity(isPastDate ? 0.5 : 1.0)
+                            
+                        } else if date > 0 && date <= dateCount(currentMonth) {
+                            if isToday {
+                                Circle()
+                                    .frame(width: circleWidth, height: circleWidth)
+                                    .overlay {
+                                        Text("\(date)")
+                                            .foregroundStyle(Color.white)
+                                    }
+                            } else {
+                                VStack(spacing: 0) {
                                     Text("\(date)")
-                                        .foregroundStyle(Color.white)
+                                        .foregroundStyle(column ? Color.red : Color.black)
+                                        .frame(width: circleWidth, height: circleWidth)
+                                        .opacity(isPastDate ? 0.5 : 1.0)
                                 }
+                            }
                         } else {
-                            Text("\(date)")
-                                .foregroundStyle(column ? Color.red : Color.black)
+                            let nextMonthDay = date - dateCount(currentMonth)
+                            Text("\(nextMonthDay)")
+                                .foregroundStyle(Color.black)
                                 .frame(width: circleWidth, height: circleWidth)
                                 .opacity(isPastDate ? 0.5 : 1.0)
                         }
-                        
-                    } else {
-                        let nextMonthDay = date - dateCount(currentMonth)
-                        Text("\(nextMonthDay)")
-                            .foregroundStyle(Color.black)
-                            .frame(width: circleWidth, height: circleWidth)
-                            .opacity(isPastDate ? 0.5 : 1.0)
                     }
                 }
             }
@@ -150,10 +204,12 @@ struct CustomCalendarView: View {
                 .onEnded { value in
                     let offsetX = value.translation.width
                     
-                    if offsetX < -50 { // 오른쪽으로 스와이프
-                        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
-                    } else if offsetX > 50 { // 왼쪽으로 스와이프
-                        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
+                    withAnimation(.smooth) { // 애니메이션.. 확인 필요...
+                        if offsetX < -50 { // 오른쪽으로 스와이프
+                            currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
+                        } else if offsetX > 50 { // 왼쪽으로 스와이프
+                            currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
+                        }
                     }
                 }
         )
