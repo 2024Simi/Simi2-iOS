@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 public enum FontCase {
     case bold(SimiFont)
@@ -46,7 +47,6 @@ public enum FontCase {
 }
 
 public extension UILabel {
-    
     func setLineSpacing(spacing: CGFloat) {
         guard let text = text else { return }
 
