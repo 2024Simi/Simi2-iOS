@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  SimiApp.swift
 //  App
 //
 //  Created by 박서연 on 2024/12/06.
@@ -9,7 +9,7 @@
 import SwiftUI
 
 @main
-struct ZerosomeApp: App {
+struct SimiApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {

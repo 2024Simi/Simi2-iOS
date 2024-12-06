@@ -119,7 +119,9 @@ struct CustomCalendarView: View {
                     .resizable()
                     .frame(width: 32, height: 32)
                     .onTapGesture {
-                        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
+                        withAnimation(.smooth) {
+                            currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
+                        }
                     }
                 
                 Image.icChevronRight
@@ -127,7 +129,9 @@ struct CustomCalendarView: View {
                     .frame(width: 32, height: 32)
                     .padding(.leading, -8)
                     .onTapGesture {
-                        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
+                        withAnimation(.smooth) {
+                            currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
+                        }
                     }
                 
                 Spacer()
@@ -137,7 +141,9 @@ struct CustomCalendarView: View {
                     .background(Color.gray800)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                     .onTapGesture {
-                        currentMonth = Date()
+                        withAnimation(.smooth) {
+                            currentMonth = Date()
+                        }
                     }
             }
             .padding(.vertical, 8)
