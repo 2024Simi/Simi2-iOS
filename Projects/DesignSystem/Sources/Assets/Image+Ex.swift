@@ -55,6 +55,7 @@ public extension Image {
     static let icFear = DesignSystemAsset.icFear.swiftUIImage
     static let icOffensive = DesignSystemAsset.icOffensive.swiftUIImage
     static let icSomehow = DesignSystemAsset.icSomehow.swiftUIImage
+    static let icGrowingHeart = DesignSystemAsset.icGrowingHeart.swiftUIImage
     
     // MARK: - Sample
     static let icSample = DesignSystemAsset.sample.swiftUIImage
