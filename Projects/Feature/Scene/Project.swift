@@ -33,8 +33,7 @@ let module = Project.module(
                 .core(.model),
                 .core(.common),
                 .designSystem,
-                .spm(.lottie),
-                .scene(.home)
+                .spm(.lottie)
             ],
             infoPlist: false
         )
