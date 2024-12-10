@@ -57,7 +57,7 @@ public class PastNoneRecordComponentView: UIView {
     private let emotionImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = .icHappy
+        image.image = .icNoRecord
         return image
     }()
     
