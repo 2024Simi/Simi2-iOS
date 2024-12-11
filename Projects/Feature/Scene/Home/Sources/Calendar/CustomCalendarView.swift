@@ -11,7 +11,7 @@ import DesignSystem
 import Combine
 
 struct CustomCalendarView: View {
-    @StateObject var viewModel = CustomCalendarViewModel()
+    @ObservedObject var viewModel: CustomCalendarViewModel
     let diaryData = DiaryData.sData
     
     private var preMonth: Date {
@@ -36,9 +36,7 @@ struct CustomCalendarView: View {
                     .resizable()
                     .frame(width: 32, height: 32)
                     .onTapGesture {
-                        withAnimation(.smooth) {
-                            viewModel.goToPreviousMonth()
-                        }
+                        viewModel.goToPreviousMonth()
                     }
                 
                 Image.icChevronRight
@@ -46,9 +44,7 @@ struct CustomCalendarView: View {
                     .frame(width: 32, height: 32)
                     .padding(.leading, -8)
                     .onTapGesture {
-                        withAnimation(.smooth) {
-                            viewModel.goToNextMonth()
-                        }
+                        viewModel.goToNextMonth()
                     }
                 
                 Spacer()
@@ -58,22 +54,19 @@ struct CustomCalendarView: View {
                     .background(Color.gray800)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                     .onTapGesture {
-                        withAnimation(.smooth) {
-                            viewModel.goToToday()
-                        }
+                        viewModel.goToToday()
                     }
             }
-            .padding(.vertical, 8)
+            .frame(height: 48)
             .padding(.horizontal, 16)
             
-            Weekday Headers
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 12) {
                 ForEach(CustomCalendarViewModel.shortWeekly, id: \.self) { data in
-                    Text(data)
+                    SText(data, fontType: .semibold(.caption1))
                         .frame(width: circleWidth, height: 22)
                         .foregroundStyle(data == "일" ? Color.red : Color.black)
                 }
-                .padding(.vertical, 8)
+                .padding(.vertical, 12)
                 
                 let lastDateOfCalendar = viewModel.numberOfWeeks(in: viewModel.currentMonth) - viewModel.firstDayOfMonth(viewModel.currentMonth)
                 
@@ -99,7 +92,7 @@ struct CustomCalendarView: View {
                             Text("\(preDate)")
                                 .foregroundStyle(date+viewModel.firstDayOfMonth(preMonth) == 1 ? .red : .black)
                                 .opacity(isPastDate ? 0.5 : 1.0)
-                                .frame(width: circleWidth-8, height: 40)
+                                .frame(width: circleWidth, height: 40)
                             
                         } else if date > 0 && date <= viewModel.dateCount(viewModel.currentMonth) {
                             if isToday {
@@ -123,11 +116,12 @@ struct CustomCalendarView: View {
                         } else {
                             let nextMonthDay = date - viewModel.dateCount(viewModel.currentMonth)
                             Text("\(nextMonthDay)")
-                                .foregroundStyle(Color.black)
+                                .foregroundStyle(column ? Color.red : Color.black)
                                 .frame(width: circleWidth, height: 40)
                                 .opacity(isPastDate ? 0.5 : 1.0)
                         }
                     }
+                    .frame(height: 44)
                 }
             }
             .padding(.horizontal, 8)
@@ -138,18 +132,23 @@ struct CustomCalendarView: View {
                     let offsetX = value.translation.width
                     let velocityX = value.velocity.width
                     if abs(velocityX) > 100 {
-                        withAnimation(.smooth) {
-                            if offsetX < -50 { // 오른쪽으로 스와이프
-                                viewModel.goToNextMonth()
-                            } else if offsetX > 50 { // 왼쪽으로 스와이프
-                                viewModel.goToPreviousMonth()
-                            }
+                        if offsetX < -50 { // 오른쪽으로 스와이프
+                            viewModel.goToNextMonth()
+                        } else if offsetX > 50 { // 왼쪽으로 스와이프
+                            viewModel.goToPreviousMonth()
                         }
                     }
                 }
         )
-        .frame(alignment: .top) //height: 431, 
+        .frame(alignment: .top)
+        .onChange(of: viewModel.currentMonth) {
+            NotificationCenter.default.post(name: .calendarHeightChanged, object: nil)
+        }
     }
+}
+
+extension Notification.Name {
+    static let calendarHeightChanged = Notification.Name("calendarHeightChanged")
 }
 
 class CustomCalendarViewModel: ObservableObject {
