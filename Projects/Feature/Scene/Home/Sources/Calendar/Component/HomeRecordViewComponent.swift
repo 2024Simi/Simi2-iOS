@@ -13,12 +13,14 @@ public class HomeRecordViewComponent: UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         self.layer.cornerRadius = 8
+        backgroundColor = .white
         setupConstraints()
     }
     
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         self.layer.cornerRadius = 8
+        backgroundColor = .white
         setupConstraints()
     }
     

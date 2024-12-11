@@ -111,7 +111,7 @@ struct CustomCalendarView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(spacing: 12) {
             let circleWidth = ((UIScreen.main.bounds.width - 52) / 7) - 8
             HStack(spacing: 8) {
                 SText(formattedDate(), fontType: .bold(.title3), color: .gray900)
@@ -152,9 +152,10 @@ struct CustomCalendarView: View {
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 12) {
                 ForEach(CustomCalendarView.shortWeekly, id: \.self) { data in
                     Text(data)
-                        .frame(width: circleWidth)
+                        .frame(width: circleWidth, height: 22)
                         .foregroundStyle(data == "일" ? Color.red : Color.black)
                 }
+                .padding(.vertical, 8)
                 
                 let lastDateOfCalendar = numberOfWeeks(in: currentMonth) - firstDayOfMonth(currentMonth)
                 
@@ -176,11 +177,12 @@ struct CustomCalendarView: View {
                             Text("\(preDate)")
                                 .foregroundStyle(date+firstDayOfMonth(preMonth) == 1 ? .red : .black)
                                 .opacity(isPastDate ? 0.5 : 1.0)
+                                .frame(width: circleWidth, height: 40)
                             
                         } else if date > 0 && date <= dateCount(currentMonth) {
                             if isToday {
                                 Circle()
-                                    .frame(width: circleWidth, height: circleWidth)
+                                    .frame(width: circleWidth, height: 40)
                                     .overlay {
                                         Text("\(date)")
                                             .foregroundStyle(Color.white)
@@ -189,7 +191,7 @@ struct CustomCalendarView: View {
                                 VStack(spacing: 0) {
                                     Text("\(date)")
                                         .foregroundStyle(column ? Color.red : Color.black)
-                                        .frame(width: circleWidth, height: circleWidth)
+                                        .frame(width: circleWidth, height: 40)
                                         .opacity(isPastDate ? 0.5 : 1.0)
                                 }
                             }
@@ -197,7 +199,7 @@ struct CustomCalendarView: View {
                             let nextMonthDay = date - dateCount(currentMonth)
                             Text("\(nextMonthDay)")
                                 .foregroundStyle(Color.black)
-                                .frame(width: circleWidth, height: circleWidth)
+                                .frame(width: circleWidth, height: 40)
                                 .opacity(isPastDate ? 0.5 : 1.0)
                         }
                     }
@@ -219,6 +221,8 @@ struct CustomCalendarView: View {
                     }
                 }
         )
+        .frame(height: 422)
+        .background(Color.white)
     }
     
     func numberOfWeeks(in month: Date) -> Int {
