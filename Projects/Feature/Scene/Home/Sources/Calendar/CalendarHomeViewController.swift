@@ -17,18 +17,37 @@ public class CalendarHomeViewController: UIViewController {
     private var mainEmotionComponent = MainEmotionViewComponent()
     private var aboutRecordComponent = HomeRecordViewComponent()
     private let viewModel = CustomCalendarViewModel()
-    private let containerView: UIStackView = {
+    
+    private let dateLabel: UILabel = {
+        let label = UILabel()
+        label.applyFontCase(.semibold(.footnote))
+        label.textColor = .gray700
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.backgroundColor = .backgroundColor
+        label.text = "2024.10.31일 감정기록"
+        return label
+    }()
+    
+    private let containerStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.backgroundColor = .backgroundColor
         return stackView
+    }()
+    
+    let containView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .backgroundColor
+        return view
     }()
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .backgroundColor
+        view.backgroundColor = .white
         setupCalendarView()
         setupNotificationObserver()
         setupComponent()
@@ -73,15 +92,27 @@ extension CalendarHomeViewController {
         mainEmotionComponent.translatesAutoresizingMaskIntoConstraints = false
         aboutRecordComponent.translatesAutoresizingMaskIntoConstraints = false
         
-        containerView.addArrangedSubview(mainEmotionComponent)
-        containerView.addArrangedSubview(aboutRecordComponent)
-        view.addSubview(containerView)
+        containerStackView.addArrangedSubview(mainEmotionComponent)
+        containerStackView.addArrangedSubview(aboutRecordComponent)
+        
+        containView.addSubview(dateLabel)
+        containView.addSubview(containerStackView)
+        view.addSubview(containView)
         
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: hostingController.view.bottomAnchor, constant: 30),
-            containerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            containerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            containView.topAnchor.constraint(equalTo: hostingController.view.bottomAnchor),
+            containView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            containView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            containView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            dateLabel.topAnchor.constraint(equalTo: containView.topAnchor, constant: 12),
+            dateLabel.leadingAnchor.constraint(equalTo: containView.leadingAnchor, constant: 16),
+            dateLabel.trailingAnchor.constraint(equalTo: containView.trailingAnchor, constant: -16),
+            
+            containerStackView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 12),
+            containerStackView.leadingAnchor.constraint(equalTo: containView.leadingAnchor, constant: 16),
+            containerStackView.trailingAnchor.constraint(equalTo: containView.trailingAnchor, constant: -16),
+            containerStackView.heightAnchor.constraint(equalToConstant: 219)
         ])
     }
 }

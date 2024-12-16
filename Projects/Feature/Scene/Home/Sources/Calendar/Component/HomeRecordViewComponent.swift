@@ -28,6 +28,8 @@ public class HomeRecordViewComponent: UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .gray400
+        view.layer.cornerRadius = 3
+        view.clipsToBounds = true
         return view
     }()
     

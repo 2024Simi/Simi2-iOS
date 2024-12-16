@@ -33,6 +33,8 @@ public class PastNoneRecordComponentView: UIView {
         let view = UIView()
         view.backgroundColor = .gray400
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 3
+        view.clipsToBounds = true
         return view
     }()
     
