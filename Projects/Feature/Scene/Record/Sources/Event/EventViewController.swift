@@ -42,7 +42,6 @@ public class EventViewController: UIViewController {
         textEditor.addGestureRecognizer(tapGesture)
     }
     
-    // MARK: - keyboard 뷰 추가
     private var overlayView: KeyboardOverlayView?
     
     deinit {
@@ -94,14 +93,6 @@ public class EventViewController: UIViewController {
         return stackView
     }()
     
-    private let textButtonStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 100
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
     private let characterImage: UIImageView = {
         let image = UIImageView()
         image.image = .icSample
@@ -133,24 +124,19 @@ public class EventViewController: UIViewController {
     }
 }
 
+// MARK: - 레이아웃 관련 코드
 extension EventViewController {
-    /// 레이아웃 관련
-    private func setupStackView() {
+    private func setupConstraint() {
+        setupNavigationBar()
         buttonStackView.addArrangedSubview(cancelButton)
         buttonStackView.addArrangedSubview(nextButton)
         
-        textButtonStackView.addArrangedSubview(textEditor)
-        textButtonStackView.addArrangedSubview(buttonStackView)
-    }
-    
-    private func setupConstraint() {
-        setupNavigationBar()
-        setupStackView()
         view.addSubview(caseLabel)
         view.addSubview(questionLabel)
         view.addSubview(characterImage)
         view.addSubview(assistanceLabel)
-        view.addSubview(textButtonStackView)
+        view.addSubview(textEditor)
+        view.addSubview(buttonStackView)
         
         textEditor.layer.borderColor = UIColor.coolgray300.cgColor
         textEditor.layer.cornerRadius = 10
@@ -173,10 +159,14 @@ extension EventViewController {
             assistanceLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             assistanceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            textButtonStackView.topAnchor.constraint(equalTo: assistanceLabel.bottomAnchor, constant: 25),
-            textButtonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textButtonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            textButtonStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32)
+            textEditor.topAnchor.constraint(equalTo: assistanceLabel.bottomAnchor, constant: 19),
+            textEditor.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            textEditor.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            textEditor.heightAnchor.constraint(equalToConstant: 251),
+            
+            buttonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            buttonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            buttonStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32)
         ])
         
         if textEditor.text.count > 0, !textEditor.text.isEmpty {
@@ -216,7 +206,6 @@ extension EventViewController {
 extension EventViewController {
     
     @objc private func textEditorTapped() {
-        // textEditor가 탭되었을 때 실행할 동작
         addOverlayView(keyboardHeight: 269)
     }
     
@@ -224,7 +213,6 @@ extension EventViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
         
-        // 키보드에 따른 화면 분기
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(notification:)),
@@ -249,7 +237,6 @@ extension EventViewController {
     }
     
     @objc private func keyboardWillHide(notification: Notification) {
-        // removeOverlayView()
         guard let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
         UIView.animate(withDuration: duration) {
             self.removeOverlayView()
