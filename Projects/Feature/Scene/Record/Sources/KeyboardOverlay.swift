@@ -15,12 +15,14 @@ public class KeyboardOverlayView: UIView {
         super.init(frame: frame)
         self.layer.cornerRadius = 6
         setupConstraints()
+        textView.delegate = self
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         self.layer.cornerRadius = 6
         setupConstraints()
+        textView.delegate = self
     }
     
     let titleLabel: UILabel = {
@@ -48,7 +50,6 @@ public class KeyboardOverlayView: UIView {
         let textView = UITextView()
         textView.font = FontCase.regular(.subheadline).toUIFont
         textView.textColor = .coolgray600
-        textView.text = "내용내용 삼백자내용 오늘은 이런일이 있었다. 내용내용 삼백자내용내용내용 삼백자내용 오늘은 이런일이 있었다. 내용내용 삼백자내용"
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
@@ -58,6 +59,8 @@ public class KeyboardOverlayView: UIView {
         label.applyFontCase(.semibold(.footnote))
         label.textColor = .coolgray400
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "(0/300)"
+        label.textAlignment = .right
         return label
     }()
     
@@ -96,5 +99,23 @@ public class KeyboardOverlayView: UIView {
             containStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             containStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
         ])
+    }
+    
+    private func updateCountLabel(text: String) {
+        let count = text.count
+        countLabel.text = "(\(count)/300)"
+    }
+}
+
+extension KeyboardOverlayView: UITextViewDelegate {
+    public func textViewDidChange(_ textView: UITextView) {
+        updateCountLabel(text: textView.text)
+    }
+    
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let currentText = textView.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: text)
+        return updatedText.count <= 300
     }
 }

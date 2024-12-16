@@ -35,10 +35,15 @@ public class EventViewController: UIViewController {
         setupButton()
         setupKeyboard()
         bindViewModel()
+        
+        textEditor.isUserInteractionEnabled = true
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(textEditorTapped))
+        textEditor.addGestureRecognizer(tapGesture)
     }
     
     // MARK: - keyboard 뷰 추가
-    private var overlayView: UIView?
+    private var overlayView: KeyboardOverlayView?
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -115,6 +120,8 @@ public class EventViewController: UIViewController {
     }()
     
     @objc private func dismissKeyboard() {
+        guard let inputText = overlayView?.textView.text else { return }
+        self.textEditor.text = inputText
         view.endEditing(true)
     }
     
@@ -207,6 +214,12 @@ extension EventViewController {
 
 // MARK: - Keyboard에 따른 TextView
 extension EventViewController {
+    
+    @objc private func textEditorTapped() {
+        // textEditor가 탭되었을 때 실행할 동작
+        addOverlayView(keyboardHeight: 269)
+    }
+    
     private func setupKeyboard() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
@@ -248,15 +261,19 @@ extension EventViewController {
         guard overlayView == nil else { return }
         
         let overlay = KeyboardOverlayView()
-        overlay.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(overlay)
+        overlay.textView.text = textEditor.text
+        overlay.textView.becomeFirstResponder()
         self.overlayView = overlay
         
         let backgroundView = UIView()
-        view.addSubview(backgroundView)
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
         backgroundView.backgroundColor = .black
         backgroundView.layer.opacity = 0.5
+        
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        overlay.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(overlay)
+        view.addSubview(backgroundView)
+        
         
         NSLayoutConstraint.activate([
             overlay.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
