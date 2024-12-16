@@ -53,7 +53,7 @@ class CustomCalendarViewModel: ObservableObject {
 
 struct CustomCalendarView: View {
     @StateObject var viewModel = CustomCalendarViewModel()
-    
+    @State private var currentView: CalendarViewType = .monthly 
     @State var currentMonth = Date()
     @State var tappedDate: Date = Date()
     static let thisMonth = Date()
@@ -221,8 +221,7 @@ struct CustomCalendarView: View {
                     }
                 }
         )
-        .frame(height: 422)
-        .background(Color.white)
+        .background(Color.gray50)
     }
     
     func numberOfWeeks(in month: Date) -> Int {

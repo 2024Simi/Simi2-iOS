@@ -71,11 +71,11 @@ public class MainEmotionViewComponent: UIView {
     }()
 
     
-    private let emotionView: UIView = {
+    private let circleView: UIView = {
         let view = UIView()
         view.backgroundColor = .gray200
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = view.layer.bounds.width / 2
+        view.layer.cornerRadius = 3
         view.clipsToBounds = true
         return view
     }()
@@ -102,22 +102,19 @@ extension MainEmotionViewComponent {
 }
 
 public extension MainEmotionViewComponent {
-    func setupConstraints() {
-        addSubview(emotionView)
+    private func setupConstraints() {
+        addSubview(circleView)
         addSubview(label)
         addSubview(mainEmotionLabel)
         addSubview(emotionButton)
         addSubview(emotionImage)
         
-        emotionView.layer.cornerRadius = emotionView.layer.bounds.width / 2
-        emotionView.clipsToBounds = true
-        
         NSLayoutConstraint.activate([
-            emotionView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            emotionView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            emotionView.widthAnchor.constraint(equalToConstant: 6),
-            emotionView.heightAnchor.constraint(equalToConstant: 6),
-            label.topAnchor.constraint(equalTo: emotionView.bottomAnchor, constant: 8),
+            circleView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            circleView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            circleView.widthAnchor.constraint(equalToConstant: 6),
+            circleView.heightAnchor.constraint(equalToConstant: 6),
+            label.topAnchor.constraint(equalTo: circleView.bottomAnchor, constant: 8),
             label.centerXAnchor.constraint(equalTo: centerXAnchor),
             mainEmotionLabel.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 4),
             mainEmotionLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -129,5 +126,18 @@ public extension MainEmotionViewComponent {
             emotionImage.widthAnchor.constraint(equalToConstant: 63),
             emotionImage.heightAnchor.constraint(equalToConstant: 63)
         ])
+    }
+    
+    func updateData(emotion: String, characterImage: UIImage, buttonTitle: String, todayColor: UIColor) {
+        circleView.backgroundColor = todayColor
+        mainEmotionLabel.text = emotion
+        emotionImage.image = characterImage
+        
+        // 버튼 제목 수정
+        guard var config = emotionButton.configuration else { return }
+        var title = AttributedString(buttonTitle)
+        title.font = FontCase.bold(.caption1).toUIFont
+        config.attributedTitle = title
+        emotionButton.configuration = config
     }
 }

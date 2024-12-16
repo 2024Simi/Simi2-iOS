@@ -12,7 +12,6 @@ import Combine
 
 struct CustomCalendarView: View {
     @ObservedObject var viewModel: CustomCalendarViewModel
-    let diaryData = DiaryData.sData
     
     private var preMonth: Date {
         return CustomCalendarViewModel.koreaCalendar.date(byAdding: .month, value: -1, to: viewModel.currentMonth)!
@@ -80,18 +79,18 @@ struct CustomCalendarView: View {
                     let calculatedDateComponent = Calendar.current.date(from: dateComponent) ?? Date()
                     let isToday = Calendar.current.isDateInToday(calculatedDateComponent)
                     let isPastDate = calculatedDateComponent < Calendar.current.startOfDay(for: Date())
-                    let isMatched = diaryData.contains { $0.createdDate == calculatedDateComponent }
+                    let isMatched = viewModel.diaryData.contains { $0.createdDate == calculatedDateComponent }
                     
                     VStack(spacing: 0) {
                         Circle()
+                            .fill(Color.happy)
                             .frame(width: 4, height: 4)
                             .opacity(isMatched ? 1.0 : 0.0)
                         
                         if date <= 0 {
                             let preDate = viewModel.dateCount(preMonth) + date
-                            Text("\(preDate)")
-                                .foregroundStyle(date+viewModel.firstDayOfMonth(preMonth) == 1 ? .red : .black)
-                                .opacity(isPastDate ? 0.5 : 1.0)
+                            SText("\(preDate)", fontType: viewModel.tappedDiaryID == date ? .bold(.body) : .semibold(.body), color: date+viewModel.firstDayOfMonth(preMonth) == 1 ? .red : .black)
+                                .opacity(viewModel.tappedDiaryID == date ? 1.0 : (isPastDate ? 0.5 : 1.0))
                                 .frame(width: circleWidth, height: 40)
                             
                         } else if date > 0 && date <= viewModel.dateCount(viewModel.currentMonth) {
@@ -103,25 +102,29 @@ struct CustomCalendarView: View {
                                         Circle()
                                             .frame(width: circleWidth-8, height: 32)
                                             .overlay {
-                                                Text("\(date)")
-                                                    .foregroundStyle(Color.white)
+                                                SText("\(date)", fontType: .semibold(.body), color: .white)
                                             }
                                     }
                             } else {
-                                Text("\(date)")
-                                    .foregroundStyle(column ? Color.red : Color.black)
+                                SText("\(date)", fontType: viewModel.tappedDiaryID == date ? .bold(.body) : .semibold(.body), color: column ? Color.red : Color.black)
                                     .frame(width: circleWidth, height: 40)
-                                    .opacity(isPastDate ? 0.5 : 1.0)
+                                    .opacity(viewModel.tappedDiaryID == date ? 1.0 : (isPastDate ? 0.5 : 1.0))
                             }
                         } else {
                             let nextMonthDay = date - viewModel.dateCount(viewModel.currentMonth)
-                            Text("\(nextMonthDay)")
-                                .foregroundStyle(column ? Color.red : Color.black)
+                            SText("\(nextMonthDay)", fontType: viewModel.tappedDiaryID == date ? .bold(.body) : .semibold(.body), color: column ? Color.red : Color.black)
                                 .frame(width: circleWidth, height: 40)
                                 .opacity(isPastDate ? 0.5 : 1.0)
                         }
                     }
                     .frame(height: 44)
+                    .onTapGesture {
+                        if isPastDate {
+                            viewModel.tappedDiaryID = date
+                            viewModel.tappedDate = calculatedDateComponent
+                        }
+                    }
+                    .background(viewModel.tappedDiaryID == date ? Color.coolgray50 : Color.clear)
                 }
             }
             .padding(.horizontal, 8)
@@ -154,6 +157,8 @@ extension Notification.Name {
 class CustomCalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date()
     @Published var tappedDate: Date = Date()
+    @Published var tappedDiaryID: Int = 0
+    @Published var diaryData = DiaryData.sData
     
     var cancellables = Set<AnyCancellable>()
     
@@ -164,7 +169,6 @@ class CustomCalendarViewModel: ObservableObject {
         return current
     }()
     
-    // Date Formatters
     static let calendarHeaderDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -172,14 +176,12 @@ class CustomCalendarViewModel: ObservableObject {
         return formatter
     }()
     
-    // Short Weekday Symbols
     static let shortWeekly: [String] = {
         return koreaCalendar.shortWeekdaySymbols
     }()
     
-    // Helper Methods
     func formattedDate() -> String {
-        return Self.calendarHeaderDateFormatter.string(from: currentMonth)
+        return Self.calendarHeaderDateFormatter.string(from: tappedDate)
     }
     
     func firstDayOfMonth(_ date: Date) -> Int {
@@ -226,6 +228,7 @@ class CustomCalendarViewModel: ObservableObject {
     
     func goToToday() {
         currentMonth = Date()
+        tappedDiaryID = 0
     }
 }
 
@@ -263,5 +266,7 @@ struct DiaryData {
         .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-01T14:19:01.273Z"),
         .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-03T14:19:01.273Z"),
         .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-04T14:19:01.273Z"),
+        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-15T14:19:01.273Z"),
+        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-12T14:19:01.273Z"),
     ]
 }
