@@ -15,7 +15,7 @@ let module = Project.module(
             name: "DesignSystem",
             product: .framework,
             resources: true,
-            dependencies: [],
+            dependencies: [.spm(.lottie)],
             infoPlist: true
         )
     ]

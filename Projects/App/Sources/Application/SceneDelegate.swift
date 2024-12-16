@@ -9,11 +9,12 @@
 import Foundation
 import UIKit
 import HomeCoordinator
+import Record
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    var coordinator: HomeCoordinator?//RecordCoordinator?
+    var coordinator: RecordCoordinator?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -25,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navigationController = UINavigationController()
         navigationController.navigationBar.isHidden = true
         // RecordCoordinator 초기화 및 시작
-        coordinator = HomeCoordinator(navigationController: navigationController)//RecordCoordinator(navigationController: navigationController)
+        coordinator = RecordCoordinator(navigationController: navigationController) //HomeCoordinator(navigationController: navigationController)
         coordinator?.start()
         
         // UINavigationController를 루트로 설정

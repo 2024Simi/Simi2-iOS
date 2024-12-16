@@ -20,7 +20,8 @@ let module = Project.module(
                 .core(.service),
                 .core(.model),
                 .core(.common),
-                .designSystem
+                .designSystem,
+                .spm(.lottie)
             ],
             infoPlist: true
         ),

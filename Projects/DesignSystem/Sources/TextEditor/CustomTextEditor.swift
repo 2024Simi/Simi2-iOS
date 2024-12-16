@@ -9,11 +9,6 @@
 import UIKit
 
 public class CustomTextEditor: UIView {
-    private let textView = UITextView()
-    private let characterCountLabel = UILabel()
-    private let placeholderLabel = UITextView()
-    
-    public var font: UIFont = FontCase.regular(.callout).toUIFont
     
     public var text: String {
         get { textView.text }
@@ -37,20 +32,77 @@ public class CustomTextEditor: UIView {
         }
     }
     
-    // MARK: - placeholder
     public var placeholder: String? {
         get { placeholderLabel.text }
         set { placeholderLabel.text = newValue }
     }
     
-    private func setupPlaceholder() {
-        placeholderLabel.isUserInteractionEnabled = false
-        placeholderLabel.textColor = .coolgray200
-        placeholderLabel.font = font
-        placeholderLabel.backgroundColor = .clear
-        addSubview(placeholderLabel)
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 0
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private let textView: UITextView = {
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.backgroundColor = .clear
+        textView.font = FontCase.regular(.callout).toUIFont
+        textView.textColor = .coolgray600
+        textView.showsVerticalScrollIndicator = false
+        return textView
+    }()
+    
+    private let countLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .coolgray400
+        label.applyFontCase(.semibold(.footnote))
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .right
+        return label
+    }()
+    
+    private let placeholderLabel: UITextView = {
+        let textView = UITextView()
+        textView.isUserInteractionEnabled = false
+        textView.textColor = .coolgray200
+        textView.font = FontCase.regular(.callout).toUIFont
+        textView.backgroundColor = .clear
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        return textView
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupTextView()
+        setupPlaceholder()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupTextView()
+        setupPlaceholder()
+    }
+
+    private func setupTextView() {
+        textView.delegate = self
+        stackView.addArrangedSubview(textView)
+        stackView.addArrangedSubview(countLabel)
         
-        placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+        ])
+    }
+    
+    private func setupPlaceholder() {
+        addSubview(placeholderLabel)
     
         NSLayoutConstraint.activate([
             placeholderLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
@@ -60,56 +112,9 @@ public class CustomTextEditor: UIView {
         ])
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupTextView()
-        setupPlaceholder()
-        setupCharacterCountLabel()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupTextView()
-        setupPlaceholder()
-        setupCharacterCountLabel()
-    }
-
-    private func setupTextView() {
-        textView.delegate = self
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.backgroundColor = .clear
-        textView.font = font
-        textView.textColor = textColor
-        textView.showsVerticalScrollIndicator = false
-        
-        addSubview(textView)
-        
-        NSLayoutConstraint.activate([
-            textView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            textView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            textView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            textView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
-        ])
-    }
-    
-    private func setupCharacterCountLabel() {
-        characterCountLabel.translatesAutoresizingMaskIntoConstraints = false
-        characterCountLabel.font = UIFont.systemFont(ofSize: 14)
-        characterCountLabel.textColor = .gray
-        characterCountLabel.textAlignment = .right
-        characterCountLabel.text = "(\(textView.text.count)/\(maxCharacterCount))"
-        
-        addSubview(characterCountLabel)
-        
-        NSLayoutConstraint.activate([
-            characterCountLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            characterCountLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
-        ])
-    }
-    
     private func updateCharacterCount() {
         let currentCount = textView.text.count
-        characterCountLabel.text = "(\(currentCount)/\(maxCharacterCount))"
+        countLabel.text = "(\(currentCount)/\(maxCharacterCount))"
     }
     
     @objc private func dismissKeyboard() {
