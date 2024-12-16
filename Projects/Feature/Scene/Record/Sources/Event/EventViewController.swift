@@ -37,6 +37,13 @@ public class EventViewController: UIViewController {
         bindViewModel()
     }
     
+    // MARK: - keyboard 뷰 추가
+    private var overlayView: UIView?
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     private let caseLabel: UILabel = {
         let label = UILabel()
         label.applyFontCase(.bold(.footnote))
@@ -196,14 +203,79 @@ extension EventViewController {
     @objc private func tappedLAction() {
         viewModel.backButtonTapped()
     }
-    
+}
+
+// MARK: - Keyboard에 따른 TextView
+extension EventViewController {
     private func setupKeyboard() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
         
+        // 키보드에 따른 화면 분기
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+        
         textEditor.textChangedCallback = { [weak self] text in
             self?.updateNextButtonState(with: text)
         }
+    }
+    
+    @objc private func keyboardWillShow(notification: Notification) {
+         addOverlayView(keyboardHeight: 269)
+    }
+    
+    @objc private func keyboardWillHide(notification: Notification) {
+        // removeOverlayView()
+        guard let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+        UIView.animate(withDuration: duration) {
+            self.removeOverlayView()
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    private func addOverlayView(keyboardHeight: CGFloat) {
+        guard overlayView == nil else { return }
+        
+        let overlay = KeyboardOverlayView()
+        overlay.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(overlay)
+        self.overlayView = overlay
+        
+        let backgroundView = UIView()
+        view.addSubview(backgroundView)
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.backgroundColor = .black
+        backgroundView.layer.opacity = 0.5
+        
+        NSLayoutConstraint.activate([
+            overlay.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            overlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            overlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            overlay.heightAnchor.constraint(equalToConstant: keyboardHeight),
+            backgroundView.topAnchor.constraint(equalTo: overlay.bottomAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        backgroundView.addGestureRecognizer(tapGesture)
+    }
+    
+    private func removeOverlayView() {
+        overlayView?.removeFromSuperview()
+        overlayView = nil
     }
 }
 

@@ -21,6 +21,7 @@ public extension Image {
     // arrow
     static let icArrowUp = DesignSystemAsset.icArrowUp.swiftUIImage
     static let icArrowBack = DesignSystemAsset.icArrowBack.swiftUIImage
+    static let icArrowDown = DesignSystemAsset.icArrowDown.swiftUIImage
     
     //check
     static let icCheckSmall = DesignSystemAsset.icCheckSmall.swiftUIImage
