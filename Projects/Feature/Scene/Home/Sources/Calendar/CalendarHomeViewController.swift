@@ -24,7 +24,6 @@ public class CalendarHomeViewController: UIViewController {
         label.textColor = .gray700
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .backgroundColor
-        label.text = "2024.10.31일 감정기록"
         return label
     }()
     
@@ -51,6 +50,7 @@ public class CalendarHomeViewController: UIViewController {
         setupCalendarView()
         setupNotificationObserver()
         setupComponent()
+        bindingData()
     }
 
     private func setupCalendarView() {
@@ -114,5 +114,13 @@ extension CalendarHomeViewController {
             containerStackView.trailingAnchor.constraint(equalTo: containView.trailingAnchor, constant: -16),
             containerStackView.heightAnchor.constraint(equalToConstant: 219)
         ])
+    }
+}
+
+extension CalendarHomeViewController {
+    func bindingData() {
+        dateLabel.text = "\(viewModel.formattedDate())일 감정기록"
+        
+        mainEmotionComponent.updateData(emotion: "없어요", characterImage: .icSad, buttonTitle: "감정 기록하기", todayColor: .sad)
     }
 }

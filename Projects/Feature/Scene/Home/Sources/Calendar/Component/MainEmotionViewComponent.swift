@@ -102,7 +102,7 @@ extension MainEmotionViewComponent {
 }
 
 public extension MainEmotionViewComponent {
-    func setupConstraints() {
+    private func setupConstraints() {
         addSubview(circleView)
         addSubview(label)
         addSubview(mainEmotionLabel)
@@ -126,5 +126,18 @@ public extension MainEmotionViewComponent {
             emotionImage.widthAnchor.constraint(equalToConstant: 63),
             emotionImage.heightAnchor.constraint(equalToConstant: 63)
         ])
+    }
+    
+    func updateData(emotion: String, characterImage: UIImage, buttonTitle: String, todayColor: UIColor) {
+        circleView.backgroundColor = todayColor
+        mainEmotionLabel.text = emotion
+        emotionImage.image = characterImage
+        
+        // 버튼 제목 수정
+        guard var config = emotionButton.configuration else { return }
+        var title = AttributedString(buttonTitle)
+        title.font = FontCase.bold(.caption1).toUIFont
+        config.attributedTitle = title
+        emotionButton.configuration = config
     }
 }

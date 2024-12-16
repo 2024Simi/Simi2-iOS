@@ -12,7 +12,6 @@ import Combine
 
 struct CustomCalendarView: View {
     @ObservedObject var viewModel: CustomCalendarViewModel
-    let diaryData = DiaryData.sData
     
     private var preMonth: Date {
         return CustomCalendarViewModel.koreaCalendar.date(byAdding: .month, value: -1, to: viewModel.currentMonth)!
@@ -80,7 +79,7 @@ struct CustomCalendarView: View {
                     let calculatedDateComponent = Calendar.current.date(from: dateComponent) ?? Date()
                     let isToday = Calendar.current.isDateInToday(calculatedDateComponent)
                     let isPastDate = calculatedDateComponent < Calendar.current.startOfDay(for: Date())
-                    let isMatched = diaryData.contains { $0.createdDate == calculatedDateComponent }
+                    let isMatched = viewModel.diaryData.contains { $0.createdDate == calculatedDateComponent }
                     
                     VStack(spacing: 0) {
                         Circle()
@@ -121,8 +120,8 @@ struct CustomCalendarView: View {
                     .frame(height: 44)
                     .onTapGesture {
                         if isPastDate {
-                            print("date \(date)")
                             viewModel.tappedDiaryID = date
+                            viewModel.tappedDate = calculatedDateComponent
                         }
                     }
                     .background(viewModel.tappedDiaryID == date ? Color.coolgray50 : Color.clear)
@@ -157,7 +156,9 @@ extension Notification.Name {
 
 class CustomCalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date()
+    @Published var tappedDate: Date = Date()
     @Published var tappedDiaryID: Int = 0
+    @Published var diaryData = DiaryData.sData
     
     var cancellables = Set<AnyCancellable>()
     
@@ -168,7 +169,6 @@ class CustomCalendarViewModel: ObservableObject {
         return current
     }()
     
-    // Date Formatters
     static let calendarHeaderDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -176,14 +176,12 @@ class CustomCalendarViewModel: ObservableObject {
         return formatter
     }()
     
-    // Short Weekday Symbols
     static let shortWeekly: [String] = {
         return koreaCalendar.shortWeekdaySymbols
     }()
     
-    // Helper Methods
     func formattedDate() -> String {
-        return Self.calendarHeaderDateFormatter.string(from: currentMonth)
+        return Self.calendarHeaderDateFormatter.string(from: tappedDate)
     }
     
     func firstDayOfMonth(_ date: Date) -> Int {
