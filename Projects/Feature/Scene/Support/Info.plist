@@ -3,15 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>UIAppFonts</key>
-	<array>
-		<string>WantedSans-Black.otf</string>
-		<string>WantedSans-Bold.otf</string>
-		<string>WantedSans-ExtraBlack.otf</string>
-		<string>WantedSans-ExtraBold.otf</string>
-		<string>WantedSans-Medium.otf</string>
-		<string>WantedSans-Regular.otf</string>
-		<string>WantedSans-SemiBold.otf</string>
-	</array>
+	<array/>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
