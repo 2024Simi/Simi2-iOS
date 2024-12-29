@@ -15,7 +15,7 @@ public enum EmotionType: String, Decodable, CaseIterable {
     case angry = "분노"
     case fear = "두려움"
     case offensive = "불쾌"
-    //    case somehow = "그럭저럭"
+    case somehow = "그럭저럭"
     
     public var detailEmotion: [String] {
         switch self {
@@ -29,6 +29,8 @@ public enum EmotionType: String, Decodable, CaseIterable {
             ["곤란한","불편한","귀찮은","어색한","부끄러운","지루한","부담스러운","피곤한","부러운","황당한","찝찝한","매스꺼운"]
         case .angry:
             ["답답한","미운","원망스러운","지긋지긋한","짜증나는","억울한","화가나는","역겨운","신경질나는","기분이상한","눈물나는","우려스러운"]
+        case .somehow:
+            []
         }
     }
     
@@ -44,6 +46,8 @@ public enum EmotionType: String, Decodable, CaseIterable {
             return UIColor.fear
         case .offensive:
             return UIColor.offensive
+        case .somehow:
+            return UIColor.somehow
         }
     }
     
@@ -59,6 +63,8 @@ public enum EmotionType: String, Decodable, CaseIterable {
             return 4
         case .offensive:
             return 5
+        case .somehow:
+            return 6
         }
     }
     
@@ -74,6 +80,8 @@ public enum EmotionType: String, Decodable, CaseIterable {
             return .icFear
         case .offensive:
             return .icOffensive
+        case .somehow:
+            return .icSomehow
         }
     }
     

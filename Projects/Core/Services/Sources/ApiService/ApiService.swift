@@ -10,14 +10,6 @@ import Foundation
 import Combine
 import Common
 
-public enum ApiMethod: String {
-    case get = "GET"
-    case post = "POST"
-    case delete = "DELETE"
-    case put = "PUT"
-    case patch = "PATCH"
-}
-
 public class ApiService {
     
     public var cancellables = Set<AnyCancellable>()
@@ -39,7 +31,7 @@ public class ApiService {
         }
         
         guard var url = URL(string: modifiedEndPoint) else {
-            return Fail(error: NetworkError.urlError).eraseToAnyPublisher()
+            return Fail(error: NetworkError.invalidURL).eraseToAnyPublisher()
         }
         
         if let parameters = queryParameters {
@@ -76,7 +68,7 @@ public class ApiService {
                 debugPrint("🚨🚨 <<<HTTP HTTPBODY>>> \(httpBody) 🚨🚨")
                 debugPrint("🚨🚨 <<<HTTP HEARDERFIELDS>>> \(String(describing: urlRequest.allHTTPHeaderFields)) 🚨🚨")
             } catch {
-                return Fail(error: NetworkError.encode).eraseToAnyPublisher()
+                return Fail(error: NetworkError.encodingFailed).eraseToAnyPublisher()
             }
         }
         
@@ -84,24 +76,21 @@ public class ApiService {
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse else {
-                    throw NetworkError.response
+                    throw NetworkError.responseError
                 }
                 
                 let statusCode = httpResponse.statusCode
                 print("🚨🚨 <<<STATUS CODE>>> \(statusCode) 🚨🚨")
                 
                 guard (200..<300).contains(statusCode) else {
-                    throw NetworkError.statusError
+                    throw NetworkError.statusError(statusCode: statusCode)
                 }
                 return data
-                //                guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
-                //                    throw NetworkError.statusError
-                //                }
             }
             .decode(type: Data.self, decoder: JSONDecoder())
             .mapError { error in
                 print("🚨🚨 <<<ERROR>>> \(error.localizedDescription) 🚨🚨")
-                return (error as? NetworkError) ?? NetworkError.apiError
+                return (error as? NetworkError) ?? NetworkError.requestFailed(error: error)
             }
             .eraseToAnyPublisher()
     }
