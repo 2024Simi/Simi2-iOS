@@ -12,8 +12,9 @@ import Models
 import Foundation
 
 public protocol DiaryNetworkInterface {
-    func getDiaryID(startDate: String, endDate: String) -> AnyPublisher<DiaryIdDTO, NetworkError>
+    func getDiary(startDate: String, endDate: String) -> AnyPublisher<DiaryDTO, NetworkError>
     func getDiaryDetail(diaryID: String) -> AnyPublisher<DiaryDetailDTO, NetworkError>
+    func postDiary(diary: PostDiaryResponse) -> AnyPublisher<PostDiaryResponse, NetworkError>
 }
 
 public class diaryService: ApiService, DiaryNetworkInterface {
@@ -24,23 +25,55 @@ public class diaryService: ApiService, DiaryNetworkInterface {
         self.apiService = apiService
     }
     
-    public func getDiaryID(startDate: String, endDate: String) -> AnyPublisher<DiaryIdDTO, NetworkError> {
-        apiService.request(httpMethod: .get, endPoint: "")
-            .decode(type: DiaryIdDTO.self, decoder: JSONDecoder())
-            .mapError({ error in
-                return (error as? NetworkError) ?? NetworkError.apiError
-            })
-            .eraseToAnyPublisher()
+    public func getDiary(startDate: String, endDate: String) -> AnyPublisher<DiaryDTO, NetworkError> {
+        let parameter: [String : String] = [
+            "startDate" : startDate,
+            "endDate" : endDate
+        ]
+        
+        return apiService.request(
+            httpMethod: .get,
+            endPoint: EndPoint.diary.url,
+            queryParameters: parameter,
+            header: "" // header 필수인지 아닌지 확인
+        )
+        .decode(type: DiaryDTO.self, decoder: JSONDecoder())
+        .mapError { error in
+            return (error as? NetworkError) ?? NetworkError.decodingFailed(error: error)
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    public func postDiary(diary: PostDiaryResponse) -> AnyPublisher<PostDiaryResponse, NetworkError> {
+        
+        return request(
+            httpMethod: .post,
+            endPoint: EndPoint.diary.url,
+            body: diary,
+            header: ""
+        )
+        .decode(type: PostDiaryResponse.self, decoder: JSONDecoder())
+        .mapError { error in
+            return (error as? NetworkError) ?? NetworkError.decodingFailed(error: error)
+        }
+        .eraseToAnyPublisher()
     }
     
     public func getDiaryDetail(diaryID: String) -> AnyPublisher<DiaryDetailDTO, NetworkError> {
-        apiService.request(httpMethod: .get, endPoint: "")
-            .decode(type: DiaryDetailDTO.self, decoder: JSONDecoder())
-            .mapError { error in
-                return (error as? NetworkError) ?? NetworkError.apiError
-            }
-            .eraseToAnyPublisher()
+        let parameter: [String : String] = [
+            "diaryId" : diaryID
+        ]
+        
+        return apiService.request(
+            httpMethod: .get,
+            endPoint: EndPoint.diary.url,
+            queryParameters: parameter,
+            header: ""
+        )
+        .decode(type: DiaryDetailDTO.self, decoder: JSONDecoder())
+        .mapError { error in
+            return (error as? NetworkError) ?? NetworkError.decodingFailed(error: error)
+        }
+        .eraseToAnyPublisher()
     }
-    
-    
 }

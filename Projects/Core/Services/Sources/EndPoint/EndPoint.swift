@@ -10,10 +10,6 @@ import Foundation
 
 public struct BaseUrl {
     public static let baseURL = "https://api-simi-sandbox.fun-utils.com/api/v1/"
-    
-    public func url(for endpoint: EndPoint) -> String {
-        return BaseUrl.baseURL + endpoint.rawValue
-    }
 }
 
 public enum EndPoint: String {
@@ -35,4 +31,8 @@ public enum EndPoint: String {
     /// AI Prompt Admin
     case prompt = "prompt"
     case completions = "completions"
+    
+    public var url: String {
+        return BaseUrl.baseURL + self.rawValue
+    }
 }
