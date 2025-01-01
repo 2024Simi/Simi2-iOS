@@ -15,14 +15,14 @@ public class ApiService {
     public var cancellables = Set<AnyCancellable>()
     public init() { }
     
-    public func request (
+    public func request<T: Decodable> (
         httpMethod: ApiMethod,
         endPoint: String,
         queryParameters: Encodable? = nil,
         pathParameters: String? = nil,
         body: Encodable? = nil,
         header: String? = nil
-    ) -> AnyPublisher<Data, NetworkError> {
+    ) -> AnyPublisher<T, NetworkError> {
         
         var modifiedEndPoint = endPoint
         
@@ -74,6 +74,11 @@ public class ApiService {
         
         debugPrint("🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵🩵")
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .handleEvents(receiveOutput: { data, _ in
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    print("🚨🚨 <<<Raw JSON Response>>> \(jsonString) 🚨🚨")
+                }
+            })
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse else {
                     throw NetworkError.responseError
@@ -81,18 +86,30 @@ public class ApiService {
                 
                 let statusCode = httpResponse.statusCode
                 print("🚨🚨 <<<STATUS CODE>>> \(statusCode) 🚨🚨")
-                
-                guard (200..<300).contains(statusCode) else {
-                    throw NetworkError.statusError(statusCode: statusCode)
-                }
+                print("🚨🚨 <<<Data>>> \(data) 🚨🚨")
+//                guard (200..<300).contains(statusCode) else {
+//                    throw NetworkError.statusError(statusCode: statusCode)
+//                }
                 return data
             }
-            .decode(type: Data.self, decoder: JSONDecoder())
+            .decode(type: Response<T>.self, decoder: JSONDecoder()) // Decode to Response<T>
+            .handleEvents(receiveOutput: { response in
+                print("🚨🚨 <<<Decoded Response>>> \(response) 🚨🚨")
+            })
+            .tryMap { response in
+                guard let data = response.data else {
+                    print("🚨🚨 <<<Response Data is nil>>> 🚨🚨")
+                    throw NetworkError.responseError
+                }
+                
+                print("DATA \(data)")
+                return data
+            }
             .mapError { error in
-                print("🚨🚨 <<<ERROR>>> \(error.localizedDescription) 🚨🚨")
                 return (error as? NetworkError) ?? NetworkError.requestFailed(error: error)
             }
             .eraseToAnyPublisher()
+
     }
 }
 

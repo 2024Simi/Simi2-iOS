@@ -8,6 +8,10 @@
 
 import Foundation
 
+
+/// 임시 accessToken
+public let masterAccessToken = Bundle.main.object(forInfoDictionaryKey: "MasterAccessToken") as? String ?? ""
+
 final public class StorageKey {
     static let accessToken = "accessToken"
     static let refreshToken = "refreshToken"

@@ -17,8 +17,8 @@ public struct CharacterResultEneity {
 }
 
 public class ResultViewModel {
-    public let diaryEntity: DiaryEntity
-    public let diaryString: DiaryString
+    public let diaryEntity: EnrollDiaryEntity
+    public let diaryString: EnrollDiaryString
     public var backButton: (() -> ())?
     public var modifyButton: (() -> ())?
     public var isEditing: Bool = false
@@ -30,11 +30,11 @@ public class ResultViewModel {
     )
     
     public init(
-        diaryEntity: DiaryEntity,
-        diaryString: DiaryString
+        diaryEntity: EnrollDiaryEntity,
+        diaryString: EnrollDiaryString
     ) {
         self.diaryEntity = diaryEntity
-        self.diaryString = DiaryString(
+        self.diaryString = EnrollDiaryString(
             eventString: diaryEntity.event,
             behaviorString: diaryEntity.behavior,
             thinkString: diaryEntity.think

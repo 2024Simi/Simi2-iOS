@@ -85,13 +85,13 @@ public class RecordCoordinator {
     
     private func fifthView() {
         let viewModel = ResultViewModel(
-            diaryEntity: DiaryEntity(
+            diaryEntity: EnrollDiaryEntity(
                 event: "event",
                 behavior: "behavior",
                 think: "think",
                 emotions: ["감동적인","감사한","자신있는","우려스러운","조마조마한"]
             ),
-            diaryString: DiaryString(
+            diaryString: EnrollDiaryString(
                 eventString: "eventString",
                 behaviorString: "behaviorString",
                 thinkString: "thinkString"

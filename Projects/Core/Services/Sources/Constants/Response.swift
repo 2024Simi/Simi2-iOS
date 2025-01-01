@@ -10,6 +10,6 @@ import Foundation
 
 public struct Response<T: Decodable>: Decodable {
     let code: String
-    let status: Bool
+    let message: String
     let data: T?
 }
