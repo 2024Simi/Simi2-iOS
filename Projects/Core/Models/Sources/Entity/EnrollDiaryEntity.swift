@@ -1,20 +1,47 @@
 //
-//  EnrollDiaryEntity.swift
-//  Common
+//  DiaryEntity.swift
+//  Models
 //
-//  Created by 박서연 on 2024/10/29.
+//  Created by 박서연 on 2024/11/25.
 //  Copyright © 2024 inner-dev. All rights reserved.
 //
 
 import Foundation
 
-// post - diary
-//struct EnrollDiaryEntity {
-////    var id = UUID().uuidString
-//    var episode: String
-//    var thoughtOfEpisode: String
-//    var emotionOfEpisodes: [EmotionOfEpisodes]
-//    var resultOfEpisode: String
-//    var empathyResponse: String
-//    var emotionOfEpisodesNotDuplicatedByType: [EmotionOfEpisodes]
-//}
+public struct EnrollDiaryEntity {
+    public let event: String
+    public let behavior: String
+    public let think: String
+    public let emotions: [String]
+    
+    public init(event: String, behavior: String, think: String, emotions: [String]) {
+        self.event = event
+        self.behavior = behavior
+        self.think = think
+        self.emotions = emotions
+    }
+}
+
+public struct EnrollDiaryString: Sequence {
+    public let event = "사건"
+    public let behavior = "생각"
+    public let think = "행동"
+    
+    public let eventString: String
+    public let behaviorString: String
+    public let thinkString: String
+    
+    public init(
+        eventString: String,
+        behaviorString: String,
+        thinkString: String
+    ) {
+        self.eventString = eventString
+        self.behaviorString = behaviorString
+        self.thinkString = thinkString
+    }
+    
+    public func makeIterator() -> Array<String>.Iterator {
+        return [eventString, behaviorString, thinkString].makeIterator()
+    }
+}

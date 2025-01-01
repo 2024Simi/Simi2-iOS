@@ -15,12 +15,14 @@ public enum NetworkError: Error, LocalizedError {
     case dataNotFound
     case queryError
     case encodingFailed
-    case decodingFailed(error: Error)
+    case decodingFailed
     case unauthorized
     case forbidden
     case noInternetConnection
     case timeout
     case unknown(error: Error)
+    case serverStatus(status: Bool)
+    case wrongMapper
     
     public var errorDescription: String? {
         switch self {
@@ -36,8 +38,8 @@ public enum NetworkError: Error, LocalizedError {
             return "No data received from the server."
         case .queryError:
             return "Wrong Query Request"
-        case .decodingFailed(let error):
-            return "Failed to decode the response: \(error.localizedDescription)"
+        case .decodingFailed:
+            return "Failed to decode the response"
         case .unauthorized:
             return "You are not authorized to access this resource."
         case .forbidden:
@@ -50,6 +52,10 @@ public enum NetworkError: Error, LocalizedError {
             return "An unknown error occurred: \(error.localizedDescription)"
         case .encodingFailed:
             return "Fail to Encoding."
+        case .serverStatus(let status):
+            return "Server Status, is \(status)"
+        case .wrongMapper:
+            return "Wrong Mapper"
         }
     }
 }

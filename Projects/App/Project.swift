@@ -16,7 +16,9 @@ let project = Project.app(
                 .coordinator(.app),
                 .coordinator(.homeCoordinator),
                 .designSystem,
-                .core(.service)
+                .core(.service),
+                .core(.model),
+                .core(.common)
             ],
             infoPlist: true
         ),

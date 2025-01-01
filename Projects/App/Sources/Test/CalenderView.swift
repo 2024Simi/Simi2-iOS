@@ -15,7 +15,7 @@ enum CalendarViewType {
 }
 
 struct CalenderView: View {
-    let monthly = CustomCalendarView(viewModel: CustomCalendarViewModel())
+    let monthly = CustomCalendarView()
     let weekly = WeeklyCalendarView(viewModel: CustomCalendarViewModel())
     @State private var dragOffset: CGFloat = 0
     @State private var currentView: CalendarViewType = .monthly

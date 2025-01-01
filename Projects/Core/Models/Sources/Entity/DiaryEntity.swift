@@ -1,47 +1,29 @@
 //
-//  DiaryEntity.swift
-//  Models
+//  EnrollDiaryEntity.swift
+//  Common
 //
-//  Created by 박서연 on 2024/11/25.
+//  Created by 박서연 on 2024/10/29.
 //  Copyright © 2024 inner-dev. All rights reserved.
 //
 
 import Foundation
 
+/// get diary -> response의 DairyDTO를 앱 내부에서 사용하기 위해서 Entity로 변환 예정
 public struct DiaryEntity {
-    public let event: String
-    public let behavior: String
-    public let think: String
-    public let emotions: [String]
+    public var diaryId: Int
+    public var primaryEmotion: String
+    public var createdAt: String
     
-    public init(event: String, behavior: String, think: String, emotions: [String]) {
-        self.event = event
-        self.behavior = behavior
-        self.think = think
-        self.emotions = emotions
-    }
-}
-
-public struct DiaryString: Sequence {
-    public let event = "사건"
-    public let behavior = "생각"
-    public let think = "행동"
-    
-    public let eventString: String
-    public let behaviorString: String
-    public let thinkString: String
-    
-    public init(
-        eventString: String,
-        behaviorString: String,
-        thinkString: String
-    ) {
-        self.eventString = eventString
-        self.behaviorString = behaviorString
-        self.thinkString = thinkString
-    }
-    
-    public func makeIterator() -> Array<String>.Iterator {
-        return [eventString, behaviorString, thinkString].makeIterator()
+    public var id = UUID().uuidString
+    public var createdDate: Date? {
+        let temp = String(createdAt.prefix(10))
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        if let date = formatter.date(from: temp) {
+            return date
+        }
+        
+        return nil
     }
 }

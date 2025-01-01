@@ -9,6 +9,8 @@
 import SwiftUI
 import DesignSystem
 import Combine
+import Models
+import Services
 
 struct CustomCalendarView: View {
     @ObservedObject var viewModel: CustomCalendarViewModel
@@ -129,6 +131,9 @@ struct CustomCalendarView: View {
             }
             .padding(.horizontal, 8)
         }
+        .onAppear {
+            viewModel.getDiaryData()
+        }
         .gesture(
             DragGesture()
                 .onEnded { value in
@@ -158,9 +163,10 @@ class CustomCalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date()
     @Published var tappedDate: Date = Date()
     @Published var tappedDiaryID: Int = 0
-    @Published var diaryData = DiaryData.sData
+    @Published var diaryData: [DiaryEntity] = []
     
-    var cancellables = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
+    private let diaryService = DiaryService(apiService: ApiService())
     
     // Korean Calendar Setup
     static let koreaCalendar: Calendar = {
@@ -230,6 +236,22 @@ class CustomCalendarViewModel: ObservableObject {
         currentMonth = Date()
         tappedDiaryID = 0
     }
+    
+    func getDiaryData() {
+        diaryService.getDiary(startDate: "2024-10-01", endDate: "2024-10-10")
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    print("🔵 Diary Success!")
+                case .failure(let error):
+                    print("🔴 Diary Failure! \(error.localizedDescription)")
+                }
+            } receiveValue: { [weak self] diary in
+                self?.diaryData = diary
+            }
+            .store(in: &cancellables)
+    }
 }
 
 // MARK: - 예제 데이터
@@ -237,19 +259,7 @@ struct DiaryData {
     let id: Int
     let primaryEmotion: String
     let createdAt: String
-    
-    var createdday: Int {
-        let temp = String(createdAt.prefix(10))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
         
-        if let date = formatter.date(from: temp) {
-            return Calendar.current.component(.day, from: date)
-        }
-        
-        return 0
-    }
-    
     var createdDate: Date? {
         let temp = String(createdAt.prefix(10))
         let formatter = DateFormatter()

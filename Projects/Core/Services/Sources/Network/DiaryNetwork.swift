@@ -12,20 +12,20 @@ import Models
 import Foundation
 
 public protocol DiaryNetworkInterface {
-    func getDiary(startDate: String, endDate: String) -> AnyPublisher<DiaryDTO, NetworkError>
+    func getDiary(startDate: String, endDate: String) -> AnyPublisher<[DiaryEntity], NetworkError>
     func getDiaryDetail(diaryID: String) -> AnyPublisher<DiaryDetailDTO, NetworkError>
     func postDiary(diary: PostDiaryResponse) -> AnyPublisher<PostDiaryResponse, NetworkError>
 }
 
-public class diaryService: ApiService, DiaryNetworkInterface {
+public class DiaryService: ApiService, DiaryNetworkInterface {
     
     private let apiService: ApiService
         
-    init(apiService: ApiService = ApiService()) {
+    public init(apiService: ApiService = ApiService()) {
         self.apiService = apiService
     }
     
-    public func getDiary(startDate: String, endDate: String) -> AnyPublisher<DiaryDTO, NetworkError> {
+    public func getDiary(startDate: String, endDate: String) -> AnyPublisher<[DiaryEntity], NetworkError> {
         let parameter: [String : String] = [
             "startDate" : startDate,
             "endDate" : endDate
@@ -35,11 +35,14 @@ public class diaryService: ApiService, DiaryNetworkInterface {
             httpMethod: .get,
             endPoint: EndPoint.diary.url,
             queryParameters: parameter,
-            header: "" // header 필수인지 아닌지 확인
+            header: masterAccessToken
         )
-        .decode(type: DiaryDTO.self, decoder: JSONDecoder())
+        .tryMap { (diaries: [DiaryDTO]) -> [DiaryEntity] in
+            let mappedDiaries = diaries.map { DiaryMapper.toDiaryEntity(response: $0) }
+            return mappedDiaries
+        }
         .mapError { error in
-            return (error as? NetworkError) ?? NetworkError.decodingFailed(error: error)
+            return (error as? NetworkError) ?? NetworkError.wrongMapper
         }
         .eraseToAnyPublisher()
     }
@@ -54,7 +57,7 @@ public class diaryService: ApiService, DiaryNetworkInterface {
         )
         .decode(type: PostDiaryResponse.self, decoder: JSONDecoder())
         .mapError { error in
-            return (error as? NetworkError) ?? NetworkError.decodingFailed(error: error)
+            return (error as? NetworkError) ?? NetworkError.decodingFailed
         }
         .eraseToAnyPublisher()
     }
@@ -72,7 +75,7 @@ public class diaryService: ApiService, DiaryNetworkInterface {
         )
         .decode(type: DiaryDetailDTO.self, decoder: JSONDecoder())
         .mapError { error in
-            return (error as? NetworkError) ?? NetworkError.decodingFailed(error: error)
+            return (error as? NetworkError) ?? NetworkError.decodingFailed
         }
         .eraseToAnyPublisher()
     }

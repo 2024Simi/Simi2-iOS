@@ -10,9 +10,36 @@ import Foundation
 
 /// api/v1/diary
 public struct DiaryDTO: Decodable {
-    let diaryId: Int
-    let primaryEmotion: String
-    let createdAt: String
+    public let diaryId: Int
+    public let primaryEmotion: String
+    public let createdAt: String
+    
+    // Entity를 위한 변수 추가
+    
+    public var createdDate: Date? {
+        let temp = String(createdAt.prefix(10))
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        if let date = formatter.date(from: temp) {
+            return date
+        }
+        
+        return nil
+    }
+    
+    
+    
+    // MARK: - diary test data
+    static let testDiarys: [DiaryDTO] = [
+        .init(diaryId: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-01T06:19:26.417Z"),
+        .init(diaryId: 0, primaryEmotion: "SAD", createdAt: "2024-12-02T06:19:26.417Z"),
+        .init(diaryId: 0, primaryEmotion: "ANGRY", createdAt: "2024-12-03T06:19:26.417Z"),
+        .init(diaryId: 0, primaryEmotion: "FAER", createdAt: "2024-12-04T06:19:26.417Z"),
+        .init(diaryId: 0, primaryEmotion: "SOMEHOW", createdAt: "2024-12-05T06:19:26.417Z"),
+        .init(diaryId: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-06T06:19:26.417Z"),
+        .init(diaryId: 0, primaryEmotion: "OFFENSIVE", createdAt: "2024-12-07T06:19:26.417Z")
+    ]
 }
 
 public struct DiaryIdDTO: Decodable {
@@ -42,4 +69,3 @@ public struct PostDiaryResponse: Codable {
     let diaryId: Int
     let empathyResponse: String
 }
-
