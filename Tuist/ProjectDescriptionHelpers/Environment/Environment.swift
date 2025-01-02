@@ -15,7 +15,7 @@ public struct EnvironmentSettings {
     public let destinations: Destinations
     
     public static let `default` = EnvironmentSettings(
-        name: "App", 
+        name: "SimiApp", 
         organizationName: "inner-dev",
         deploymentTargets: .iOS("17.0"),
         platform: .iOS,

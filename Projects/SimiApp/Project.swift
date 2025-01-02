@@ -13,7 +13,7 @@ let project = Project.app(
         .appTarget(
             name: EnvironmentSettings.default.name,
             dependencies: [
-                .coordinator(.app),
+                .coordinator(.simiApp),
                 .coordinator(.homeCoordinator),
                 .designSystem,
                 .core(.service),

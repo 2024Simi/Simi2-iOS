@@ -10,7 +10,7 @@ import ProjectDescription
 let workspace = Workspace(
     name: "simi",
     projects: [
-        "Projects/App",
+        "Projects/SimiApp",
         "Projects/Core",
         "Projects/DesignSystem",
         "Projects/Feature/Coordinator",
