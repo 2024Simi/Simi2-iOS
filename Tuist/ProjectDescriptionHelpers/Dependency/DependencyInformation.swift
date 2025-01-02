@@ -24,7 +24,7 @@ public enum Core: String {
 
 public enum Coordinator: String {
     case homeCoordinator = "HomeCoordinator"
-    case app = "AppCoordinator"
+    case simiApp = "AppCoordinator"
 }
 
 public enum Scene: String {
