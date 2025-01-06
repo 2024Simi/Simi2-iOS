@@ -18,8 +18,7 @@ let module = Project.module(
             dependencies: [
                 .scene(.home),
                 .scene(.record)
-            ],
-            infoPlist: false
+            ]
         ),
         .moduleTarget(
             name: "HomeCoordinator",
@@ -28,8 +27,7 @@ let module = Project.module(
             dependencies: [
                 .scene(.home),
                 .scene(.record)
-            ],
-            infoPlist: false
+            ]
         )
     ]
 )

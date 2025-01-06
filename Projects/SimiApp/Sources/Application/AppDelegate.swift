@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import DesignSystem
 
-@main
+//@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,

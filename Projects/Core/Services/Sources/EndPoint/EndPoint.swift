@@ -13,7 +13,6 @@ public struct BaseUrl {
 }
 
 public enum EndPoint: String {
-    
     /// Auth
     case signUp = "signUp"
     case login = "login"

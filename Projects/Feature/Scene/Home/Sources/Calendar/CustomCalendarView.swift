@@ -32,12 +32,13 @@ struct CustomCalendarView: View {
             let circleWidth = ((UIScreen.main.bounds.width - 52) / 7) - 8
             
             HStack(spacing: 8) {
-                SText(viewModel.formattedDate(), fontType: .bold(.title3), color: .gray900)
+                SText(viewModel.dateTitle, fontType: .bold(.title3), color: .gray900)
                 Image.icChevronLeft
                     .resizable()
                     .frame(width: 32, height: 32)
                     .onTapGesture {
                         viewModel.goToPreviousMonth()
+                        viewModel.formattedDate()
                     }
                 
                 Image.icChevronRight
@@ -46,6 +47,7 @@ struct CustomCalendarView: View {
                     .padding(.leading, -8)
                     .onTapGesture {
                         viewModel.goToNextMonth()
+                        viewModel.formattedDate()
                     }
                 
                 Spacer()
@@ -56,6 +58,7 @@ struct CustomCalendarView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                     .onTapGesture {
                         viewModel.goToToday()
+                        viewModel.formattedDate()
                     }
             }
             .frame(height: 48)
@@ -132,7 +135,7 @@ struct CustomCalendarView: View {
             .padding(.horizontal, 8)
         }
         .onAppear {
-            viewModel.getDiaryData()
+            viewModel.send(.getDairyData)
         }
         .gesture(
             DragGesture()
@@ -142,8 +145,10 @@ struct CustomCalendarView: View {
                     if abs(velocityX) > 100 {
                         if offsetX < -50 { // 오른쪽으로 스와이프
                             viewModel.goToNextMonth()
+                            viewModel.formattedDate()
                         } else if offsetX > 50 { // 왼쪽으로 스와이프
                             viewModel.goToPreviousMonth()
+                            viewModel.formattedDate()
                         }
                     }
                 }
@@ -159,124 +164,31 @@ extension Notification.Name {
     static let calendarHeightChanged = Notification.Name("calendarHeightChanged")
 }
 
-class CustomCalendarViewModel: ObservableObject {
-    @Published var currentMonth: Date = Date()
-    @Published var tappedDate: Date = Date()
-    @Published var tappedDiaryID: Int = 0
-    @Published var diaryData: [DiaryEntity] = []
-    
-    private var cancellables = Set<AnyCancellable>()
-    private let diaryService = DiaryService(apiService: ApiService())
-    
-    // Korean Calendar Setup
-    static let koreaCalendar: Calendar = {
-        var current = Calendar.current
-        current.locale = Locale(identifier: "ko_KR")
-        return current
-    }()
-    
-    static let calendarHeaderDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "YYYY.MM.dd"
-        return formatter
-    }()
-    
-    static let shortWeekly: [String] = {
-        return koreaCalendar.shortWeekdaySymbols
-    }()
-    
-    func formattedDate() -> String {
-        return Self.calendarHeaderDateFormatter.string(from: tappedDate)
-    }
-    
-    func firstDayOfMonth(_ date: Date) -> Int {
-        let startOfMonth = Self.koreaCalendar.date(from: Self.koreaCalendar.dateComponents([.year, .month], from: currentMonth))!
-        let weekday = Self.koreaCalendar.component(.weekday, from: startOfMonth)
-        return weekday - 1 // 일요일 -> 1부터 시작
-    }
-    
-    func currentYear(_ date: Date) -> Int {
-        return Self.koreaCalendar.component(.year, from: currentMonth)
-    }
-    
-    func returnCurrentMonth(_ date: Date) -> Int {
-        return Self.koreaCalendar.component(.month, from: currentMonth)
-    }
-    
-    func dateCount(_ month: Date) -> Int {
-        return Self.koreaCalendar.range(of: .day, in: .month, for: month)?.count ?? 0
-    }
-    
-    func numberOfWeeks(in month: Date) -> Int {
-        let calendar = Self.koreaCalendar
-        
-        guard let firstDayMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: month)),
-              let range = calendar.range(of: .day, in: .month, for: month) else {
-            return 0
-        }
-        
-        let lastDayOfMonth = calendar.date(byAdding: .day, value: range.count - 1, to: firstDayMonth)!
-        let firstWeek = calendar.component(.weekOfMonth, from: firstDayMonth)
-        let lastWeek = calendar.component(.weekOfMonth, from: lastDayOfMonth)
-        
-        return (lastWeek - firstWeek + 1) * 7
-    }
-    
-    // Navigation Methods
-    func goToPreviousMonth() {
-        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
-    }
-    
-    func goToNextMonth() {
-        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
-    }
-    
-    func goToToday() {
-        currentMonth = Date()
-        tappedDiaryID = 0
-    }
-    
-    func getDiaryData() {
-        diaryService.getDiary(startDate: "2024-10-01", endDate: "2024-10-10")
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished:
-                    print("🔵 Diary Success!")
-                case .failure(let error):
-                    print("🔴 Diary Failure! \(error.localizedDescription)")
-                }
-            } receiveValue: { [weak self] diary in
-                self?.diaryData = diary
-            }
-            .store(in: &cancellables)
-    }
-}
 
-// MARK: - 예제 데이터
-struct DiaryData {
-    let id: Int
-    let primaryEmotion: String
-    let createdAt: String
-        
-    var createdDate: Date? {
-        let temp = String(createdAt.prefix(10))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        
-        if let date = formatter.date(from: temp) {
-            return date
-        }
-        
-        return nil
-    }
-    
-    static let sData: [DiaryData] = [
-        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-01T14:19:01.273Z"),
-        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-03T14:19:01.273Z"),
-        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-04T14:19:01.273Z"),
-        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-15T14:19:01.273Z"),
-        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-12T14:19:01.273Z"),
-    ]
-}
+
+//// MARK: - 예제 데이터
+//struct DiaryData {
+//    let id: Int
+//    let primaryEmotion: String
+//    let createdAt: String
+//        
+//    var createdDate: Date? {
+//        let temp = String(createdAt.prefix(10))
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd"
+//        
+//        if let date = formatter.date(from: temp) {
+//            return date
+//        }
+//        
+//        return nil
+//    }
+//    
+//    static let sData: [DiaryData] = [
+//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-01T14:19:01.273Z"),
+//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-03T14:19:01.273Z"),
+//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-04T14:19:01.273Z"),
+//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-15T14:19:01.273Z"),
+//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-12T14:19:01.273Z"),
+//    ]
+//}

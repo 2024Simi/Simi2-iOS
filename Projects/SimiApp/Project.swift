@@ -19,8 +19,7 @@ let project = Project.app(
                 .core(.service),
                 .core(.model),
                 .core(.common)
-            ],
-            infoPlist: true
+            ]
         ),
     ]
 )

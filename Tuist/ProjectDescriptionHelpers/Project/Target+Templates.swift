@@ -20,8 +20,7 @@ public extension Target {
         name: String,
         product: Product = .staticLibrary,
         resources: Bool = false,
-        dependencies: [Module] = [],
-        infoPlist: Bool = false,
+        dependencies: [Module] = [], 
         setting: Bool = false
     ) -> Target {
         let dependencies = dependencies.map { $0.setDependency() }
@@ -32,23 +31,19 @@ public extension Target {
             product: product,
             bundleId: "com.\(organizationName).\(name)",
             deploymentTargets: deploymentTargets,
-            infoPlist: infoPlist
-            ? .file(path: "Support/Info.plist") : nil,
+            infoPlist: .default,
             sources: ["Sources/**"],
             resources: resources ? ["Resources/**"] : nil,
             dependencies: dependencies,
-            settings: setting
-            ? Configuration.getSetting(name: name)
-            : Configuration.noneSettings
+            settings: Configuration.defaultConfiguration
         )
     }
     
     static func multiTarget(
         name: String,
-        product: Product = .staticLibrary,
+        product: Product,
         resources: Bool = false,
         dependencies: [Module] = [],
-        infoPlist: Bool = false,
         setting: Bool = false
     ) -> Target {
         let dependencies = dependencies.map { $0.setDependency() }
@@ -59,21 +54,17 @@ public extension Target {
             product: product,
             bundleId: "com.\(organizationName).\(name)",
             deploymentTargets: deploymentTargets,
-            infoPlist: infoPlist
-            ? .file(path: "Support/Info.plist") : nil,
+            infoPlist: .default,
             sources: ["\(name)/Sources/**"],
             resources: resources ? ["Resources/**"] : nil,
             dependencies: dependencies,
-            settings: setting
-            ? Configuration.getSetting(name: name)
-            : Configuration.noneSettings
+            settings: Configuration.defaultConfiguration
         )
     }
     
     static func appTarget(
         name: String,
-        dependencies: [Module] = [],
-        infoPlist: Bool = false
+        dependencies: [Module] = []
     ) -> Target {
         let dependencies = dependencies.map { $0.setDependency() }
         
@@ -83,13 +74,12 @@ public extension Target {
             product: .app,
             bundleId: "com.\(name).\(organizationName)",
             deploymentTargets: deploymentTargets,
-            infoPlist: infoPlist
-            ? .file(path: "Support/Info.plist") : .default,
+            infoPlist: .file(path: "Support/Info.plist"),
             sources: ["Sources/**"],
             resources: nil,
             //            entitlements: "\(name).entitlements", // 추가 후 주석 해제
             dependencies: dependencies,
-            settings: Configuration.defaultSettings
+            settings: Configuration.defaultConfiguration
         )
     }
 }
