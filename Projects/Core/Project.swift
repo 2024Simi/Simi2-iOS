@@ -17,7 +17,6 @@ let module = Project.module(
             product: .staticLibrary,
             resources: false,
             dependencies: [],
-            infoPlist: true,
             setting: true
         ),
         .multiTarget(
@@ -25,7 +24,6 @@ let module = Project.module(
             product: .staticLibrary,
             resources: false,
             dependencies: [.designSystem],
-            infoPlist: true,
             setting: false
         ),
         .multiTarget(
@@ -38,7 +36,6 @@ let module = Project.module(
                 .core(.common),
                 .core(.model)
             ],
-            infoPlist: true,
             setting: true
         )
     ]

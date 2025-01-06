@@ -26,4 +26,8 @@ public struct DiaryEntity {
         
         return nil
     }
+    
+    public var createdString: String {
+        return String(createdAt.prefix(10))
+    }
 }

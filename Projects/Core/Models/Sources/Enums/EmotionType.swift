@@ -51,6 +51,23 @@ public enum EmotionType: String, Decodable, CaseIterable {
         }
     }
     
+    public var englishEmotion: String {
+        switch self {
+        case .happy:
+            return "HAPPY"
+        case .sad:
+            return "SAD"
+        case .angry:
+            return "ANGRY"
+        case .fear:
+            return "FEAR"
+        case .offensive:
+            return "OFFENSIVE"
+        case .somehow:
+            return "SOMEHOW"
+        }
+    }
+    
     public var id: Int {
         switch self {
         case .happy:

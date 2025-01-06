@@ -15,7 +15,6 @@ public struct DiaryDTO: Decodable {
     public let createdAt: String
     
     // Entity를 위한 변수 추가
-    
     public var createdDate: Date? {
         let temp = String(createdAt.prefix(10))
         let formatter = DateFormatter()
@@ -28,18 +27,9 @@ public struct DiaryDTO: Decodable {
         return nil
     }
     
-    
-    
-    // MARK: - diary test data
-    static let testDiarys: [DiaryDTO] = [
-        .init(diaryId: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-01T06:19:26.417Z"),
-        .init(diaryId: 0, primaryEmotion: "SAD", createdAt: "2024-12-02T06:19:26.417Z"),
-        .init(diaryId: 0, primaryEmotion: "ANGRY", createdAt: "2024-12-03T06:19:26.417Z"),
-        .init(diaryId: 0, primaryEmotion: "FAER", createdAt: "2024-12-04T06:19:26.417Z"),
-        .init(diaryId: 0, primaryEmotion: "SOMEHOW", createdAt: "2024-12-05T06:19:26.417Z"),
-        .init(diaryId: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-06T06:19:26.417Z"),
-        .init(diaryId: 0, primaryEmotion: "OFFENSIVE", createdAt: "2024-12-07T06:19:26.417Z")
-    ]
+    public var emotionType: EmotionType? {
+        return EmotionType.allCases.first { $0.rawValue == primaryEmotion }
+    }
 }
 
 public struct DiaryIdDTO: Decodable {
@@ -51,16 +41,16 @@ public struct DiaryDetailDTO: Decodable {
     var diaryId: Int
     var episode: String
     var thoughtOfEpisode: String
-    var emotionOfEpisodes: [EmotionOfEpisodes]
-    var primaryEmption: EmotionType
+    var emotionOfEpisodes: [EmotionOfEpisode]
+    var primaryEmotion: String
     var resultOfEpisode: String
     var empathyResponse: String
 }
 
 // 감정 선택뷰에서 선택하는
 // 행복 탭에서 감정 여러개 선택
-public struct EmotionOfEpisodes: Decodable {
-    let type: EmotionType
+public struct EmotionOfEpisode: Decodable {
+    let type: String
     let details: [String]
 }
 

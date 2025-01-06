@@ -37,5 +37,15 @@ public extension Configuration {
         ],
         defaultSettings: .recommended
     )
+    
+    static let name = EnvironmentSettings.default.name
+    static let defaultConfiguration = Settings.settings(
+        base: ["OTHER_LDFLAGS": ["-ObjC"]],
+        configurations: [
+            .debug(name: .debug, xcconfig: .relativeToRoot("Projects/\(name)/Config/Secrets.xcconfig")),
+            .release(name: .release, xcconfig: .relativeToRoot("Projects/\(name)/Config/Secrets.xcconfig")),
+        ],
+        defaultSettings: DefaultSettings.recommended
+    )
 }
 

@@ -8,13 +8,13 @@
 
 import SwiftUI
 
-//@main
-//struct SimiApp: App {
-//    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-//    
-//    var body: some Scene {
-//        WindowGroup {
-//            CustomCalendarView()
-//        }
-//    }
-//}
+@main
+struct SimiApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    var body: some Scene {
+        WindowGroup {
+            ApiTestView()
+        }
+    }
+}

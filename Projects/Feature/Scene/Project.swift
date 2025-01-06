@@ -22,8 +22,7 @@ let module = Project.module(
                 .core(.common),
                 .designSystem,
                 .spm(.lottie)
-            ],
-            infoPlist: true
+            ]
         ),
         .multiTarget(
             name: "Record",
@@ -35,8 +34,7 @@ let module = Project.module(
                 .core(.common),
                 .designSystem,
                 .spm(.lottie)
-            ],
-            infoPlist: false
+            ]
         )
     ]
 )

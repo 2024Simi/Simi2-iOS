@@ -71,11 +71,16 @@ public class CalendarHomeViewController: UIViewController {
 
     private func setupNotificationObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCalendarHeight), name: .calendarHeightChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCalendarUnderTitle), name: .calenderUnderTitleChanged, object: nil)
     }
 
     @objc private func updateCalendarHeight() {
         self.calendarHeightConstraint.constant = self.calculateNewHeight()
         self.view.layoutIfNeeded()
+    }
+    
+    @objc private func updateCalendarUnderTitle() {
+        bindingData()
     }
 
     private func calculateNewHeight() -> CGFloat {
@@ -84,6 +89,7 @@ public class CalendarHomeViewController: UIViewController {
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        bindingData()
     }
 }
 
@@ -119,8 +125,8 @@ extension CalendarHomeViewController {
 
 extension CalendarHomeViewController {
     func bindingData() {
-        dateLabel.text = "\(viewModel.formattedDate())일 감정기록"
-        
-        mainEmotionComponent.updateData(emotion: "없어요", characterImage: .icSad, buttonTitle: "감정 기록하기", todayColor: .sad)
+        dateLabel.text = "\(viewModel.underDateTitle)일 감정기록"
+        mainEmotionComponent.updateData(emotion: viewModel.emotionLabel, characterImage: viewModel.characterImage, buttonTitle: "감정 기록하기", todayColor: viewModel.emotionColor)
+        aboutRecordComponent.updateData(recordColor: viewModel.recordColor, subLabel: viewModel.recordSubLabel, mainLabel: viewModel.recordMainLabel, heart: viewModel.heartImage)
     }
 }

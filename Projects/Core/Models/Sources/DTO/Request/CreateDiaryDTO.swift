@@ -20,8 +20,8 @@ struct PostDiaryDTO {
 //    var id = UUID().uuidString
     var episode: String
     var thoughtOfEpisode: String
-    var emotionOfEpisodes: [EmotionOfEpisodes]
+    var emotionOfEpisodes: [EmotionOfEpisode]
     var resultOfEpisode: String
     var empathyResponse: String
-    var emotionOfEpisodesNotDuplicatedByType: [EmotionOfEpisodes]
+    var emotionOfEpisodesNotDuplicatedByType: [EmotionOfEpisode]
 }

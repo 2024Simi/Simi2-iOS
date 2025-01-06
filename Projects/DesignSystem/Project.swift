@@ -13,10 +13,9 @@ let module = Project.module(
     targets: [
         .moduleTarget(
             name: "DesignSystem",
-            product: .framework,
+            product: .staticLibrary,
             resources: true,
-            dependencies: [.spm(.lottie)],
-            infoPlist: true
+            dependencies: [.spm(.lottie)]
         )
     ]
 )

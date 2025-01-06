@@ -25,12 +25,12 @@ public class DiaryService: ApiService, DiaryNetworkInterface {
         self.apiService = apiService
     }
     
+    /// 전체 달력 데이터 가져오기 API
     public func getDiary(startDate: String, endDate: String) -> AnyPublisher<[DiaryEntity], NetworkError> {
         let parameter: [String : String] = [
             "startDate" : startDate,
             "endDate" : endDate
         ]
-        
         return apiService.request(
             httpMethod: .get,
             endPoint: EndPoint.diary.url,
@@ -48,12 +48,11 @@ public class DiaryService: ApiService, DiaryNetworkInterface {
     }
     
     public func postDiary(diary: PostDiaryResponse) -> AnyPublisher<PostDiaryResponse, NetworkError> {
-        
         return request(
             httpMethod: .post,
             endPoint: EndPoint.diary.url,
             body: diary,
-            header: ""
+            header: masterAccessToken
         )
         .decode(type: PostDiaryResponse.self, decoder: JSONDecoder())
         .mapError { error in
@@ -62,21 +61,14 @@ public class DiaryService: ApiService, DiaryNetworkInterface {
         .eraseToAnyPublisher()
     }
     
-    public func getDiaryDetail(diaryID: String) -> AnyPublisher<DiaryDetailDTO, NetworkError> {
-        let parameter: [String : String] = [
-            "diaryId" : diaryID
-        ]
-        
+    /// 일기별 세부 데이터 가져오기
+    public func getDiaryDetail(diaryID: String) -> AnyPublisher<DiaryDetailDTO, NetworkError> {        
         return apiService.request(
             httpMethod: .get,
             endPoint: EndPoint.diary.url,
-            queryParameters: parameter,
-            header: ""
+            pathParameters: diaryID,
+            header: masterAccessToken
         )
-        .decode(type: DiaryDetailDTO.self, decoder: JSONDecoder())
-        .mapError { error in
-            return (error as? NetworkError) ?? NetworkError.decodingFailed
-        }
         .eraseToAnyPublisher()
     }
 }
