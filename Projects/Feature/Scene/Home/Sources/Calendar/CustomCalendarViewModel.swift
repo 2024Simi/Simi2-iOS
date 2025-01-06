@@ -20,6 +20,17 @@ class CustomCalendarViewModel: ObservableObject {
     @Published var dateTitle: String = ""
     @Published var tappedDateString: Int?
     @Published var underDateTitle: String = ""
+    @Published var diaryDetail: DiaryDetailDTO?
+    @Published var tappedDiaryPrimaryEmotion: String = ""
+    
+    @Published var heartImage: UIImage = .icEmptyHeart
+    @Published var characterImage: UIImage = .icNoRecord
+    @Published var recordColor: UIColor = .white
+    @Published var emotionColor: UIColor = .coolgray200
+    @Published var recordSubLabel: String = "아직 기록이 없어요"
+    @Published var recordMainLabel: String = "오늘을\n기록해주세요!"
+    @Published var emotionLabel: String = "없어요"
+    @Published var buttonTitle: String = "감정 기록하기"
     
     private var cancellables = Set<AnyCancellable>()
     private let diaryService = DiaryService(apiService: ApiService())
@@ -78,6 +89,44 @@ class CustomCalendarViewModel: ObservableObject {
         case .calculatedTappedDiaryId(let date):
             let temp = self.diaryData.filter { $0.createdDate == date }.first
             self.tappedDiaryID = temp?.diaryId ?? 0
+            guard tappedDiaryID != nil else { return }
+            
+            // 하위 UIKit을 위한 데이터 구하기
+            guard let underComponent = self.diaryData.filter({ $0.diaryId == tappedDiaryID }).first else {
+                self.heartImage = .icGrowingHeart
+                self.characterImage = .icNoRecord
+                self.recordColor = .white
+                self.emotionColor =  .coolgray200
+                self.emotionLabel = "없어요"
+                self.recordSubLabel = "아직 기록이 없어요"
+                self.recordMainLabel = "오늘을\n기록해주세요!"
+                self.buttonTitle = "감정 기록하기"
+                return
+            }
+            
+            guard let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == underComponent.primaryEmotion }) else { return }
+            self.heartImage = .icGrowingHeart
+            self.characterImage = emotion.image
+            self.recordColor = .coolgray200
+            self.emotionColor = emotion.color
+            self.emotionLabel = emotion.rawValue
+            self.recordSubLabel = "매일 감정을 기록해봐요"
+            self.recordMainLabel = "오늘도\n고생많았어요"
+            self.buttonTitle = "기록 보러가기"
+            
+//            diaryService.getDiaryDetail(diaryID: String(diaryId))
+//                .receive(on: DispatchQueue.main)
+//                .sink { completion in
+//                    switch completion {
+//                    case .finished:
+//                        print("🔵 Diary Detail Success!")
+//                    case .failure(let error):
+//                        print("🔴 Diary Detail Failure! \(error.localizedDescription)")
+//                    }
+//                } receiveValue: { [weak self] diary in
+//                    self?.diaryDetail = diary
+//                }
+//                .store(in: &cancellables)
             
         case .calculatedUnderTitle(let date):
             self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
