@@ -39,6 +39,7 @@ struct CustomCalendarView: View {
                     .onTapGesture {
                         viewModel.goToPreviousMonth()
                         viewModel.send(.formattedDate)
+                        viewModel.send(.getDairyData)
                     }
                 
                 Image.icChevronRight
@@ -154,6 +155,7 @@ struct CustomCalendarView: View {
                         } else if offsetX > 50 { // 왼쪽으로 스와이프
                             viewModel.goToPreviousMonth()
                             viewModel.send(.formattedDate)
+                            viewModel.send(.getDairyData)
                         }
                     }
                 }

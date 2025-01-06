@@ -37,29 +37,43 @@ class CustomCalendarViewModel: ObservableObject {
         return formatter
     }()
     
+    static let DateFormatterForRequest: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "YYYY-MM-dd"
+        return formatter
+    }()
+    
     enum Action {
         case getDairyData
         case calculatedTappedDiaryId(Date)
         case calculatedUnderTitle(Date)
         case formattedDate
+        case updateComponentData
     }
     
     func send(_ action: Action) {
         switch action {
         case .getDairyData:
-            diaryService.getDiary(startDate: "2024-10-01", endDate: "2024-10-10")
-                .receive(on: DispatchQueue.main)
-                .sink { completion in
-                    switch completion {
-                    case .finished:
-                        print("🔵 Diary Success!")
-                    case .failure(let error):
-                        print("🔴 Diary Failure! \(error.localizedDescription)")
+            let previousDate = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth) ?? Date()
+            let startDate = Self.DateFormatterForRequest.string(from: previousDate)
+            let endDate = Self.DateFormatterForRequest.string(from: currentMonth)
+            
+            if !self.diaryData.contains(where: { $0.createdString == startDate }) {
+                diaryService.getDiary(startDate: startDate, endDate: endDate)
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .finished:
+                            print("🔵 Diary Success!")
+                        case .failure(let error):
+                            print("🔴 Diary Failure! \(error.localizedDescription)")
+                        }
+                    } receiveValue: { [weak self] diary in
+                        self?.diaryData.append(contentsOf: diary)
                     }
-                } receiveValue: { [weak self] diary in
-                    self?.diaryData = diary
-                }
-                .store(in: &cancellables)
+                    .store(in: &cancellables)
+            }
             
         case .calculatedTappedDiaryId(let date):
             let temp = self.diaryData.filter { $0.createdDate == date }.first
@@ -67,10 +81,12 @@ class CustomCalendarViewModel: ObservableObject {
             
         case .calculatedUnderTitle(let date):
             self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
-            print("🌴 \(self.underDateTitle)")
             
         case .formattedDate:
             self.dateTitle = Self.calendarHeaderDateFormatter.string(from: currentMonth)
+            
+        case .updateComponentData:
+            print("update")
         }
     }
 }
@@ -80,11 +96,6 @@ extension CustomCalendarViewModel {
     static let shortWeekly: [String] = {
         return koreaCalendar.shortWeekdaySymbols
     }()
-    
-//    func calculateDiaryId(_ date: Date) -> Int {
-//        let temp = self.diaryData.filter { $0.createdDate == date }.first
-//        return temp?.diaryId ?? 0
-//    }
     
     func calculatePrimaryEmotionColor(_ date: Date) -> Color {
         let temp = self.diaryData.filter { $0.createdDate ==  date }

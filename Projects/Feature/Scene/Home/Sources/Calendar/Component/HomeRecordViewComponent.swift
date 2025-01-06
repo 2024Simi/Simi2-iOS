@@ -85,4 +85,11 @@ public extension HomeRecordViewComponent {
             heartImage.heightAnchor.constraint(equalToConstant: 80)
         ])
     }
+    
+    func updateData(recordColor: UIColor, subLabel: String, mainLabel: String, heart: UIImage) {
+        circleView.backgroundColor = recordColor
+        label.text = subLabel
+        mainRecordLabel.text = mainLabel
+        heartImage.image = heart
+    }
 }
