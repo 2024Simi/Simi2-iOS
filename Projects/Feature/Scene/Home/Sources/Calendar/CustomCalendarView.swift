@@ -38,7 +38,7 @@ struct CustomCalendarView: View {
                     .frame(width: 32, height: 32)
                     .onTapGesture {
                         viewModel.goToPreviousMonth()
-                        viewModel.formattedDate()
+                        viewModel.send(.formattedDate)
                     }
                 
                 Image.icChevronRight
@@ -47,7 +47,7 @@ struct CustomCalendarView: View {
                     .padding(.leading, -8)
                     .onTapGesture {
                         viewModel.goToNextMonth()
-                        viewModel.formattedDate()
+                        viewModel.send(.formattedDate)
                     }
                 
                 Spacer()
@@ -58,7 +58,7 @@ struct CustomCalendarView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                     .onTapGesture {
                         viewModel.goToToday()
-                        viewModel.formattedDate()
+                        viewModel.send(.formattedDate)
                     }
             }
             .frame(height: 48)
@@ -88,14 +88,14 @@ struct CustomCalendarView: View {
                     
                     VStack(spacing: 0) {
                         Circle()
-                            .fill(Color.happy)
+                            .fill(viewModel.calculatePrimaryEmotionColor(calculatedDateComponent))
                             .frame(width: 4, height: 4)
                             .opacity(isMatched ? 1.0 : 0.0)
                         
                         if date <= 0 {
                             let preDate = viewModel.dateCount(preMonth) + date
                             SText("\(preDate)", fontType: viewModel.tappedDiaryID == date ? .bold(.body) : .semibold(.body), color: date+viewModel.firstDayOfMonth(preMonth) == 1 ? .red : .black)
-                                .opacity(viewModel.tappedDiaryID == date ? 1.0 : (isPastDate ? 0.5 : 1.0))
+                                .opacity(viewModel.tappedDateString == date ? 1.0 : (isPastDate ? 0.5 : 1.0))
                                 .frame(width: circleWidth, height: 40)
                             
                         } else if date > 0 && date <= viewModel.dateCount(viewModel.currentMonth) {
@@ -113,11 +113,11 @@ struct CustomCalendarView: View {
                             } else {
                                 SText("\(date)", fontType: viewModel.tappedDiaryID == date ? .bold(.body) : .semibold(.body), color: column ? Color.red : Color.black)
                                     .frame(width: circleWidth, height: 40)
-                                    .opacity(viewModel.tappedDiaryID == date ? 1.0 : (isPastDate ? 0.5 : 1.0))
+                                    .opacity(viewModel.tappedDateString == date ? 1.0 : (isPastDate ? 0.5 : 1.0))
                             }
                         } else {
                             let nextMonthDay = date - viewModel.dateCount(viewModel.currentMonth)
-                            SText("\(nextMonthDay)", fontType: viewModel.tappedDiaryID == date ? .bold(.body) : .semibold(.body), color: column ? Color.red : Color.black)
+                            SText("\(nextMonthDay)", fontType: viewModel.tappedDateString == date ? .bold(.body) : .semibold(.body), color: column ? Color.red : Color.black)
                                 .frame(width: circleWidth, height: 40)
                                 .opacity(isPastDate ? 0.5 : 1.0)
                         }
@@ -127,15 +127,20 @@ struct CustomCalendarView: View {
                         if isPastDate {
                             viewModel.tappedDiaryID = date
                             viewModel.tappedDate = calculatedDateComponent
+                            viewModel.send(.calculatedTappedDiaryId(calculatedDateComponent))
+                            viewModel.tappedDateString = date
+                            viewModel.send(.calculatedUnderTitle(calculatedDateComponent))
                         }
                     }
-                    .background(viewModel.tappedDiaryID == date ? Color.coolgray50 : Color.clear)
+                    .background(viewModel.tappedDateString == date ? Color.coolgray50 : Color.clear)
                 }
             }
             .padding(.horizontal, 8)
         }
         .onAppear {
+            viewModel.send(.formattedDate)
             viewModel.send(.getDairyData)
+            viewModel.send(.calculatedUnderTitle(viewModel.tappedDate))
         }
         .gesture(
             DragGesture()
@@ -145,23 +150,26 @@ struct CustomCalendarView: View {
                     if abs(velocityX) > 100 {
                         if offsetX < -50 { // 오른쪽으로 스와이프
                             viewModel.goToNextMonth()
-                            viewModel.formattedDate()
+                            viewModel.send(.formattedDate)
                         } else if offsetX > 50 { // 왼쪽으로 스와이프
                             viewModel.goToPreviousMonth()
-                            viewModel.formattedDate()
+                            viewModel.send(.formattedDate)
                         }
                     }
                 }
         )
-        .frame(alignment: .top)
         .onChange(of: viewModel.currentMonth) {
             NotificationCenter.default.post(name: .calendarHeightChanged, object: nil)
+        }
+        .onChange(of: viewModel.underDateTitle) {
+            NotificationCenter.default.post(name: .calenderUnderTitleChanged, object: nil)
         }
     }
 }
 
 extension Notification.Name {
     static let calendarHeightChanged = Notification.Name("calendarHeightChanged")
+    static let calenderUnderTitleChanged = Notification.Name("calenderUnderTitleChanged")
 }
 
 

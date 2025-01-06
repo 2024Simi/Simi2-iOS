@@ -15,9 +15,11 @@ import Services
 class CustomCalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date()
     @Published var tappedDate: Date = Date()
-    @Published var tappedDiaryID: Int = 0
+    @Published var tappedDiaryID: Int?
     @Published var diaryData: [DiaryEntity] = []
     @Published var dateTitle: String = ""
+    @Published var tappedDateString: Int?
+    @Published var underDateTitle: String = ""
     
     private var cancellables = Set<AnyCancellable>()
     private let diaryService = DiaryService(apiService: ApiService())
@@ -37,6 +39,9 @@ class CustomCalendarViewModel: ObservableObject {
     
     enum Action {
         case getDairyData
+        case calculatedTappedDiaryId(Date)
+        case calculatedUnderTitle(Date)
+        case formattedDate
     }
     
     func send(_ action: Action) {
@@ -55,6 +60,17 @@ class CustomCalendarViewModel: ObservableObject {
                     self?.diaryData = diary
                 }
                 .store(in: &cancellables)
+            
+        case .calculatedTappedDiaryId(let date):
+            let temp = self.diaryData.filter { $0.createdDate == date }.first
+            self.tappedDiaryID = temp?.diaryId ?? 0
+            
+        case .calculatedUnderTitle(let date):
+            self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
+            print("🌴 \(self.underDateTitle)")
+            
+        case .formattedDate:
+            self.dateTitle = Self.calendarHeaderDateFormatter.string(from: currentMonth)
         }
     }
 }
@@ -65,8 +81,29 @@ extension CustomCalendarViewModel {
         return koreaCalendar.shortWeekdaySymbols
     }()
     
-    func formattedDate() {
-        self.dateTitle = Self.calendarHeaderDateFormatter.string(from: currentMonth)
+//    func calculateDiaryId(_ date: Date) -> Int {
+//        let temp = self.diaryData.filter { $0.createdDate == date }.first
+//        return temp?.diaryId ?? 0
+//    }
+    
+    func calculatePrimaryEmotionColor(_ date: Date) -> Color {
+        let temp = self.diaryData.filter { $0.createdDate ==  date }
+        let color = temp.compactMap { $0.primaryEmotion }.joined()
+    
+        switch color {
+        case "HAPPY":
+            return .happy
+        case "SAD":
+            return .sad
+        case "SOMEHOW":
+            return .somehow
+        case "ANGER":
+            return .anger
+        case "FEAR":
+            return .fear
+        default:
+            return .happy
+        }
     }
     
     func firstDayOfMonth(_ date: Date) -> Int {
@@ -112,6 +149,7 @@ extension CustomCalendarViewModel {
     
     func goToToday() {
         currentMonth = Date()
-        tappedDiaryID = 0
+        tappedDiaryID = nil
+        tappedDateString = nil
     }
 }
