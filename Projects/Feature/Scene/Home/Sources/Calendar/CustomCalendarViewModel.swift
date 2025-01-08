@@ -12,6 +12,29 @@ import Combine
 import Models
 import Services
 
+public struct HeartLabel {
+    let subLabel: String
+    let mainLabel: String
+    
+    static let noneHeart: HeartLabel = HeartLabel(subLabel: "아직 기록이 없어요", mainLabel: "오늘을\n기록해주세요!")
+    static let hasHeart: HeartLabel = HeartLabel(subLabel: "매일 감정을 기록해봐요", mainLabel: "이날도\n고생많았어요")
+}
+
+public struct DiaryLabel {
+    static let todayMainLabel = "오늘의 주 감정은"
+    static let recordLabel = "감정 기록하기"
+    static let showLabel = "기록 보러가기"
+}
+
+private struct PastDiaryLabel {
+    let mainLabel: String
+    let subLabel: String
+    let characterLabel: String
+    let buttonLabel: String
+    
+    static let pastNoneRecord = PastDiaryLabel(mainLabel: "작성된 일기가 없어요", subLabel: "지난날의 감정기록", characterLabel: "너의 감정이 궁금해!", buttonLabel: "감정 기록하기")
+}
+
 class CustomCalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date()
     @Published var tappedDate: Date = Date()
@@ -23,14 +46,16 @@ class CustomCalendarViewModel: ObservableObject {
     @Published var diaryDetail: DiaryDetailDTO?
     @Published var tappedDiaryPrimaryEmotion: String = ""
     
+    @Published var recordColor: UIColor = .white
+    @Published var emotionLabel: String = "없어요"
     @Published var heartImage: UIImage = .icEmptyHeart
     @Published var characterImage: UIImage = .icNoRecord
-    @Published var recordColor: UIColor = .white
     @Published var emotionColor: UIColor = .coolgray200
-    @Published var recordSubLabel: String = "아직 기록이 없어요"
-    @Published var recordMainLabel: String = "오늘을\n기록해주세요!"
-    @Published var emotionLabel: String = "없어요"
-    @Published var buttonTitle: String = "감정 기록하기"
+    @Published var recordSubLabel: String = HeartLabel.noneHeart.subLabel
+    @Published var recordMainLabel: String = HeartLabel.noneHeart.mainLabel
+    @Published var buttonTitle: String = DiaryLabel.recordLabel
+    @Published var isPaste: Bool = false
+    @Published var isToday: Bool = true
     
     private var cancellables = Set<AnyCancellable>()
     private let diaryService = DiaryService(apiService: ApiService())
@@ -87,47 +112,24 @@ class CustomCalendarViewModel: ObservableObject {
             }
             
         case .calculatedTappedDiaryId(let date):
-            let temp = self.diaryData.filter { $0.createdDate == date }.first
-            self.tappedDiaryID = temp?.diaryId ?? 0
-            guard tappedDiaryID != nil else { return }
+            guard let tempDiary = diaryData.first(where: { $0.createdDate == date }) else {
+                  tappedDiaryID = 0
+                  return
+              }
+              tappedDiaryID = tempDiary.diaryId
             
-            // 하위 UIKit을 위한 데이터 구하기
-            guard let underComponent = self.diaryData.filter({ $0.diaryId == tappedDiaryID }).first else {
-                self.heartImage = .icGrowingHeart
-                self.characterImage = .icNoRecord
-                self.recordColor = .white
-                self.emotionColor =  .coolgray200
-                self.emotionLabel = "없어요"
-                self.recordSubLabel = "아직 기록이 없어요"
-                self.recordMainLabel = "오늘을\n기록해주세요!"
-                self.buttonTitle = "감정 기록하기"
+            guard let underComponent = diaryData.first(where: { $0.diaryId == tappedDiaryID }) else {
+                setEmptyState()
                 return
             }
-            
-            guard let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == underComponent.primaryEmotion }) else { return }
-            self.heartImage = .icGrowingHeart
-            self.characterImage = emotion.image
-            self.recordColor = .coolgray200
-            self.emotionColor = emotion.color
-            self.emotionLabel = emotion.rawValue
-            self.recordSubLabel = "매일 감정을 기록해봐요"
-            self.recordMainLabel = "오늘도\n고생많았어요"
-            self.buttonTitle = "기록 보러가기"
-            
-//            diaryService.getDiaryDetail(diaryID: String(diaryId))
-//                .receive(on: DispatchQueue.main)
-//                .sink { completion in
-//                    switch completion {
-//                    case .finished:
-//                        print("🔵 Diary Detail Success!")
-//                    case .failure(let error):
-//                        print("🔴 Diary Detail Failure! \(error.localizedDescription)")
-//                    }
-//                } receiveValue: { [weak self] diary in
-//                    self?.diaryDetail = diary
-//                }
-//                .store(in: &cancellables)
-            
+
+            guard let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == underComponent.primaryEmotion }) else {
+                setEmptyState()
+                return
+            }
+
+            updateUI(with: emotion)
+
         case .calculatedUnderTitle(let date):
             self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
             
@@ -137,6 +139,28 @@ class CustomCalendarViewModel: ObservableObject {
         case .updateComponentData:
             print("update")
         }
+    }
+    
+    private func setEmptyState() {
+        heartImage = .icEmptyHeart
+        characterImage = .icNoRecord
+        recordColor = .white
+        emotionColor = .coolgray200
+        emotionLabel = "없어요"
+        recordSubLabel = HeartLabel.noneHeart.subLabel
+        recordMainLabel = HeartLabel.noneHeart.mainLabel
+        buttonTitle = DiaryLabel.recordLabel
+    }
+
+    private func updateUI(with emotion: EmotionType) {
+        heartImage = .icGrowingHeart
+        characterImage = emotion.image
+        recordColor = .coolgray200
+        emotionColor = emotion.color
+        emotionLabel = emotion.rawValue
+        recordSubLabel = HeartLabel.hasHeart.subLabel
+        recordMainLabel = HeartLabel.hasHeart.mainLabel
+        buttonTitle = DiaryLabel.showLabel
     }
 }
 

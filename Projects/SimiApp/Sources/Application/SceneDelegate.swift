@@ -26,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navigationController = UINavigationController()
         navigationController.navigationBar.isHidden = true
         // RecordCoordinator 초기화 및 시작
-        coordinator = HomeCoordinator(navigationController: navigationController) //RecordCoordinator(navigationController: navigationController)
+        coordinator = HomeCoordinator(navigationController: navigationController, recordCoordinator: RecordCoordinator(navigationController: navigationController)) //RecordCoordinator(navigationController: navigationController)
         coordinator?.start()
         
         // UINavigationController를 루트로 설정

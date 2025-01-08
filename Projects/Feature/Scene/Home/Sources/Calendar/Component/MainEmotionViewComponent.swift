@@ -8,9 +8,10 @@
 
 import UIKit
 import DesignSystem
+import Models
 
 public class MainEmotionViewComponent: UIView {
-    public var buttonTapped: (() -> Void)?
+    public var buttonTapped: ((DiaryDetailDTO?) -> Void)?
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -97,7 +98,8 @@ public class MainEmotionViewComponent: UIView {
 
 extension MainEmotionViewComponent {
     @objc func tappedButton() {
-        buttonTapped?()
+//        let temp = DiaryDetailDTO(diaryId: 16, episode: "episode", thoughtOfEpisode: "ddd", emotionOfEpisodes: [], primaryEmotion: "parid", resultOfEpisode: "dsakfjaks", empathyResponse: "daslkjhfasl;")
+        buttonTapped?(nil)
     }
 }
 

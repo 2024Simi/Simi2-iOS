@@ -60,6 +60,7 @@ public class PastNoneRecordComponentView: UIView {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = .icNoRecord
+        image.contentMode = .scaleAspectFit
         return image
     }()
     
@@ -115,6 +116,7 @@ public class PastNoneRecordComponentView: UIView {
             aboutDiaryLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             emotionImage.topAnchor.constraint(equalTo: aboutDiaryLabel.bottomAnchor, constant: 12),
             emotionImage.centerXAnchor.constraint(equalTo: centerXAnchor),
+            emotionImage.heightAnchor.constraint(equalToConstant: 63),
             questionLabel.topAnchor.constraint(equalTo: emotionImage.bottomAnchor, constant: 12),
             questionLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             recordButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
