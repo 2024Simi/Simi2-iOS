@@ -167,6 +167,6 @@ extension CalendarHomeViewController {
         dateLabel.text = "\(viewModel.underDateTitle)일 감정기록"
         mainEmotionComponent.updateData(emotion: viewModel.emotionLabel, characterImage: viewModel.characterImage, buttonTitle: viewModel.buttonTitle, todayColor: viewModel.emotionColor)
         aboutRecordComponent.updateData(recordColor: viewModel.recordColor, subLabel: viewModel.recordSubLabel, mainLabel: viewModel.recordMainLabel, heart: viewModel.heartImage)
-        mainEmotionComponent.diaryID = viewModel.tappedDateString
+        mainEmotionComponent.diaryID = viewModel.tappedDiaryID
     }
 }

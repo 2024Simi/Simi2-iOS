@@ -12,36 +12,13 @@ import Combine
 import Models
 import Services
 
-public struct HeartLabel {
-    let subLabel: String
-    let mainLabel: String
-    
-    static let noneHeart: HeartLabel = HeartLabel(subLabel: "아직 기록이 없어요", mainLabel: "오늘을\n기록해주세요!")
-    static let hasHeart: HeartLabel = HeartLabel(subLabel: "매일 감정을 기록해봐요", mainLabel: "이날도\n고생많았어요")
-}
-
-public struct DiaryLabel {
-    static let todayMainLabel = "오늘의 주 감정은"
-    static let recordLabel = "감정 기록하기"
-    static let showLabel = "기록 보러가기"
-}
-
-private struct PastDiaryLabel {
-    let mainLabel: String
-    let subLabel: String
-    let characterLabel: String
-    let buttonLabel: String
-    
-    static let pastNoneRecord = PastDiaryLabel(mainLabel: "작성된 일기가 없어요", subLabel: "지난날의 감정기록", characterLabel: "너의 감정이 궁금해!", buttonLabel: "감정 기록하기")
-}
-
 class CustomCalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date()
     @Published var tappedDate: Date = Date()
-    @Published var tappedDiaryID: Int?
+    @Published var tappedDiaryID: Int? // tap한 다이어리의 고유 id
     @Published var diaryData: [DiaryEntity] = []
     @Published var dateTitle: String = ""
-    @Published var tappedDateString: Int?
+    @Published var tappedDateString: Int? // tap한 다이어리의 일자값
     @Published var underDateTitle: String = ""
     @Published var diaryDetail: DiaryDetailDTO?
     @Published var tappedDiaryPrimaryEmotion: String = ""
@@ -84,24 +61,20 @@ class CustomCalendarViewModel: ObservableObject {
     enum Action {
         /// API를 통해 가져오는 서버에 저장된 일기 데이터
         case getDairyData
-        
         /// 이전 달로 움직일 때
         case goToPreviousMonth
-        
         /// 다음 달로 움직일때
         case goToNextMonth
-        
         /// 오늘 버튼을 탭했을 때
         case goToToday
-        
-        /// 탭한 숫자에 해당하는 날짜의 일기 검색
+        /// 탭한 숫자에 해당하는 날짜의 일기 DiaryEntity 찾기
         case calculatedTappedDiaryId(Date)
-        
         /// 일기 데이터에 맞춰서 UIKit의 날짜 라벨 업데이트
         case calculatedUnderTitle(Date)
-        
-        ///
-        case formattedDate
+        case formattedDate // 협의필요
+        /// UIKit 컴포넌트 데이터 바인딩
+        case setComponentData(PastDiaryState, EmotionType?)
+
     }
     
     func send(_ action: Action) {
@@ -129,10 +102,8 @@ class CustomCalendarViewModel: ObservableObject {
             
         case .goToPreviousMonth:
             currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
-            
         case .goToNextMonth:
             currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
-            
         case .goToToday:
             currentMonth = Date()
             tappedDiaryID = nil
@@ -140,56 +111,32 @@ class CustomCalendarViewModel: ObservableObject {
             
         case .calculatedTappedDiaryId(let date):
             guard let tempDiary = diaryData.first(where: { $0.createdDate == date }) else {
-                print("🐛여기 언제탐????")
-                setEmptyState()
+                send(.setComponentData(.none, nil))
                 tappedDiaryID = nil
                 return
             }
             
-            tappedDiaryID = tempDiary.diaryId
-            
-            // 탭한 날짜에 일기 기록이 있는 경우
-            guard let underComponent = diaryData.first(where: { $0.diaryId == tappedDiaryID }) else {
-                setEmptyState() // 기록이 없는 경우는 끝
-                print("기록 없음")
+            tappedDiaryID = tempDiary.diaryId // 일기가 있는 경우 ID값 빼내기
+            guard let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == tempDiary.primaryEmotion }) else {
                 return
             }
-            print("📋기록 있음")
-            // 기록이 있는 경우 메인 감정 찾기
-            guard let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == underComponent.primaryEmotion }) else {
-                return
-            }
-            
-            updateUI(with: emotion)
+        
+            send(.setComponentData(.has, emotion))
             
         case .calculatedUnderTitle(let date):
             self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
-            
         case .formattedDate:
             self.dateTitle = Self.calendarHeaderDateFormatter.string(from: currentMonth)
+        case .setComponentData(let state, let emotion):
+            heartImage = (state == .none ? .icEmptyHeart : .icGrowingHeart)
+            characterImage = (state == .none ? .icNoRecord : emotion?.image ?? .icNoRecord)
+            recordColor = (state == .none) ? UIColor.white : UIColor.coolgray200
+            recordSubLabel = (state == .none) ? HeartLabel.noneHeart.subLabel : HeartLabel.hasHeart.subLabel
+            recordMainLabel = (state == .none) ? HeartLabel.noneHeart.mainLabel : HeartLabel.hasHeart.mainLabel
+            emotionLabel = (state == .none) ? "없어요" : emotion?.rawValue ?? ""
+            emotionColor = (state == .none) ? UIColor.coolgray200 : emotion?.color ?? .coolgray200
+            buttonTitle = (state == .none) ? DiaryLabel.recordLabel : DiaryLabel.showLabel
         }
-    }
-    
-    private func setEmptyState() {
-        heartImage = .icEmptyHeart
-        characterImage = .icNoRecord
-        recordColor = .white
-        emotionColor = .coolgray200
-        emotionLabel = "없어요"
-        recordSubLabel = HeartLabel.noneHeart.subLabel
-        recordMainLabel = HeartLabel.noneHeart.mainLabel
-        buttonTitle = DiaryLabel.recordLabel
-    }
-    
-    private func updateUI(with emotion: EmotionType) {
-        heartImage = .icGrowingHeart
-        characterImage = emotion.image
-        recordColor = .coolgray200
-        emotionColor = emotion.color
-        emotionLabel = emotion.rawValue
-        recordSubLabel = HeartLabel.hasHeart.subLabel
-        recordMainLabel = HeartLabel.hasHeart.mainLabel
-        buttonTitle = DiaryLabel.showLabel
     }
 }
 
@@ -250,19 +197,5 @@ extension CustomCalendarViewModel {
         let lastWeek = calendar.component(.weekOfMonth, from: lastDayOfMonth)
         
         return (lastWeek - firstWeek + 1) * 7
-    }
-    
-    func goToPreviousMonth() {
-        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
-    }
-    
-    func goToNextMonth() {
-        currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
-    }
-    
-    func goToToday() {
-        currentMonth = Date()
-        tappedDiaryID = nil
-        tappedDateString = nil
     }
 }

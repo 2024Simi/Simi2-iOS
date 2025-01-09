@@ -37,7 +37,7 @@ struct CustomCalendarView: View {
                     .resizable()
                     .frame(width: 32, height: 32)
                     .onTapGesture {
-                        viewModel.goToPreviousMonth()
+                        viewModel.send(.goToPreviousMonth)
                         viewModel.send(.formattedDate)
                         viewModel.send(.getDairyData)
                     }
@@ -47,7 +47,7 @@ struct CustomCalendarView: View {
                     .frame(width: 32, height: 32)
                     .padding(.leading, -8)
                     .onTapGesture {
-                        viewModel.goToNextMonth()
+                        viewModel.send(.goToNextMonth)
                         viewModel.send(.formattedDate)
                     }
                 
@@ -58,7 +58,7 @@ struct CustomCalendarView: View {
                     .background(Color.gray800)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                     .onTapGesture {
-                        viewModel.goToToday()
+                        viewModel.send(.goToToday)
                         viewModel.send(.formattedDate)
                         viewModel.isToday = true
                         viewModel.isPaste = false
@@ -97,7 +97,7 @@ struct CustomCalendarView: View {
                             .fill(viewModel.calculatePrimaryEmotionColor(calculatedDateComponent))
                             .frame(width: 4, height: 4)
                             .opacity(isMatched ? 1.0 : 0.0)
-                        
+                            
                         if date <= 0 {
                             let preDate = viewModel.dateCount(preMonth) + date
                             SText("\(preDate)", fontType: viewModel.tappedDiaryID == date ? .bold(.body) : .semibold(.body), color: date+viewModel.firstDayOfMonth(preMonth) == 1 ? .red : .black)
@@ -161,10 +161,10 @@ struct CustomCalendarView: View {
                     let velocityX = value.velocity.width
                     if abs(velocityX) > 100 {
                         if offsetX < -50 { // 오른쪽으로 스와이프
-                            viewModel.goToNextMonth()
+                            viewModel.send(.goToNextMonth)
                             viewModel.send(.formattedDate)
                         } else if offsetX > 50 { // 왼쪽으로 스와이프
-                            viewModel.goToPreviousMonth()
+                            viewModel.send(.goToPreviousMonth)
                             viewModel.send(.formattedDate)
                             viewModel.send(.getDairyData)
                         }
