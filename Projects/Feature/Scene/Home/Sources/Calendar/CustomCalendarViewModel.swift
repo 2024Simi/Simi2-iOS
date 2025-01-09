@@ -82,12 +82,26 @@ class CustomCalendarViewModel: ObservableObject {
     }()
     
     enum Action {
+        /// API를 통해 가져오는 서버에 저장된 일기 데이터
         case getDairyData
+        
+        /// 이전 달로 움직일 때
+        case goToPreviousMonth
+        
+        /// 다음 달로 움직일때
+        case goToNextMonth
+        
+        /// 오늘 버튼을 탭했을 때
+        case goToToday
+        
+        /// 탭한 숫자에 해당하는 날짜의 일기 검색
         case calculatedTappedDiaryId(Date)
+        
+        /// 일기 데이터에 맞춰서 UIKit의 날짜 라벨 업데이트
         case calculatedUnderTitle(Date)
+        
+        ///
         case formattedDate
-        case updateComponentData
-        case calculatedIsDiary(Date)
     }
     
     func send(_ action: Action) {
@@ -113,14 +127,20 @@ class CustomCalendarViewModel: ObservableObject {
                     .store(in: &cancellables)
             }
             
+        case .goToPreviousMonth:
+            currentMonth = Self.koreaCalendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
+            
+        case .goToNextMonth:
+            currentMonth = Self.koreaCalendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
+            
+        case .goToToday:
+            currentMonth = Date()
+            tappedDiaryID = nil
+            tappedDateString = nil
+            
         case .calculatedTappedDiaryId(let date):
-            self.isDiary = self.diaryData.contains { $0.createdDate == date }
-            self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
-            
-            
             guard let tempDiary = diaryData.first(where: { $0.createdDate == date }) else {
-                print("🐛여기 언제탐????") //해당 날짜에 일기기록 없을 때 탐
-                // ui 데이터 초기화 필요
+                print("🐛여기 언제탐????")
                 setEmptyState()
                 tappedDiaryID = nil
                 return
@@ -147,12 +167,6 @@ class CustomCalendarViewModel: ObservableObject {
             
         case .formattedDate:
             self.dateTitle = Self.calendarHeaderDateFormatter.string(from: currentMonth)
-            
-        case .updateComponentData:
-            print("update")
-            
-        case .calculatedIsDiary(let date):
-            self.isDiary = self.diaryData.contains { $0.createdDate == date }
         }
     }
     
