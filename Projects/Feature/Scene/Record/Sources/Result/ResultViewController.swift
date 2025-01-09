@@ -214,7 +214,7 @@ extension ResultViewController {
     }
     
     @objc func tappedLAction() {
-        print("뒤로가기")
+        viewModel.backButton?()
     }
     
     @objc func tappedRAction() {

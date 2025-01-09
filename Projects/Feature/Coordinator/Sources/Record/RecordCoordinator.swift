@@ -10,15 +10,30 @@ import UIKit
 import Record
 import Models
 
+public protocol RecordCoordinatorDelegate: AnyObject {
+    func navigateBackToHome()
+}
+
 public class RecordCoordinator {
     private let navigationController: UINavigationController
+
+    public var diaryId: Int?
+    public weak var delegate: RecordCoordinatorDelegate?
     
-    public init(navigationController: UINavigationController) {
+    public init(
+        navigationController: UINavigationController,
+        diaryId: Int? = nil
+    ) {
         self.navigationController = navigationController
+        self.diaryId = diaryId
     }
     
     public func start() {
-        firstView()
+        if let diary = diaryId {
+            fifthView()
+        } else {
+            firstView()
+        }
     }
     
     private func firstView() {
@@ -34,9 +49,6 @@ public class RecordCoordinator {
         }
         
         navigationController.pushViewController(viewController, animated: true)
-//        let viewController = TestViewController()
-//        navigationController.pushViewController(viewController, animated: true)
-        
     }
     
     private func secondView(text: String) {
@@ -100,7 +112,7 @@ public class RecordCoordinator {
         let viewController = ResultViewController(viewModel: viewModel)
         
         viewModel.backButton = {
-            self.navigationController.popViewController(animated: true)
+            self.delegate?.navigateBackToHome()
         }
         
         navigationController.pushViewController(viewController, animated: true)

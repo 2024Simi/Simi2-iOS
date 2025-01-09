@@ -33,29 +33,29 @@ public struct DiaryDTO: Decodable {
 }
 
 public struct DiaryIdDTO: Decodable {
-    var diaryId: Int
-    var createdAt: String
+    public var diaryId: Int
+    public var createdAt: String
 }
 
 public struct DiaryDetailDTO: Decodable {
-    var diaryId: Int
-    var episode: String
-    var thoughtOfEpisode: String
-    var emotionOfEpisodes: [EmotionOfEpisode]
-    var primaryEmotion: String
-    var resultOfEpisode: String
-    var empathyResponse: String
+    public var diaryId: Int
+    public var episode: String
+    public var thoughtOfEpisode: String
+    public var emotionOfEpisodes: [EmotionOfEpisode]
+    public var primaryEmotion: String
+    public var resultOfEpisode: String
+    public var empathyResponse: String
 }
 
 // 감정 선택뷰에서 선택하는
 // 행복 탭에서 감정 여러개 선택
 public struct EmotionOfEpisode: Decodable {
-    let type: String
-    let details: [String]
+    public let type: String
+    public let details: [String]
 }
 
 /// diary post result
 public struct PostDiaryResponse: Codable {
-    let diaryId: Int
-    let empathyResponse: String
+    public let diaryId: Int
+    public let empathyResponse: String
 }

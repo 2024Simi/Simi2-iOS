@@ -37,7 +37,7 @@ struct CustomCalendarView: View {
                     .resizable()
                     .frame(width: 32, height: 32)
                     .onTapGesture {
-                        viewModel.goToPreviousMonth()
+                        viewModel.send(.goToPreviousMonth)
                         viewModel.send(.formattedDate)
                         viewModel.send(.getDairyData)
                     }
@@ -47,7 +47,7 @@ struct CustomCalendarView: View {
                     .frame(width: 32, height: 32)
                     .padding(.leading, -8)
                     .onTapGesture {
-                        viewModel.goToNextMonth()
+                        viewModel.send(.goToNextMonth)
                         viewModel.send(.formattedDate)
                     }
                 
@@ -58,8 +58,12 @@ struct CustomCalendarView: View {
                     .background(Color.gray800)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                     .onTapGesture {
-                        viewModel.goToToday()
+                        viewModel.send(.goToToday)
                         viewModel.send(.formattedDate)
+                        viewModel.isToday = true
+                        viewModel.isPaste = false
+                        viewModel.send(.calculatedUnderTitle(Date()))
+                        viewModel.send(.calculatedTappedDiaryId(Date()))
                     }
             }
             .frame(height: 48)
@@ -86,13 +90,14 @@ struct CustomCalendarView: View {
                     let isToday = Calendar.current.isDateInToday(calculatedDateComponent)
                     let isPastDate = calculatedDateComponent < Calendar.current.startOfDay(for: Date())
                     let isMatched = viewModel.diaryData.contains { $0.createdDate == calculatedDateComponent }
+                    let isFuture = calculatedDateComponent > Calendar.current.startOfDay(for: Date())
                     
                     VStack(spacing: 0) {
                         Circle()
                             .fill(viewModel.calculatePrimaryEmotionColor(calculatedDateComponent))
                             .frame(width: 4, height: 4)
                             .opacity(isMatched ? 1.0 : 0.0)
-                        
+                            
                         if date <= 0 {
                             let preDate = viewModel.dateCount(preMonth) + date
                             SText("\(preDate)", fontType: viewModel.tappedDiaryID == date ? .bold(.body) : .semibold(.body), color: date+viewModel.firstDayOfMonth(preMonth) == 1 ? .red : .black)
@@ -125,15 +130,21 @@ struct CustomCalendarView: View {
                     }
                     .frame(height: 44)
                     .onTapGesture {
-                        if isPastDate {
-                            viewModel.tappedDiaryID = date
-                            viewModel.tappedDate = calculatedDateComponent
-                            viewModel.send(.calculatedTappedDiaryId(calculatedDateComponent))
-                            viewModel.tappedDateString = date
-                            viewModel.send(.calculatedUnderTitle(calculatedDateComponent))
+                        viewModel.isToday = isToday
+                        if isToday {
+                            viewModel.isPaste = false
+                        } else {
+                            (isPastDate && !isMatched) ? (viewModel.isPaste = true) : (viewModel.isPaste = false)
                         }
+
+                        viewModel.tappedDiaryID = date
+                        viewModel.tappedDateString = date
+                        viewModel.tappedDate = calculatedDateComponent
+                        viewModel.send(.calculatedUnderTitle(calculatedDateComponent))
+                        viewModel.send(.calculatedTappedDiaryId(calculatedDateComponent))
                     }
-                    .background(viewModel.tappedDateString == date ? Color.coolgray50 : Color.clear)
+                    .background((viewModel.tappedDateString == date && !isToday) ? Color.coolgray50 : Color.clear)
+                    .disabled(isFuture)
                 }
             }
             .padding(.horizontal, 8)
@@ -150,10 +161,10 @@ struct CustomCalendarView: View {
                     let velocityX = value.velocity.width
                     if abs(velocityX) > 100 {
                         if offsetX < -50 { // 오른쪽으로 스와이프
-                            viewModel.goToNextMonth()
+                            viewModel.send(.goToNextMonth)
                             viewModel.send(.formattedDate)
                         } else if offsetX > 50 { // 왼쪽으로 스와이프
-                            viewModel.goToPreviousMonth()
+                            viewModel.send(.goToPreviousMonth)
                             viewModel.send(.formattedDate)
                             viewModel.send(.getDairyData)
                         }
@@ -166,39 +177,17 @@ struct CustomCalendarView: View {
         .onChange(of: viewModel.underDateTitle) {
             NotificationCenter.default.post(name: .calenderUnderTitleChanged, object: nil)
         }
+        .onChange(of: viewModel.isPaste) {
+            NotificationCenter.default.post(name: .calendarIspateChanged, object: nil)
+        }
+        .onChange(of: viewModel.isToday) {
+            NotificationCenter.default.post(name: .calendarIspateChanged, object: nil)
+        }
     }
 }
 
 extension Notification.Name {
     static let calendarHeightChanged = Notification.Name("calendarHeightChanged")
     static let calenderUnderTitleChanged = Notification.Name("calenderUnderTitleChanged")
+    static let calendarIspateChanged = Notification.Name("calendarIspateChanged")
 }
-
-
-
-//// MARK: - 예제 데이터
-//struct DiaryData {
-//    let id: Int
-//    let primaryEmotion: String
-//    let createdAt: String
-//        
-//    var createdDate: Date? {
-//        let temp = String(createdAt.prefix(10))
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd"
-//        
-//        if let date = formatter.date(from: temp) {
-//            return date
-//        }
-//        
-//        return nil
-//    }
-//    
-//    static let sData: [DiaryData] = [
-//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-01T14:19:01.273Z"),
-//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-03T14:19:01.273Z"),
-//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-04T14:19:01.273Z"),
-//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-15T14:19:01.273Z"),
-//        .init(id: 0, primaryEmotion: "HAPPY", createdAt: "2024-12-12T14:19:01.273Z"),
-//    ]
-//}

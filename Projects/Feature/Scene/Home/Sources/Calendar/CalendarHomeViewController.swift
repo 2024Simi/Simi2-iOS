@@ -13,10 +13,10 @@ import Combine
 public class CalendarHomeViewController: UIViewController {
     private var hostingController: UIHostingController<CustomCalendarView>!
     private var calendarHeightConstraint: NSLayoutConstraint!
-    
-    private var mainEmotionComponent = MainEmotionViewComponent()
     private var aboutRecordComponent = HomeRecordViewComponent()
     private let viewModel = CustomCalendarViewModel()
+    public var mainEmotionComponent = MainEmotionViewComponent()
+    public var pastNoneRecord = PastNoneRecordComponentView()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
@@ -72,8 +72,9 @@ public class CalendarHomeViewController: UIViewController {
     private func setupNotificationObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCalendarHeight), name: .calendarHeightChanged, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateCalendarUnderTitle), name: .calenderUnderTitleChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateIspateConstraints), name: .calendarIspateChanged, object: nil)
     }
-
+    
     @objc private func updateCalendarHeight() {
         self.calendarHeightConstraint.constant = self.calculateNewHeight()
         self.view.layoutIfNeeded()
@@ -81,6 +82,11 @@ public class CalendarHomeViewController: UIViewController {
     
     @objc private func updateCalendarUnderTitle() {
         bindingData()
+    }
+    
+    @objc private func updateIspateConstraints() {
+        bindingData()
+        setupComponent()
     }
 
     private func calculateNewHeight() -> CGFloat {
@@ -90,11 +96,20 @@ public class CalendarHomeViewController: UIViewController {
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         bindingData()
+        setupComponent()
     }
 }
 
 extension CalendarHomeViewController {
     private func setupComponent() {
+        if viewModel.isPaste {
+            setupPastComponent()
+        } else {
+            setupTodayComponent()
+        }
+    }
+    
+    private func setupTodayComponent() {
         mainEmotionComponent.translatesAutoresizingMaskIntoConstraints = false
         aboutRecordComponent.translatesAutoresizingMaskIntoConstraints = false
         
@@ -121,12 +136,37 @@ extension CalendarHomeViewController {
             containerStackView.heightAnchor.constraint(equalToConstant: 219)
         ])
     }
+    
+    private func setupPastComponent() {
+        pastNoneRecord.translatesAutoresizingMaskIntoConstraints = false
+        
+        containView.addSubview(dateLabel)
+        containView.addSubview(pastNoneRecord)
+        view.addSubview(containView)
+        
+        NSLayoutConstraint.activate([
+            containView.topAnchor.constraint(equalTo: hostingController.view.bottomAnchor),
+            containView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            containView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            containView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            dateLabel.topAnchor.constraint(equalTo: containView.topAnchor, constant: 12),
+            dateLabel.leadingAnchor.constraint(equalTo: containView.leadingAnchor, constant: 16),
+            dateLabel.trailingAnchor.constraint(equalTo: containView.trailingAnchor, constant: -16),
+            
+            pastNoneRecord.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 12),
+            pastNoneRecord.leadingAnchor.constraint(equalTo: containView.leadingAnchor, constant: 16),
+            pastNoneRecord.trailingAnchor.constraint(equalTo: containView.trailingAnchor, constant: -16),
+            pastNoneRecord.heightAnchor.constraint(equalToConstant: 219)
+        ])
+    }
 }
 
 extension CalendarHomeViewController {
     func bindingData() {
         dateLabel.text = "\(viewModel.underDateTitle)일 감정기록"
-        mainEmotionComponent.updateData(emotion: viewModel.emotionLabel, characterImage: viewModel.characterImage, buttonTitle: "감정 기록하기", todayColor: viewModel.emotionColor)
+        mainEmotionComponent.updateData(emotion: viewModel.emotionLabel, characterImage: viewModel.characterImage, buttonTitle: viewModel.buttonTitle, todayColor: viewModel.emotionColor)
         aboutRecordComponent.updateData(recordColor: viewModel.recordColor, subLabel: viewModel.recordSubLabel, mainLabel: viewModel.recordMainLabel, heart: viewModel.heartImage)
+        mainEmotionComponent.diaryID = viewModel.tappedDiaryID
     }
 }
