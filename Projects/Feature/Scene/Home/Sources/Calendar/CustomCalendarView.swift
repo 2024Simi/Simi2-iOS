@@ -142,8 +142,9 @@ struct CustomCalendarView: View {
                         viewModel.tappedDate = calculatedDateComponent
                         viewModel.send(.calculatedUnderTitle(calculatedDateComponent))
                         viewModel.send(.calculatedTappedDiaryId(calculatedDateComponent))
+                        viewModel.send(.calculatedIsDiary(calculatedDateComponent))
                     }
-                    .background(viewModel.tappedDateString == date ? Color.coolgray50 : Color.clear)
+                    .background((viewModel.tappedDateString == date && !isToday) ? Color.coolgray50 : Color.clear)
                     .disabled(isFuture)
                 }
             }

@@ -46,6 +46,7 @@ class CustomCalendarViewModel: ObservableObject {
     @Published var diaryDetail: DiaryDetailDTO?
     @Published var tappedDiaryPrimaryEmotion: String = ""
     
+    @Published var isDiary: Bool = false
     @Published var recordColor: UIColor = .white
     @Published var emotionLabel: String = "없어요"
     @Published var heartImage: UIImage = .icEmptyHeart
@@ -86,6 +87,7 @@ class CustomCalendarViewModel: ObservableObject {
         case calculatedUnderTitle(Date)
         case formattedDate
         case updateComponentData
+        case calculatedIsDiary(Date)
     }
     
     func send(_ action: Action) {
@@ -112,23 +114,34 @@ class CustomCalendarViewModel: ObservableObject {
             }
             
         case .calculatedTappedDiaryId(let date):
+            self.isDiary = self.diaryData.contains { $0.createdDate == date }
+            self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
+            
+            
             guard let tempDiary = diaryData.first(where: { $0.createdDate == date }) else {
-                  tappedDiaryID = 0
-                  return
-              }
-              tappedDiaryID = tempDiary.diaryId
+                print("🐛여기 언제탐????") //해당 날짜에 일기기록 없을 때 탐
+                // ui 데이터 초기화 필요
+                setEmptyState()
+                tappedDiaryID = nil
+                return
+            }
+            
+            tappedDiaryID = tempDiary.diaryId
             
             // 탭한 날짜에 일기 기록이 있는 경우
             guard let underComponent = diaryData.first(where: { $0.diaryId == tappedDiaryID }) else {
-                setEmptyState()
+                setEmptyState() // 기록이 없는 경우는 끝
+                print("기록 없음")
                 return
             }
+            print("📋기록 있음")
+            // 기록이 있는 경우 메인 감정 찾기
             guard let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == underComponent.primaryEmotion }) else {
                 return
             }
-
+            
             updateUI(with: emotion)
-
+            
         case .calculatedUnderTitle(let date):
             self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
             
@@ -137,6 +150,9 @@ class CustomCalendarViewModel: ObservableObject {
             
         case .updateComponentData:
             print("update")
+            
+        case .calculatedIsDiary(let date):
+            self.isDiary = self.diaryData.contains { $0.createdDate == date }
         }
     }
     
@@ -150,7 +166,7 @@ class CustomCalendarViewModel: ObservableObject {
         recordMainLabel = HeartLabel.noneHeart.mainLabel
         buttonTitle = DiaryLabel.recordLabel
     }
-
+    
     private func updateUI(with emotion: EmotionType) {
         heartImage = .icGrowingHeart
         characterImage = emotion.image
@@ -172,7 +188,7 @@ extension CustomCalendarViewModel {
     func calculatePrimaryEmotionColor(_ date: Date) -> Color {
         let temp = self.diaryData.filter { $0.createdDate ==  date }
         let color = temp.compactMap { $0.primaryEmotion }.joined()
-    
+        
         switch color {
         case "HAPPY":
             return .happy

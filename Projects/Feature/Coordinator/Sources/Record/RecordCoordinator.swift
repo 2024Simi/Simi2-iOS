@@ -17,19 +17,23 @@ public protocol RecordCoordinatorDelegate: AnyObject {
 public class RecordCoordinator {
     private let navigationController: UINavigationController
 
-    public let diaryDetail: DiaryDetailDTO?
+    public var diaryId: Int?
     public weak var delegate: RecordCoordinatorDelegate?
     
     public init(
         navigationController: UINavigationController,
-        diaryDetail: DiaryDetailDTO? = nil
+        diaryId: Int? = nil
     ) {
         self.navigationController = navigationController
-        self.diaryDetail = diaryDetail
+        self.diaryId = diaryId
     }
     
     public func start() {
-        firstView()
+        if let diary = diaryId {
+            fifthView()
+        } else {
+            firstView()
+        }
     }
     
     private func firstView() {

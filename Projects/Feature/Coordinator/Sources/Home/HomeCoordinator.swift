@@ -35,20 +35,17 @@ public class HomeCoordinator {
         navigationController.pushViewController(viewController, animated: true)
     }
     
-    func startRecordCoordinator(with diaryDetail: DiaryDetailDTO?) {
-        let recordCoordinator = RecordCoordinator(navigationController: navigationController, diaryDetail: diaryDetail)
-        recordCoordinator.delegate = self
+    func startRecordCoordinator(with diaryId: Int?) {
+        let recordCoordinator = RecordCoordinator(navigationController: navigationController)
         self.recordCoordinator = recordCoordinator
+        recordCoordinator.delegate = self
+        recordCoordinator.diaryId = diaryId
         recordCoordinator.start()
     }
 }
 
 extension HomeCoordinator: RecordCoordinatorDelegate {
     public func navigateBackToHome() {
-        let homeViewController = CalendarHomeViewController()
-        homeViewController.mainEmotionComponent.buttonTapped = { [weak self] diaryDetail in
-            self?.startRecordCoordinator(with: diaryDetail)
-        }
-        navigationController.setViewControllers([homeViewController], animated: true)
+        navigationController.popToRootViewController(animated: true)
     }
 }
