@@ -118,13 +118,12 @@ class CustomCalendarViewModel: ObservableObject {
               }
               tappedDiaryID = tempDiary.diaryId
             
+            // 탭한 날짜에 일기 기록이 있는 경우
             guard let underComponent = diaryData.first(where: { $0.diaryId == tappedDiaryID }) else {
                 setEmptyState()
                 return
             }
-
             guard let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == underComponent.primaryEmotion }) else {
-                setEmptyState()
                 return
             }
 

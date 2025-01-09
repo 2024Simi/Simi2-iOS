@@ -164,7 +164,7 @@ extension CalendarHomeViewController {
 extension CalendarHomeViewController {
     func bindingData() {
         dateLabel.text = "\(viewModel.underDateTitle)일 감정기록"
-        mainEmotionComponent.updateData(emotion: viewModel.emotionLabel, characterImage: viewModel.characterImage, buttonTitle: DiaryLabel.recordLabel, todayColor: viewModel.emotionColor)
+        mainEmotionComponent.updateData(emotion: viewModel.emotionLabel, characterImage: viewModel.characterImage, buttonTitle: viewModel.buttonTitle, todayColor: viewModel.emotionColor)
         aboutRecordComponent.updateData(recordColor: viewModel.recordColor, subLabel: viewModel.recordSubLabel, mainLabel: viewModel.recordMainLabel, heart: viewModel.heartImage)
         
     }
