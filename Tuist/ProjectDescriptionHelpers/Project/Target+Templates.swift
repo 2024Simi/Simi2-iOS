@@ -8,20 +8,19 @@
 import ProjectDescription
 
 public extension Target {
-    private static let environmentSettings = EnvironmentSettings.default
-    private static let organizationName = environmentSettings.organizationName
-    private static let destinations = environmentSettings.destinations
-    private static let deploymentTargets = environmentSettings.deploymentTargets
-    private static let defaultSettings = DefaultSettings.recommended(excluding: [
-        "SWIFT_ACTIVE_COMPILATION_CONDITIONS"
-    ])
+    private static let appName = Environment.name
+    private static let organizationName = Environment.organizationName
+    private static let destinations = Environment.destinations
+    private static let deploymentTargets = Environment.deploymentTargets
     
     static func moduleTarget(
         name: String,
         product: Product = .staticLibrary,
         resources: Bool = false,
         dependencies: [Module] = [], 
-        setting: Bool = false
+        setting: Bool = false,
+        mergedBinaryType: MergedBinaryType = .disabled,
+        mergeable: Bool = false
     ) -> Target {
         let dependencies = dependencies.map { $0.setDependency() }
         
@@ -35,7 +34,9 @@ public extension Target {
             sources: ["Sources/**"],
             resources: resources ? ["Resources/**"] : nil,
             dependencies: dependencies,
-            settings: Configuration.defaultConfiguration
+            settings: Configuration.defaultConfiguration,
+            mergedBinaryType: mergedBinaryType,
+            mergeable: mergeable
         )
     }
     
@@ -44,7 +45,9 @@ public extension Target {
         product: Product,
         resources: Bool = false,
         dependencies: [Module] = [],
-        setting: Bool = false
+        setting: Bool = false,
+        mergedBinaryType: MergedBinaryType = .disabled,
+        mergeable: Bool = false
     ) -> Target {
         let dependencies = dependencies.map { $0.setDependency() }
         
@@ -58,7 +61,9 @@ public extension Target {
             sources: ["\(name)/Sources/**"],
             resources: resources ? ["Resources/**"] : nil,
             dependencies: dependencies,
-            settings: Configuration.defaultConfiguration
+            settings: Configuration.defaultConfiguration,
+            mergedBinaryType: mergedBinaryType,
+            mergeable: mergeable
         )
     }
     

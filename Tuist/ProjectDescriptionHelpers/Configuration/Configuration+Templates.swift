@@ -8,44 +8,15 @@
 import ProjectDescription
 
 public extension Configuration {
-    static func getSetting(name: String) -> Settings {
-        return Settings.settings(
-            base: ["OTHER_LDFLAGS":["-Objc"]],
-            configurations: [
-                .debug(
-                    name: .debug,//
-                    xcconfig:  .relativeToManifest("Config/Secrets.xcconfig")
-                ),
-                .release(
-                    name: .release,
-                    xcconfig: .relativeToManifest("Config/Secrets.xcconfig")
-                )
-            ])
-    }
     
-    static let defaultSettings: Settings = Settings.settings(
-        base: ["OTHER_LDFLAGS":["-Objc"]],
-        configurations: [
-        .debug(name: .debug, xcconfig: .relativeToManifest("Config/Secrets.xcconfig")),
-        .release(name: .release, xcconfig: .relativeToManifest("Config/Secrets.xcconfig"))
-    ])
-    
-    static let noneSettings = Settings.settings(
-        configurations: [
-            .debug(name: .debug),
-            .release(name: .release)
-        ],
-        defaultSettings: .recommended
-    )
-    
-    static let name = EnvironmentSettings.default.name
     static let defaultConfiguration = Settings.settings(
-        base: ["OTHER_LDFLAGS": ["-ObjC"]],
         configurations: [
-            .debug(name: .debug, xcconfig: .relativeToRoot("Projects/\(name)/Config/Secrets.xcconfig")),
-            .release(name: .release, xcconfig: .relativeToRoot("Projects/\(name)/Config/Secrets.xcconfig")),
+            .debug(name: .debug, xcconfig: .relativeToRoot("Projects/\(Environment.name)/Config/Secrets.xcconfig")),
+            .release(name: .release, xcconfig: .relativeToRoot("Projects/\(Environment.name)/Config/Secrets.xcconfig")),
         ],
         defaultSettings: DefaultSettings.recommended
     )
+    
+//    static let defaultConfiguration = Settings.settings()
 }
 
