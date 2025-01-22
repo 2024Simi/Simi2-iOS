@@ -11,8 +11,17 @@ import ProjectDescriptionHelpers
 let module = Project.module(
     name: "Coordinator",
     targets: [
+//        .moduleTarget(
+//            name: "AppCoordinator",
+//            product: .staticLibrary,
+//            resources: false,
+//            dependencies: [
+//                .scene(.home),
+//                .scene(.record)
+//            ]
+//        ),
         .moduleTarget(
-            name: "AppCoordinator",
+            name: "HomeCoordinator",
             product: .staticLibrary,
             resources: false,
             dependencies: [
@@ -21,7 +30,7 @@ let module = Project.module(
             ]
         ),
         .moduleTarget(
-            name: "HomeCoordinator",
+            name: "RecordCoordinator",
             product: .staticLibrary,
             resources: false,
             dependencies: [

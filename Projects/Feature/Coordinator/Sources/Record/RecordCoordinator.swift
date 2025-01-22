@@ -30,7 +30,7 @@ public class RecordCoordinator {
     
     public func start() {
         if let diary = diaryId {
-            fifthView()
+            fifthView(diaryID: diary)
         } else {
             firstView()
         }
@@ -91,30 +91,30 @@ public class RecordCoordinator {
         }
         
         viewModel.nextButton = { [weak self] text in
-            self?.fifthView()
+            self?.fifthView(diaryID: nil)
         }
     }
     
-    private func fifthView() {
-        let viewModel = ResultViewModel(
-            diaryEntity: EnrollDiaryEntity(
-                event: "event",
-                behavior: "behavior",
-                think: "think",
-                emotions: ["감동적인","감사한","자신있는","우려스러운","조마조마한"]
-            ),
-            diaryString: EnrollDiaryString(
-                eventString: "eventString",
-                behaviorString: "behaviorString",
-                thinkString: "thinkString"
-            )
-        )
-        let viewController = ResultViewController(viewModel: viewModel)
-        
-        viewModel.backButton = {
-            self.delegate?.navigateBackToHome()
-        }
-        
-        navigationController.pushViewController(viewController, animated: true)
+    private func fifthView(diaryID: Int?) {
+//        let viewModel = ResultViewModel(
+//            diaryEntity: EnrollDiaryEntity(
+//                event: "event",
+//                behavior: "behavior",
+//                think: "think",
+//                emotions: ["감동적인","감사한","자신있는","우려스러운","조마조마한"]
+//            ),
+//            diaryString: EnrollDiaryString(
+//                eventString: "eventString",
+//                behaviorString: "behaviorString",
+//                thinkString: "thinkString"
+//            )
+//        )
+//        let viewController = ResultViewController(viewModel: viewModel)
+//        
+//        viewModel.backButton = {
+//            self.delegate?.navigateBackToHome()
+//        }
+//        
+//        navigationController.pushViewController(viewController, animated: true)
     }
 }

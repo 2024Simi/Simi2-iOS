@@ -22,6 +22,7 @@ class CustomCalendarViewModel: ObservableObject {
     @Published var underDateTitle: String = ""
     @Published var diaryDetail: DiaryDetailDTO?
     @Published var tappedDiaryPrimaryEmotion: String = ""
+    @Published var tappedDiaryEntity: DiaryEntity?
     
     @Published var isDiary: Bool = false
     @Published var recordColor: UIColor = .white
@@ -74,7 +75,7 @@ class CustomCalendarViewModel: ObservableObject {
         case formattedDate // 협의필요
         /// UIKit 컴포넌트 데이터 바인딩
         case setComponentData(PastDiaryState, EmotionType?)
-
+        case calculatedTappedDiaryEntity(Date)
     }
     
     func send(_ action: Action) {
@@ -110,18 +111,29 @@ class CustomCalendarViewModel: ObservableObject {
             tappedDateString = nil
             
         case .calculatedTappedDiaryId(let date):
-            guard let tempDiary = diaryData.first(where: { $0.createdDate == date }) else {
-                send(.setComponentData(.none, nil))
+            
+//            send(.calculatedTappedDiaryEntity(date))
+//            if let diary = self.tappedDiaryEntity {
+//                self.tappedDiaryID = diary.diaryId
+//                let emotion = EmotionType.allCases.first { $0.englishEmotion == diary.primaryEmotion }
+//                send(.setComponentData(.has, emotion))
+//            } else {
+//                self.tappedDiaryID = nil
+//                send(.setComponentData(.none, nil))
+//            }
+            
+            if let tempDiary = diaryData.first(where: { $0.createdDate == date }) {
+                tappedDiaryID = tempDiary.diaryId
+                let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == tempDiary.primaryEmotion })
+                send(.setComponentData(.has, emotion))
+            } else {
                 tappedDiaryID = nil
-                return
+                send(.setComponentData(.none, nil))
             }
             
-            tappedDiaryID = tempDiary.diaryId // 일기가 있는 경우 ID값 빼내기
-            guard let emotion = EmotionType.allCases.first(where: { $0.englishEmotion == tempDiary.primaryEmotion }) else {
-                return
-            }
-        
-            send(.setComponentData(.has, emotion))
+        case .calculatedTappedDiaryEntity(let date):
+            guard let entity = diaryData.first(where: { $0.createdDate == date }) else { return }
+            self.tappedDiaryEntity = entity
             
         case .calculatedUnderTitle(let date):
             self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)

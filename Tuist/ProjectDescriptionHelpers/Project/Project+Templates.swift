@@ -8,12 +8,8 @@
 import ProjectDescription
 
 public extension Project {
-    private static let environmentSettings = EnvironmentSettings.default
-    private static let appName = environmentSettings.name
-    private static let organizationName = environmentSettings.organizationName
-    private static let defaultSettings = DefaultSettings.recommended(excluding: [
-        "SWIFT_ACTIVE_COMPILATION_CONDITIONS"
-    ])
+    private static let appName = Environment.name
+    private static let organizationName = Environment.organizationName
     
     static let customOption: Options = .options(
         defaultKnownRegions: ["en", "ko"],
@@ -27,11 +23,9 @@ public extension Project {
             name: appName,
             organizationName: organizationName,
             options: customOption,
-            settings: Configuration.noneSettings,
+            settings: Configuration.defaultConfiguration,
             targets: target,
-            schemes: [
-                .scheme(target: .debug, name: appName)
-            ]
+            schemes: .app
         )
     }
     
@@ -41,15 +35,25 @@ public extension Project {
         settings: Bool = false,
         targets: [Target]
     ) -> Project {
+        let debugScheme = Scheme.scheme(
+            schemeName: "\(name)Debug",
+            targetName: name,
+            configurationName: .debug
+        )
+
+        let releaseScheme = Scheme.scheme(
+            schemeName: "\(name)Release",
+            targetName: name,
+            configurationName: .release
+        )
+        
         return Project(
             name: name,
             organizationName: organizationName,
             options: options,
-            settings: settings
-            ? Configuration.getSetting(name: name)
-            : Configuration.noneSettings,
+            settings: Configuration.defaultConfiguration,
             targets: targets,
-            schemes: []
+            schemes: [debugScheme, releaseScheme]
         )
     }
 }

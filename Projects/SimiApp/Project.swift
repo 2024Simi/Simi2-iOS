@@ -11,10 +11,10 @@ import ProjectDescriptionHelpers
 let project = Project.app(
     target: [
         .appTarget(
-            name: EnvironmentSettings.default.name,
+            name: Environment.name,
             dependencies: [
-                .coordinator(.simiApp),
                 .coordinator(.homeCoordinator),
+                .coordinator(.recordCoordinator),
                 .designSystem,
                 .core(.service),
                 .core(.model),

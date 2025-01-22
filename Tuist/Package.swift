@@ -1,25 +1,13 @@
 // swift-tools-version: 5.9
-import PackageDescription
+@preconcurrency import PackageDescription
 
 #if TUIST
-    import ProjectDescription
+@preconcurrency import ProjectDescription
 
     let packageSettings = PackageSettings(
         // Customize the product types for specific package product
         // Default is .staticFramework
-        // productTypes: ["Alamofire": .framework,]
-//        productTypes: [
-//          "Lottie": .framework,
-//          "kakao-ios-sdk": .staticLibrary,
-//          "swiftyJSON": .framework
-//        ]
-        productTypes: [:],
-        baseSettings: .settings(
-            configurations: [
-                .debug(name: .debug),
-                .release(name: .release)
-            ]
-        )
+        productTypes: [:]
     )
 #endif
 

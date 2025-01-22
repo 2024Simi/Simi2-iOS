@@ -8,7 +8,6 @@
 
 import SwiftUI
 
-
 enum CalendarViewType {
     case monthly
     case weekly
