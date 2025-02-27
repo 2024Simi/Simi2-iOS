@@ -11,7 +11,7 @@ import Security
 
 final public class KeyChain {
     
-    class func create(key: String, token: String) {
+    public class func create(key: String, token: String) {
         let query: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: key,
@@ -23,7 +23,7 @@ final public class KeyChain {
         assert(status == noErr, "🔮 Failed to save KeyChain!")
     }
     
-    class func read(key: String) -> String? {
+    public class func read(key: String) -> String? {
         let query: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: key,
@@ -45,7 +45,7 @@ final public class KeyChain {
         }
     }
     
-    class func delete(key: String) {
+    public class func delete(key: String) {
         let query: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: key

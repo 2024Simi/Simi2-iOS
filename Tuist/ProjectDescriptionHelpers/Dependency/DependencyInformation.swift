@@ -36,7 +36,7 @@ public enum SPM: String {
     case lottie = "Lottie"
     case KakaoSDKUser = "KakaoSDKUser"
     case swiftyJSON = "swiftyJSON"
-    case firebase = "firebase"
+    case firebase = "FirebaseMessaging"
 }
 
 extension Module {

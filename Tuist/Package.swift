@@ -17,5 +17,6 @@ let package = Package(
       .package(url: "https://github.com/airbnb/lottie-ios", from: "4.5.0"),
       .package(url: "https://github.com/kakao/kakao-ios-sdk.git", from: "2.20.0"),
       .package(url: "https://github.com/SwiftyJSON/SwiftyJSON", from: "5.0.2"),
+      .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.7.0")
     ]
 )

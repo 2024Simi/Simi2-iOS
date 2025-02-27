@@ -18,7 +18,8 @@ let project = Project.app(
                 .designSystem,
                 .core(.service),
                 .core(.model),
-                .core(.common)
+                .core(.common),
+                .spm(.firebase)
             ]
         ),
     ]
