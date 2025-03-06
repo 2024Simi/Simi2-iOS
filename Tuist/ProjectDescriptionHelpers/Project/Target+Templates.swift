@@ -81,7 +81,7 @@ public extension Target {
             deploymentTargets: deploymentTargets,
             infoPlist: .file(path: "Support/Info.plist"),
             sources: ["Sources/**"],
-            resources: nil,
+            resources: ["Resources/**"],
             //            entitlements: "\(name).entitlements", // 추가 후 주석 해제
             dependencies: dependencies,
             settings: Configuration.defaultConfiguration
