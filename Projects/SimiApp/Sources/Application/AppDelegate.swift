@@ -14,7 +14,7 @@ import DesignSystem
 import Firebase
 import FirebaseMessaging
 
-//@main
+@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,

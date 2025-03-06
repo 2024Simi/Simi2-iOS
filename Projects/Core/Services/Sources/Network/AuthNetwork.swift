@@ -16,6 +16,7 @@ protocol AuthNetworkInterface {
     func postLogout() -> AnyPublisher<Data, NetworkError>
     func postLogin() -> AnyPublisher<PostAuthDTO, NetworkError>
     func postProvider(loginType: String, idToken: String) -> AnyPublisher<Data, NetworkError>
+    func putConsent(consent: ConsentRequest) -> AnyPublisher<Data, NetworkError>
 }
 
 //public class AuthNetwork: ApiService, DiaryNetworkInterface {}

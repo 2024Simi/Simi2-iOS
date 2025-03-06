@@ -31,6 +31,9 @@ public enum EndPoint: String {
     case prompt = "prompt"
     case completions = "completions"
     
+    /// Notification
+    case notification = "notification"
+    
     public var url: String {
         return BaseUrl.baseURL + self.rawValue
     }

@@ -47,6 +47,7 @@ public class DiaryService: ApiService, DiaryNetworkInterface {
         .eraseToAnyPublisher()
     }
     
+    /// 일기 추가
     public func postDiary(diary: PostDiaryResponse) -> AnyPublisher<PostDiaryResponse, NetworkError> {
         return request(
             httpMethod: .post,
