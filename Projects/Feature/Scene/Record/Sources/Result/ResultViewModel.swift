@@ -22,50 +22,46 @@ public class ResultViewModel {
     
     private var cancellables = Set<AnyCancellable>()
     private let diaryService = DiaryService(apiService: ApiService())
-    
-    public let diaryId: Int?
-    public let diaryEntity: EnrollDiaryEntity
-    public let diaryString: EnrollDiaryString
+
+    /// diaryId
+    public let diaryId: Int
+    /// 일기 수정 후 다시 서버에 데이터를 보내기 위한 post Request
+    public let diaryEntity: PostDiaryRequest
+    /// diaryID를 통해서 가져오는 다이어리 데이터
+    public var diaryDataById = CurrentValueSubject<GetDiaryByDiaryIdDTO, Never>(.init())
+    /// 뒤로가기
     public var backButton: (() -> ())?
+    /// 수정하기
     public var modifyButton: (() -> ())?
-    public var isEditing: Bool = false
-    public var resultMessage = CharacterResultEneity(
-        mainEmotion: "행복",
-        message: "오늘은 어떤 어떤 하루를 보냈군아, 고생 많아써. 너가 짱이야 호호호호 할말이 없다 내용내용내용 고생 많아써. 너가 짱이야 호호호호 할말이 없다 내용내용내용고생 많아써",
-        mainImage: EmotionType.happy.image,
-        color: .happy
-    )
-    
+    /// 수정인지 아닌지
+    public var isEditing: Bool
+
     public init(
-        diaryId: Int?,
-        diaryEntity: EnrollDiaryEntity,
-        diaryString: EnrollDiaryString,
-        backButton: (() -> Void)?,
-        modifyButton: (() -> Void)?,
-        isEditing: Bool,
-        resultMessage: CharacterResultEneity
+        diaryId: Int,
+        diaryEntity: PostDiaryRequest = .init(),
+        backButton: (() -> Void)? = nil,
+        modifyButton: (() -> Void)? = nil,
+        isEditing: Bool = false
     ) {
         self.diaryId = diaryId
         self.diaryEntity = diaryEntity
-        self.diaryString = diaryString
         self.backButton = backButton
         self.modifyButton = modifyButton
         self.isEditing = isEditing
-        self.resultMessage = resultMessage
     }
     
     enum Action {
-        case getDiaryDetail
+        /// DiaryID를 통해 특정 ID의 일기 데이터 불러옵니다.
+        case getDiaryDetailByID
+        /// 일기를 서버에 기록합니다.
         case postDiary
     }
     
     func send(_ action: Action) {
         switch action {
-        case .getDiaryDetail:
-            guard let id = diaryId else { return }
-            
-            diaryService.getDiaryDetail(diaryID: String(id))
-                .receive(on: DispatchQueue.main)
+        case .getDiaryDetailByID:
+            diaryService.getDiaryDetail(diaryID: "\(diaryId)")
+                .receive(on: DispatchQueue.main) // 메인 스레드에서 UI 작업
                 .sink { completion in
                     switch completion {
                     case .finished:
@@ -74,7 +70,7 @@ public class ResultViewModel {
                         print("🔴 Diary Detail Failure! \(error.localizedDescription)")
                     }
                 } receiveValue: { [weak self] diary in
-//                    self?.diaryDetail = diary
+                    self?.diaryDataById.send(diary) // 값 방출
                 }
                 .store(in: &cancellables)
             

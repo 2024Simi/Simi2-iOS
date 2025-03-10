@@ -20,7 +20,7 @@ class CustomCalendarViewModel: ObservableObject {
     @Published var dateTitle: String = ""
     @Published var tappedDateString: Int? // tap한 다이어리의 일자값
     @Published var underDateTitle: String = ""
-    @Published var diaryDetail: DiaryDetailDTO?
+    @Published var diaryDetail: GetDiaryByDiaryIdDTO?
     @Published var tappedDiaryPrimaryEmotion: String = ""
     @Published var tappedDiaryEntity: DiaryEntity?
     
@@ -74,7 +74,7 @@ class CustomCalendarViewModel: ObservableObject {
         case calculatedUnderTitle(Date)
         case formattedDate // 협의필요
         /// UIKit 컴포넌트 데이터 바인딩
-        case setComponentData(PastDiaryState, EmotionType?)
+        case setComponentData(DiaryState, EmotionType?)
         case calculatedTappedDiaryEntity(Date)
     }
     
@@ -137,8 +137,10 @@ class CustomCalendarViewModel: ObservableObject {
             
         case .calculatedUnderTitle(let date):
             self.underDateTitle = Self.calendarHeaderDateFormatter.string(from: date)
+            
         case .formattedDate:
             self.dateTitle = Self.calendarHeaderDateFormatter.string(from: currentMonth)
+            
         case .setComponentData(let state, let emotion):
             heartImage = (state == .none ? .icEmptyHeart : .icGrowingHeart)
             characterImage = (state == .none ? .icNoRecord : emotion?.image ?? .icNoRecord)

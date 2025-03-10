@@ -22,7 +22,7 @@ public struct DiaryLabel {
     public static let showLabel = "기록 보러가기"
 }
 
-public enum PastDiaryState {
+public enum DiaryState {
     case none
     case has
 }

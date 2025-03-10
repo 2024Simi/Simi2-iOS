@@ -9,6 +9,7 @@
 import UIKit
 import DesignSystem
 
+/// 기록 유무에 따라 달라지는 뷰를 작성하기 위한 컴포넌트
 public class HomeRecordViewComponent: UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)

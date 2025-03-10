@@ -29,15 +29,21 @@ public class HomeCoordinator {
     
     private func firstView() {
         let viewController = CalendarHomeViewController()
-        viewController.mainEmotionComponent.buttonTapped = { [weak self] diaryDetailDTO in
-            self?.startRecordCoordinator(with: diaryDetailDTO)
+        
+        viewController.mainEmotionComponent.buttonTapped = { diaryID in
+            self.startRecordCoordinator(with: diaryID)
         }
+        
         navigationController.pushViewController(viewController, animated: true)
     }
     
     func startRecordCoordinator(with diaryId: Int?) {
-        let recordCoordinator = RecordCoordinator(navigationController: navigationController)
+        let recordCoordinator = RecordCoordinator(
+            navigationController: navigationController,
+            diaryId: diaryId
+        )
         self.recordCoordinator = recordCoordinator
+        
         recordCoordinator.delegate = self
         recordCoordinator.diaryId = diaryId
         recordCoordinator.start()

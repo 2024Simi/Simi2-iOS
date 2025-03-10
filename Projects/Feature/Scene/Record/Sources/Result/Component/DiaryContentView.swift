@@ -67,13 +67,13 @@ public class DiaryContentView: UIView {
         return containerView
     }
     
-    func configure(event: String, behavior: String, result: String) {
+    func configure(event: String, think: String, result: String) {
         let eventView = setupViewComponent(title: "사건", content: event)
-        let behaviorView = setupViewComponent(title: "행동", content: behavior)
+        let thinkView = setupViewComponent(title: "행동", content: think)
         let resultView = setupViewComponent(title: "결과", content: result)
         
         mainStackView.addArrangedSubview(eventView)
-        mainStackView.addArrangedSubview(behaviorView)
+        mainStackView.addArrangedSubview(thinkView)
         mainStackView.addArrangedSubview(resultView)
         
         addSubview(mainStackView)

@@ -14,6 +14,7 @@ public protocol RecordCoordinatorDelegate: AnyObject {
     func navigateBackToHome()
 }
 
+/// 기록화면을 위한 Coordinator
 public class RecordCoordinator {
     private let navigationController: UINavigationController
 
@@ -22,7 +23,7 @@ public class RecordCoordinator {
     
     public init(
         navigationController: UINavigationController,
-        diaryId: Int? = nil
+        diaryId: Int?
     ) {
         self.navigationController = navigationController
         self.diaryId = diaryId
@@ -91,30 +92,18 @@ public class RecordCoordinator {
         }
         
         viewModel.nextButton = { [weak self] text in
-            self?.fifthView(diaryID: nil)
+            self?.fifthView(diaryID: 0)
         }
     }
     
-    private func fifthView(diaryID: Int?) {
-//        let viewModel = ResultViewModel(
-//            diaryEntity: EnrollDiaryEntity(
-//                event: "event",
-//                behavior: "behavior",
-//                think: "think",
-//                emotions: ["감동적인","감사한","자신있는","우려스러운","조마조마한"]
-//            ),
-//            diaryString: EnrollDiaryString(
-//                eventString: "eventString",
-//                behaviorString: "behaviorString",
-//                thinkString: "thinkString"
-//            )
-//        )
-//        let viewController = ResultViewController(viewModel: viewModel)
-//        
-//        viewModel.backButton = {
-//            self.delegate?.navigateBackToHome()
-//        }
-//        
-//        navigationController.pushViewController(viewController, animated: true)
+    private func fifthView(diaryID: Int) {
+        let viewModel = ResultViewModel(diaryId: diaryID)
+        let viewController = ResultViewController(viewModel: viewModel)
+        
+        viewModel.backButton = {
+            self.delegate?.navigateBackToHome()
+        }
+        
+        navigationController.pushViewController(viewController, animated: true)
     }
 }

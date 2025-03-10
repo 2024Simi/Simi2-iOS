@@ -10,10 +10,8 @@ import UIKit
 import DesignSystem
 import Models
 
+/// 일기 기록이 있을 때 주감정과 일기기록을 보러가기 위한 컴포넌트
 public class MainEmotionViewComponent: UIView {
-//    public var buttonTapped: ((DiaryDetailDTO?) -> Void)?
-//    public var diaryDetail: DiaryDetailDTO?
-    
     public var buttonTapped: ((Int?) -> Void)?
     public var diaryID: Int?
     
@@ -102,11 +100,11 @@ public class MainEmotionViewComponent: UIView {
 
 extension MainEmotionViewComponent {
     @objc func tappedButton() {
-//        let temp = DiaryDetailDTO(diaryId: 16, episode: "episode", thoughtOfEpisode: "ddd", emotionOfEpisodes: [], primaryEmotion: "parid", resultOfEpisode: "dsakfjaks", empathyResponse: "daslkjhfasl;")
         buttonTapped?(diaryID)
     }
 }
 
+// MARK: - 레이아웃 설정 코드
 public extension MainEmotionViewComponent {
     private func setupConstraints() {
         addSubview(circleView)

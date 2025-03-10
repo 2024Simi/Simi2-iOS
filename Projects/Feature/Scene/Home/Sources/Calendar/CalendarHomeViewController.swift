@@ -165,8 +165,23 @@ extension CalendarHomeViewController {
 extension CalendarHomeViewController {
     func bindingData() {
         dateLabel.text = "\(viewModel.underDateTitle)일 감정기록"
-        mainEmotionComponent.updateData(emotion: viewModel.emotionLabel, characterImage: viewModel.characterImage, buttonTitle: viewModel.buttonTitle, todayColor: viewModel.emotionColor)
-        aboutRecordComponent.updateData(recordColor: viewModel.recordColor, subLabel: viewModel.recordSubLabel, mainLabel: viewModel.recordMainLabel, heart: viewModel.heartImage)
+        
+        /// 감정 컴포넌트 데이터 바인딩
+        mainEmotionComponent.updateData(
+            emotion: viewModel.emotionLabel,
+            characterImage: viewModel.characterImage,
+            buttonTitle: viewModel.buttonTitle,
+            todayColor: viewModel.emotionColor
+        )
+        
+        /// 기록 유무에 대한 컴포넌트 데이터 바인딩
+        aboutRecordComponent.updateData(
+            recordColor: viewModel.recordColor,
+            subLabel: viewModel.recordSubLabel,
+            mainLabel: viewModel.recordMainLabel,
+            heart: viewModel.heartImage
+        )
+        
         mainEmotionComponent.diaryID = viewModel.tappedDiaryID
     }
 }

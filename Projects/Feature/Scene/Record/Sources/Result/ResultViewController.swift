@@ -9,13 +9,17 @@
 import UIKit
 import DesignSystem
 import Models
+import Combine
 
 public class ResultViewController: UIViewController {
+    
+    private var cancellables = Set<AnyCancellable>()
     let characterView = CharacterResultView()
     let diaryContentView = DiaryContentView()
     
     public var customBar: CustomNavigationBar
     public var viewModel: ResultViewModel
+    
     public init(
         customBar: CustomNavigationBar = CustomNavigationBar(),
         viewModel: ResultViewModel
@@ -32,12 +36,15 @@ public class ResultViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        bind()
         setupNavigationBar()
         configureLayout()
         
+        viewModel.send(.getDiaryDetailByID)
     }
     
     // MARK: - Setup UI
+    /// 대표 감정 캐릭터를 위한 이미지 뷰
     private let characterImage: UIImageView = {
         let image = UIImageView()
         image.image = .icSample
@@ -46,6 +53,7 @@ public class ResultViewController: UIViewController {
         return image
     }()
 
+    /// 5개의 감정들을 저장하기 위한 스크롤 뷰(가로)
     private let emotionsScrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.showsHorizontalScrollIndicator = false
@@ -56,6 +64,7 @@ public class ResultViewController: UIViewController {
         return scroll
     }()
     
+    /// 감정들을 저장할 스택
     private let emotionsStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -66,6 +75,7 @@ public class ResultViewController: UIViewController {
         return stack
     }()
     
+    /// 전체 화면의 스크롤뷰(세로)
     private let totalScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
@@ -73,27 +83,33 @@ public class ResultViewController: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
-    
-    private let stringStack: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.spacing = 10
-        return stackView
-    }()
+}
+
+// MARK: - Data 및 데이터 Binding을 처리하는 곳입니다.
+extension ResultViewController {
+    func bind() {
+        viewModel.diaryDataById
+            .receive(on: DispatchQueue.main)  // 메인 스레드에서 UI 업데이트
+            .sink { [weak self] diaryData in
+                guard let self = self else { return }
+                
+                let event = diaryData.episode
+                let think = diaryData.thoughtOfEpisode
+                let behavior = diaryData.resultOfEpisode
+                
+                // UI 업데이트 시점
+                self.diaryContentView.configure(
+                    event: event,
+                    think: think,
+                    result: behavior)
+            }
+            .store(in: &cancellables)
+    }
 }
 
 // MARK: - Layout Extenison
 extension ResultViewController {
     private func configureLayout() {
-        diaryContentView.configure(
-            event: "푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는",
-            behavior: "푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는 너에게 나는 그런 사람이고 싶다. 들판에 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔한 미소와 작은 행복을 주는 사람 너에게 나는 그런 핀 작은 풀꽃같이 바람에 날리는 어여쁜 민들레같이 잔잔한 미소와 작은 행복을 주는 사람 너에게 나는 그런 사람이고 싶다..푸른하늘처럼 투명하게 새벽공기처럼 청아하게 언제나 파란 희망으로 다가서는",
-            result: "언제나 파란 희망으로 다가서는 너에언제나 파란 희망으로 다가서는 너에언제나 파란 희망으로 다가서는 너에언제나 파란 희망으로 다가서는 너에언제나 파란 희망으로 다가서는 너에"
-        )
-        
-        characterView.configure(mainEmotion: viewModel.resultMessage.mainEmotion, empathyMessage: viewModel.resultMessage.message, stackViewColor: viewModel.resultMessage.color, image: viewModel.resultMessage.mainImage)
-        
         totalScrollView.backgroundColor = .backgroundColor
         characterView.backgroundColor = UIColor.white
         diaryContentView.translatesAutoresizingMaskIntoConstraints = false
