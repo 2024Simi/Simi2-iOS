@@ -9,7 +9,7 @@
 import Foundation
 
 public class DiaryMapper {
-    public static func toDiaryEntity(response: DiaryDTO) -> DiaryEntity {
+    public static func toDiaryEntity(response: GetDiaryDTO) -> DiaryEntity {
         DiaryEntity(
             diaryId: response.diaryId,
             primaryEmotion: response.primaryEmotion,
