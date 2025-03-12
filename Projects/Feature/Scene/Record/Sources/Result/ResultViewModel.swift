@@ -28,7 +28,7 @@ public class ResultViewModel {
     /// 일기 수정 후 다시 서버에 데이터를 보내기 위한 post Request
     public let diaryEntity: PostDiaryRequest
     /// diaryID를 통해서 가져오는 다이어리 데이터
-    public var diaryDataById = CurrentValueSubject<GetDiaryByDiaryIdDTO, Never>(.init())
+    public var diaryDataById = CurrentValueSubject<GetDiaryByDiaryIdEntity, Never>(.init())
     /// 뒤로가기
     public var backButton: (() -> ())?
     /// 수정하기

@@ -16,4 +16,21 @@ public class DiaryMapper {
             createdAt: response.createdAt
         )
     }
+    
+    public static func toGetDiaryByDiaryIdEntity(response: GetDiaryByDiaryIdDTO) -> GetDiaryByDiaryIdEntity {
+         GetDiaryByDiaryIdEntity(
+            diaryId: response.diaryId,
+            episode: response.episode,
+            thoughtOfEpisode: response.thoughtOfEpisode,
+            resultOfEpisode: response.resultOfEpisode,
+            primaryEmotion: response.primaryEmotion,
+            emotionOfEpisodes: response.emotionOfEpisodes.map { dto in
+                EmotionOfEpisodeEntity(
+                    type: dto.type,
+                    details: dto.details
+                )
+            },
+            empathyResponse: response.empathyResponse
+        )
+    }
 }

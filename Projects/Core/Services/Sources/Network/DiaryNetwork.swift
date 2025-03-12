@@ -13,7 +13,7 @@ import Foundation
 
 public protocol DiaryNetworkInterface {
     func getDiary(startDate: String, endDate: String) -> AnyPublisher<[DiaryEntity], NetworkError>
-    func getDiaryDetail(diaryID: String) -> AnyPublisher<GetDiaryByDiaryIdDTO, NetworkError>
+    func getDiaryDetail(diaryID: String) -> AnyPublisher<GetDiaryByDiaryIdEntity, NetworkError>
     func postDiary(diary: PostDiaryResponse) -> AnyPublisher<PostDiaryResponse, NetworkError>
 }
 
@@ -63,13 +63,20 @@ public class DiaryService: ApiService, DiaryNetworkInterface {
     }
     
     /// 일기별 세부 데이터 가져오기
-    public func getDiaryDetail(diaryID: String) -> AnyPublisher<GetDiaryByDiaryIdDTO, NetworkError> {        
+    public func getDiaryDetail(diaryID: String) -> AnyPublisher<GetDiaryByDiaryIdEntity, NetworkError> {
         return apiService.request(
             httpMethod: .get,
             endPoint: EndPoint.diary.url,
             pathParameters: diaryID,
             header: masterAccessToken
         )
+        .tryMap { (diary: GetDiaryByDiaryIdDTO) -> GetDiaryByDiaryIdEntity in
+            let mappedDiaries = DiaryMapper.toGetDiaryByDiaryIdEntity(response: diary)
+            return mappedDiaries
+        }
+        .mapError { error in
+            return (error as? NetworkError) ?? NetworkError.decodingFailed
+        }
         .eraseToAnyPublisher()
     }
 }

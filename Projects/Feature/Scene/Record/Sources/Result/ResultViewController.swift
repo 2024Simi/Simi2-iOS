@@ -39,7 +39,6 @@ public class ResultViewController: UIViewController {
         bind()
         setupNavigationBar()
         configureLayout()
-        
         viewModel.send(.getDiaryDetailByID)
     }
     
@@ -93,21 +92,26 @@ extension ResultViewController {
             .sink { [weak self] diaryData in
                 guard let self = self else { return }
                 
+                /// 사건/행동/결과 데이터 업데이트
                 let event = diaryData.episode
                 let think = diaryData.thoughtOfEpisode
                 let behavior = diaryData.resultOfEpisode
                 
-                // UI 업데이트 시점
-                self.diaryContentView.configure(
+                self.diaryContentView.updateData(
                     event: event,
                     think: think,
-                    result: behavior)
+                    result: behavior
+                )
+                
+                // 감정 카드 데이터 업데이트를 위한 데이터 필터링 + 데이터 업데이트
+                let emotions = diaryData.emotionOfEpisodes.flatMap { $0.details }
+                setupEmotionLabels(emotoins: emotions)
             }
             .store(in: &cancellables)
     }
 }
 
-// MARK: - Layout Extenison
+// MARK: - 레이아웃을 구현하는 ResultViewController의 Extension입니다.
 extension ResultViewController {
     private func configureLayout() {
         totalScrollView.backgroundColor = .backgroundColor
@@ -116,7 +120,7 @@ extension ResultViewController {
         characterView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(totalScrollView)
         
-        setupEmotionLabels()
+        setupEmotionLabels(emotoins: [])
         totalScrollView.addSubview(characterView)
         totalScrollView.addSubview(emotionsScrollView)
         totalScrollView.addSubview(diaryContentView)
@@ -151,8 +155,8 @@ extension ResultViewController {
         ])
     }
     
-    private func setupEmotionLabels() {
-        for emotion in viewModel.diaryEntity.emotions {
+    private func setupEmotionLabels(emotoins: [String]) {
+        for emotion in emotoins {
             let labelColor = EmotionType.allCases.first { $0.detailEmotion.contains(emotion) }?.color
             let label = UILabel()
             label.text = emotion
@@ -173,34 +177,6 @@ extension ResultViewController {
         }
         emotionsScrollView.addSubview(emotionsStack)
         emotionsScrollView.backgroundColor = .backgroundColor
-    }
-    
-    private func setupViewComponent(title: String, content: String) -> UIView {
-        let titleLabel = UILabel()
-        let contentLable = UILabel()
-        let stackView = UIStackView()
-        let view = UIView()
-        
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentLable.translatesAutoresizingMaskIntoConstraints = false
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        titleLabel.text = title
-        contentLable.text = content
-        titleLabel.applyFontCase(.bold(.subheadline))
-        titleLabel.textColor = .coolgray600
-        contentLable.applyFontCase(FontCase.regular(.subheadline))
-        contentLable.textColor = .coolgray800
-        
-        stackView.axis = .vertical
-        stackView.spacing = 6
-        stackView.isLayoutMarginsRelativeArrangement = false
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(contentLable)
-        view.addSubview(stackView)
-        
-        return view
     }
 }
 

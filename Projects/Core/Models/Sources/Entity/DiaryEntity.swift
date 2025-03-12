@@ -30,4 +30,8 @@ public struct DiaryEntity {
     public var createdString: String {
         return String(createdAt.prefix(10))
     }
+    
+    public var emotionType: EmotionType? {
+        return EmotionType.allCases.first { $0.englishEmotion == primaryEmotion }
+    }
 }

@@ -10,11 +10,14 @@ import UIKit
 import DesignSystem
 import Models
 
+// DiaryContentView에서 새로운 컴포넌트를 활용
 public class DiaryContentView: UIView {
     
-    var textViews: [UITextView] = []
+    private var textViews: [DiaryContentViewComponent] = []
+    let eventView = DiaryContentViewComponent(title: "사건", content: "")
+    let thinkView = DiaryContentViewComponent(title: "행동", content: "")
+    let resultView = DiaryContentViewComponent(title: "결과", content: "")
     
-    // 3개의 view(제목 + 내용 스택뷰)를 담을 총괄 스택뷰
     private let mainStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -24,60 +27,11 @@ public class DiaryContentView: UIView {
         return stack
     }()
     
-    private func setupViewComponent(title: String, content: String) -> UIView {
-        // 각각의 제목 + 내용 스택뷰를 담을 View
-        let containerView = UIView()
-        containerView.layer.cornerRadius = 6
-        
-        // 제목 + 내용 스택뷰
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 4
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.backgroundColor = .white
-        
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.applyFontCase(.bold(.subheadline))
-        titleLabel.textColor = .coolgray600
-        
-        let contentTextView = UITextView()
-        contentTextView.text = content
-        contentTextView.font = FontCase.regular(.subheadline).toUIFont
-        contentTextView.textColor = .coolgray800
-        contentTextView.translatesAutoresizingMaskIntoConstraints = false
-        contentTextView.isScrollEnabled = false
-        contentTextView.isEditable = false
-        contentTextView.textContainer.lineFragmentPadding = 0  // 텍스트 패딩 제거
-        contentTextView.textContainerInset = .zero  // 컨테이너 인셋 제거
-        
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(contentTextView)
-        containerView.addSubview(stackView)
-        
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
-            stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16),
-        ])
-        
-        textViews.append(contentTextView)
-        
-        return containerView
-    }
-    
-    func configure(event: String, think: String, result: String) {
-        let eventView = setupViewComponent(title: "사건", content: event)
-        let thinkView = setupViewComponent(title: "행동", content: think)
-        let resultView = setupViewComponent(title: "결과", content: result)
-        
-        mainStackView.addArrangedSubview(eventView)
-        mainStackView.addArrangedSubview(thinkView)
-        mainStackView.addArrangedSubview(resultView)
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        configure()
         
         addSubview(mainStackView)
-        
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: topAnchor),
             mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -86,7 +40,90 @@ public class DiaryContentView: UIView {
         ])
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure() {
+        mainStackView.addArrangedSubview(eventView)
+        mainStackView.addArrangedSubview(thinkView)
+        mainStackView.addArrangedSubview(resultView)
+        
+        textViews.append(eventView)
+        textViews.append(thinkView)
+        textViews.append(resultView)
+    }
+    
     func setTextViewsEditable(_ editable: Bool) {
-        textViews.forEach { $0.isEditable = editable }
+        textViews.forEach { $0.setEditable(editable) }
+    }
+    
+    func updateData(event: String, think: String, result: String) {
+        eventView.updateContentTextViewText(data: event)
+        thinkView.updateContentTextViewText(data: think)
+        resultView.updateContentTextViewText(data: result)
     }
 }
+
+
+/// 결과 화면의 사건, 행동, 결과를 그리는 공통 컴포넌트 입니다.
+
+class DiaryContentViewComponent: UIView {
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.applyFontCase(.bold(.subheadline))
+        label.textColor = .coolgray600
+        return label
+    }()
+    
+    private let contentTextView: UITextView = {
+        let textView = UITextView()
+        textView.font = FontCase.regular(.subheadline).toUIFont
+        textView.textColor = .coolgray800
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isScrollEnabled = false
+        textView.isEditable = false
+        textView.textContainer.lineFragmentPadding = 0
+        textView.textContainerInset = .zero
+        return textView
+    }()
+    
+    init(title: String, content: String) {
+        super.init(frame: .zero)
+        self.titleLabel.text = title
+        self.contentTextView.text = content
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupView() {
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, contentTextView])
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.layer.cornerRadius = 6
+        self.backgroundColor = .white
+        
+        addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+        ])
+    }
+    
+    func setEditable(_ editable: Bool) {
+        contentTextView.isEditable = editable
+    }
+    
+    func updateContentTextViewText(data: String) {
+        contentTextView.text = data
+    }
+}
+

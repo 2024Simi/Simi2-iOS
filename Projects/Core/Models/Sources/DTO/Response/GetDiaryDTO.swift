@@ -18,21 +18,21 @@ public struct GetDiaryDTO: Decodable {
     public let createdAt: String
     
     // Entity를 위한 변수 추가
-    public var createdDate: Date? {
-        let temp = String(createdAt.prefix(10))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        
-        if let date = formatter.date(from: temp) {
-            return date
-        }
-        
-        return nil
-    }
+//    public var createdDate: Date? {
+//        let temp = String(createdAt.prefix(10))
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd"
+//        
+//        if let date = formatter.date(from: temp) {
+//            return date
+//        }
+//        
+//        return nil
+//    }
     
-    public var emotionType: EmotionType? {
-        return EmotionType.allCases.first { $0.rawValue == primaryEmotion }
-    }
+//    public var emotionType: EmotionType? {
+//        return EmotionType.allCases.first { $0.rawValue == primaryEmotion }
+//    }
 }
 
 public struct DiaryIdDTO: Decodable {
@@ -57,6 +57,31 @@ public struct GetDiaryByDiaryIdDTO: Decodable {
     public var emotionOfEpisodes: [EmotionOfEpisode]
     /// 시미의 반응 문구
     public var empathyResponse: String
+}
+
+// 감정 선택뷰에서 선택하는
+// 행복 탭에서 감정 여러개 선택
+public struct EmotionOfEpisode: Decodable {
+    public let type: String
+    public let details: [String]
+}
+
+/// Entity
+public struct GetDiaryByDiaryIdEntity {
+    /// diaryID
+    public var diaryId: Int
+    /// 오늘은 어떤일이 있었어? 의 "사건"
+    public var episode: String
+    /// 그 일에 대해서 어떤 생각이 들었어? 의 "생각"
+    public var thoughtOfEpisode: String
+    /// 그래서 어떤 행동을 했어?의 "행동"
+    public var resultOfEpisode: String
+    /// 오늘의 주감정
+    public var primaryEmotion: String
+    /// 오늘 선택한 감정들
+    public var emotionOfEpisodes: [EmotionOfEpisodeEntity]
+    /// 시미의 반응 문구
+    public var empathyResponse: String
     
     /// vm 단에서 사용하기 위한 초기값을 위한 init
     public init() {
@@ -68,17 +93,41 @@ public struct GetDiaryByDiaryIdDTO: Decodable {
         self.emotionOfEpisodes = []
         self.empathyResponse = ""
     }
+    
+    public init(
+        diaryId: Int,
+        episode: String,
+        thoughtOfEpisode: String,
+        resultOfEpisode: String,
+        primaryEmotion: String,
+        emotionOfEpisodes: [EmotionOfEpisodeEntity],
+        empathyResponse: String
+    ) {
+         self.diaryId = diaryId
+         self.episode = episode
+         self.thoughtOfEpisode = thoughtOfEpisode
+         self.resultOfEpisode = resultOfEpisode
+         self.primaryEmotion = primaryEmotion
+         self.emotionOfEpisodes = emotionOfEpisodes
+         self.empathyResponse = empathyResponse
+     }
 }
 
-// 감정 선택뷰에서 선택하는
-// 행복 탭에서 감정 여러개 선택
-public struct EmotionOfEpisode: Decodable {
+public struct EmotionOfEpisodeEntity: Decodable {
     public let type: String
     public let details: [String]
+    
+    /// 서버에 올라와있는 type을 EmotionType과 매칭하여 매칭되는 값으로 설정(옵서녈) -> 기본값 happy
+    public var emotionType: EmotionType {
+        return EmotionType.allCases.first { $0.englishEmotion == type } ?? .happy
+    }
 }
 
+
+///request으로 수정 필요 -> 일기 서버에 보낼때 사용함???
 /// diary post result
 public struct PostDiaryResponse: Codable {
     public let diaryId: Int
     public let empathyResponse: String
 }
+
