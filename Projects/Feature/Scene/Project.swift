@@ -25,7 +25,31 @@ let module = Project.module(
             ]
         ),
         .multiTarget(
+            name: "MyPage",
+            product: .staticLibrary,
+            resources: false,
+            dependencies: [
+                .core(.service),
+                .core(.model),
+                .core(.common),
+                .designSystem,
+                .spm(.lottie)
+            ]
+        ),
+        .multiTarget(
             name: "Record",
+            product: .staticLibrary,
+            resources: false,
+            dependencies: [
+                .core(.service),
+                .core(.model),
+                .core(.common),
+                .designSystem,
+                .spm(.lottie)
+            ]
+        ),
+        .multiTarget(
+            name: "Onboarding",
             product: .staticLibrary,
             resources: false,
             dependencies: [

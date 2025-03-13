@@ -11,7 +11,7 @@ import DesignSystem
 import Lottie
 
 public class LottieTestViewController: UIViewController {
-
+/*
     override public func viewDidLoad() {
         super.viewDidLoad()
         
@@ -29,4 +29,5 @@ public class LottieTestViewController: UIViewController {
         
         loading.play()
     }
+ */
 }

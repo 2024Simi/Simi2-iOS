@@ -8,20 +8,20 @@
 
 import Foundation
 import UIKit
-//import HomeCoordinator
-//import Record
+import HomeCoordinator
+import Record
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-//    var coordinator: HomeCoordinator?//RecordCoordinator?
+    var coordinator: HomeCoordinator?//RecordCoordinator?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 //        
-//        window = UIWindow(windowScene: windowScene)
-////        window?.rootViewController = FontTestViewController()  // Root View Controller 설정
-////        window?.makeKeyAndVisible()  // Window를 키 및 보이게 설정
+        window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = TestTextFieldViewController()  // Root View Controller 설정
+        window?.makeKeyAndVisible()  // Window를 키 및 보이게 설정
 //        
 //        let navigationController = UINavigationController()
 //        navigationController.navigationBar.isHidden = true

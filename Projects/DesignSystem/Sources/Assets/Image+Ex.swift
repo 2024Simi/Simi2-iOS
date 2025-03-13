@@ -61,4 +61,12 @@ public extension Image {
     
     // MARK: - Sample
     static let icSample = DesignSystemAsset.sample.swiftUIImage
+    
+    static let icDawn = DesignSystemAsset.icDawn.swiftUIImage
+    static let icMorning = DesignSystemAsset.icMorning.swiftUIImage
+    static let icNoon = DesignSystemAsset.icNoon.swiftUIImage
+    static let icAfternoon = DesignSystemAsset.icAfternoon.swiftUIImage
+    static let icEvening = DesignSystemAsset.icEvening.swiftUIImage
+    static let icDirectSelection = DesignSystemAsset.icDirectSelection.swiftUIImage
+    //
 }

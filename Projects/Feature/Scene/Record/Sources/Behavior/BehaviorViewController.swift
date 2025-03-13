@@ -107,7 +107,7 @@ public class BehaviorViewController: UIViewController {
         return label
     }()
     
-    @objc private func dismissKeyboard() {
+    @objc public override func dismissKeyboard() {
         view.endEditing(true)
     }
     

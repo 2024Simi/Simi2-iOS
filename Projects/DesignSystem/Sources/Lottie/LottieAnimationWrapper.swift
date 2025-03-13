@@ -1,15 +1,15 @@
 //
-//  LottieAnimationView.swift
+//  LottieAnimationWrapper.swift
 //  DesignSystem
 //
-//  Created by 박서연 on 2024/12/12.
-//  Copyright © 2024 inner-dev. All rights reserved.
+//  Created by cha_nyeong on 3/12/25.
+//  Copyright © 2025 inner-dev. All rights reserved.
 //
 
 import UIKit
 import Lottie
 
-public class LottieAnimationView: UIView {
+public class LottieAnimationWrapper: UIView {
     private var animationView: LottieAnimationView!
 
     public init(animationName: String, loopMode: LottieLoopMode = .playOnce) {
@@ -22,8 +22,10 @@ public class LottieAnimationView: UIView {
     }
 
     private func setupAnimationView(animationName: String, loopMode: LottieLoopMode) {
-        animationView = LottieAnimationView(animationName: animationName, loopMode: loopMode)
-        animationView.contentMode = .scaleAspectFit
+        // Lottie의 AnimationView 초기화
+        animationView = LottieAnimationView.init(name: animationName)
+        animationView.loopMode = loopMode
+        animationView.contentMode = .scaleAspectFill // 화면을 꽉 채우도록 설정
         animationView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(animationView)
 
@@ -35,8 +37,8 @@ public class LottieAnimationView: UIView {
         ])
     }
 
-    public func play() {
-        animationView.play()
+    public func play(completion: LottieCompletionBlock? = nil) {
+        animationView.play(completion: completion)
     }
 
     public func stop() {

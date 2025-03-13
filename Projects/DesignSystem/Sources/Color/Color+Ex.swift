@@ -47,4 +47,5 @@ public extension Color {
     static var somehow = Color(DesignSystemAsset.somehow.swiftUIColor)
     static var fear = Color(DesignSystemAsset.fear.swiftUIColor)
     
+    static var kakao = Color(DesignSystemAsset.kakao.swiftUIColor)
 }

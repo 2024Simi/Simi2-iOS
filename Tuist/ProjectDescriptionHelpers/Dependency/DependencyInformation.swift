@@ -25,11 +25,15 @@ public enum Core: String {
 public enum Coordinator: String {
     case homeCoordinator = "HomeCoordinator"
     case recordCoordinator = "RecordCoordinator"
+    case onboardingCoordinator = "OnboardingCoordinator"
+    case mypageCoordinator = "MypageCoordinator"
 }
 
 public enum Scene: String {
     case home = "Home"
     case record = "Record"
+    case onboarding = "Onboarding"
+    case mypage = "MyPage"
 }
 
 public enum SPM: String {

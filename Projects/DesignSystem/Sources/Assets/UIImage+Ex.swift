@@ -62,4 +62,15 @@ public extension UIImage {
     
     // MARK: - Sample
     static let icSample = DesignSystemAsset.sample.image
+    
+    // MARK: - img
+    static let imgSimis = DesignSystemAsset.imgSimis.image
+    
+    static let icDawn = DesignSystemAsset.icDawn.image
+    static let icMorning = DesignSystemAsset.icMorning.image
+    static let icNoon = DesignSystemAsset.icNoon.image
+    static let icAfternoon = DesignSystemAsset.icAfternoon.image
+    static let icEvening = DesignSystemAsset.icEvening.image
+    static let icDirectSelection = DesignSystemAsset.icDirectSelection.image
+    
 }

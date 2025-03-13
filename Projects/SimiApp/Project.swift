@@ -15,6 +15,8 @@ let project = Project.app(
             dependencies: [
                 .coordinator(.homeCoordinator),
                 .coordinator(.recordCoordinator),
+                .coordinator(.mypageCoordinator),
+                .coordinator(.onboardingCoordinator),
                 .designSystem,
                 .core(.service),
                 .core(.model),

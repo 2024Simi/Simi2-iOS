@@ -110,7 +110,7 @@ public class EventViewController: UIViewController {
         return label
     }()
     
-    @objc private func dismissKeyboard() {
+    @objc public override func dismissKeyboard() {
         guard let inputText = overlayView?.textView.text else { return }
         self.textEditor.text = inputText
         view.endEditing(true)

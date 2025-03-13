@@ -37,6 +37,26 @@ let module = Project.module(
                 .scene(.home),
                 .scene(.record)
             ]
+        ),
+        .moduleTarget(
+            name: "OnboardingCoordinator",
+            product: .staticLibrary,
+            resources: false,
+            dependencies: [
+                .scene(.home),
+                .scene(.record),
+                .scene(.onboarding)
+            ]
+        ),
+        .moduleTarget(
+            name: "MyPageCoordinator",
+            product: .staticLibrary,
+            resources: false,
+            dependencies: [
+                .scene(.home),
+                .scene(.record),
+                .scene(.onboarding)
+            ]
         )
     ]
 )

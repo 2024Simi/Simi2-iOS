@@ -58,6 +58,7 @@ public enum appColor {
     case coolgray100
     case coolgray50
     
+    case kakao
 }
 
 public extension UIColor {
@@ -221,5 +222,9 @@ public extension UIColor {
     
     static var color10: UIColor {
         return DesignSystemAsset.color10.color
+    }
+    
+    static var kakao: UIColor {
+        return DesignSystemAsset.kakao.color
     }
 }

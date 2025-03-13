@@ -24,6 +24,7 @@ public class FCMNetworkService: ApiService, FCMNetworkInferface {
         self.apiService = apiService
     }
     
+    /// 알람 설정
     public func putNotification(_ fcmInfo: Models.NotificationRequest) -> AnyPublisher<NotificationDTO, NetworkError> {
         return apiService.request(
             httpMethod: .put,
